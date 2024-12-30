@@ -1,19 +1,13 @@
-public class Retailer implements BaseEntity {
+package crud.model;
 
-    private Long id;
+import crud.base.BaseEntity;
+
+public class Supplier extends BaseEntity {
+
     private String name;
     private String email;
     private String password;
-    private String photoLocation;
-
-
-    public Long getId() { 
-        return id; 
-    }
-
-    public void setId(Long id) { 
-        this.id = id; 
-    }
+    private String imageLocation;
 
     public String getName() {
          return name;
@@ -39,17 +33,22 @@ public class Retailer implements BaseEntity {
         this.password = password; 
     }
 
-    public String getPhotoLocation() {
-        return photoLocation;
+    public String getImageLocation() {
+        return imageLocation;
      }
 
-    public void setPhotoLocation(String photoLocation) { 
-        this.photoLocation = photoLocation;
+    public void setImageLocation(String imageLocation) {
+        this.imageLocation = imageLocation;
     }
+
 
 
     @Override
     public String toString() {
-        return ToStringBuilder.reflectionToString(this);
+        return "Supplier{" +
+                "email='" + email + '\'' +
+                ", name='" + name + '\'' +
+                ", id=" + this.getId() +
+                '}';
     }
 }

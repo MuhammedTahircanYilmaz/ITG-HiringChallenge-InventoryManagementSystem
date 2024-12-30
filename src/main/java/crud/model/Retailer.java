@@ -1,16 +1,21 @@
-public class Supplier implements BaseEntity {
+package crud.model;
 
-    private Long id;
+import crud.base.BaseEntity;
+
+import java.util.UUID;
+
+public class Retailer extends BaseEntity {
+
+    private UUID id;
     private String name;
     private String email;
     private String password;
-    private String photoLocation;
+    private String imageLocation;
 
-     public Long getId() { 
-        return id; 
-    }
 
-    public void setId(Long id) { 
+    public UUID getId() {return id; }
+
+    public void setId(UUID id) {
         this.id = id; 
     }
 
@@ -38,18 +43,21 @@ public class Supplier implements BaseEntity {
         this.password = password; 
     }
 
-    public String getPhotoLocation() {
-        return photoLocation;
+    public String getImageLocation() {
+        return imageLocation;
      }
 
-    public void setPhotoLocation(String photoLocation) { 
-        this.photoLocation = photoLocation;
+    public void setImageLocation(String imageLocation) {
+        this.imageLocation = imageLocation;
     }
-
-
 
     @Override
     public String toString() {
-        return ToStringBuilder.reflectionToString(this);
+        return "Retailer{" +
+                "email='" + email + '\'' +
+                ", name='" + name + '\'' +
+                ", id=" + id +
+                '}';
     }
+
 }
