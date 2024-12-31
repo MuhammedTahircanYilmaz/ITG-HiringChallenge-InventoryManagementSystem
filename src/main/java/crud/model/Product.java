@@ -6,7 +6,7 @@ import java.util.UUID;
 
 public class Product extends BaseEntity {
 
-    private Long supplierId;
+    private UUID supplierId;
     private String name;
     private String description;
     private Long stockQuantity;
@@ -14,11 +14,11 @@ public class Product extends BaseEntity {
     private Float discount;
     private String imageLocation;
 
-    public Long getSupplierId() {
+    public UUID getSupplierId() {
         return supplierId;
         }
 
-    public void setSupplierId(long supplierId ) {
+    public void setSupplierId(UUID supplierId ) {
         this.supplierId = supplierId;
         }
 
