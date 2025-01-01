@@ -43,7 +43,7 @@ public class ProductRepository implements BaseRepository<Product, UUID> {
             ps = connection.prepareStatement(SQL_INSERT);
 
             ps.setString(1, id.toString());
-            ps.setLong(2, entity.getSupplierId());
+            ps.setString(2, entity.getSupplierId().toString());
             ps.setString(3, entity.getName());
             ps.setString(4, entity.getDescription());
             ps.setLong(5, entity.getStockQuantity());
@@ -69,7 +69,7 @@ public class ProductRepository implements BaseRepository<Product, UUID> {
         try {
             ps = connection.prepareStatement(SQL_UPDATE);
 
-            ps.setLong(1, entity.getSupplierId());
+            ps.setString(1, entity.getSupplierId().toString());
             ps.setString(2, entity.getName());
             ps.setString(3, entity.getDescription());
             ps.setLong(4, entity.getStockQuantity());
@@ -189,7 +189,7 @@ public class ProductRepository implements BaseRepository<Product, UUID> {
         Product product = new Product();
 
         product.setId(UUID.fromString(rs.getString("Id")));
-        product.setSupplierId(rs.getLong("SupplierId"));
+        product.setSupplierId(UUID.fromString(rs.getString("SupplierId")));
         product.setName(rs.getString("Name"));
         product.setDescription(rs.getString("Description"));
         product.setStockQuantity(rs.getLong("StockQuantity"));

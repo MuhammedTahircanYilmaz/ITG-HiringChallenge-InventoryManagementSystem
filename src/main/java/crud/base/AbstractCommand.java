@@ -5,6 +5,7 @@ package crud.base;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.UUID;
 
 public abstract class AbstractCommand implements BaseService {
 
@@ -26,13 +27,17 @@ public abstract class AbstractCommand implements BaseService {
 
     protected static final String PAGE_SUPPLIER_LIST = "/supplier/list.jsp";
     protected static final String PAGE_SUPPLIER_FORM = "/supplier/form.jsp";
+    protected static final String PAGE_RETAILER_LIST = "/retailer/list.jsp";
+    protected static final String PAGE_RETAILER_FORM = "/retailer/form.jsp";
+    protected static final String PAGE_BILL_LIST = "/bill/list.jsp";
+    protected static final String PAGE_BILL_FORM = "/bill/form.jsp";
     protected static final String PAGE_PRODUCT_LIST = "/product/list.jsp";
     protected static final String PAGE_PRODUCT_FORM = "/product/form.jsp";
 
-    protected Long getId(HttpServletRequest request) throws ServletException {
+    protected UUID getId(HttpServletRequest request) throws ServletException {
         try {
             String id = request.getParameter("id");
-            return Long.parseLong(id);
+            return UUID.fromString(id);
         } catch (Exception e) {
             setAttributeException(request, e);
             throw new ServletException(UNEXPECTED_ERROR_ATTRIBUTE_MESSAGE, e);
