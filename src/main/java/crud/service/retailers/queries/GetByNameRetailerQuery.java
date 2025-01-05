@@ -1,10 +1,15 @@
 package crud.service.retailers.queries;
 
+import crud.authorization.AuthService;
 import crud.base.AbstractCommand;
+import crud.dtos.retailers.responses.RetailerResponseDto;
 import crud.exception.DAOException;
+import crud.exception.MappingException;
+import crud.mapper.RetailerMapper;
 import crud.model.entities.Retailer;
 import crud.repository.RetailerRepository;
 import crud.service.validation.RetailerValidator;
+import crud.util.Logger;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
@@ -13,28 +18,37 @@ public class GetByNameRetailerQuery extends AbstractCommand {
 
     private final RetailerRepository repository;
     private final RetailerValidator validator;
+    private final AuthService authService ;
+    private final RetailerMapper mapper;
     private String page = PAGE_RETAILER_FORM;
 
-    public GetByNameRetailerQuery(RetailerRepository repository, RetailerValidator validator) {
+    public GetByNameRetailerQuery(RetailerRepository repository, RetailerValidator validator, AuthService authService, RetailerMapper mapper) {
         this.repository = repository;
         this.validator = validator;
+        this.authService = authService;
+        this.mapper = mapper;
     }
 
     @Override
     public String execute(HttpServletRequest request) {
         try {
 
-            validator.validateGetByNameRequest(request);
+            String token = authService.extractToken(request);
+            authService.isAuthenticated(token);
 
-            String retailerName = request.getParameter("name");
+            ArrayList<Retailer> retailers = repository.findAllByName(request.getParameter("RetailerName"));
+            ArrayList<RetailerResponseDto> response = new ArrayList<>();
 
-            ArrayList<Retailer> retailer = repository.findAllByName(retailerName);
+            for(Retailer retailer : retailers){
+                RetailerResponseDto dto = mapper.mapEntityToEntityResponseDto(retailer);
+                response.add(dto);
+            }
 
-            setEntity(request, retailer);
+            setEntities(request, response,"");
 
-        } catch (DAOException  | IllegalArgumentException ex) {
+        } catch (DAOException | IllegalArgumentException | MappingException ex) {
 
-            // logger.error(ex.getMessage());
+            Logger.error(this.getClass().getName(), ex.getMessage());
 
             page = PAGE_RETAILER_LIST;
 

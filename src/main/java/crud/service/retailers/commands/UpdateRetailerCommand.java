@@ -1,48 +1,67 @@
 package crud.service.retailers.commands;
 
+import crud.authorization.AuthService;
 import crud.base.AbstractCommand;
 import crud.base.BaseMapper;
+import crud.dtos.retailers.requests.UpdateRetailerCommandDto;
 import crud.exception.DAOException;
 import crud.exception.MappingException;
+import crud.mapper.RetailerMapper;
 import crud.model.entities.Retailer;
 import crud.repository.RetailerRepository;
 import crud.service.validation.RetailerValidator;
+import crud.util.Logger;
 import crud.util.PasswordUtils;
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.UUID;
+
 public class UpdateRetailerCommand extends AbstractCommand {
 
-    public UpdateRetailerCommand(RetailerRepository repository, BaseMapper<Retailer> mapper, RetailerValidator validator) {
+    public UpdateRetailerCommand(RetailerRepository repository, RetailerMapper mapper, RetailerValidator validator, AuthService authService) {
         this.repository = repository;
         this.validator = validator;
+        this.authService = authService;
         this.mapper = mapper;
     }
 
     private String page = PAGE_RETAILER_LIST;
     private RetailerRepository repository;
     private RetailerValidator validator;
-    private BaseMapper<Retailer> mapper;
+    private RetailerMapper mapper;
+    private final AuthService authService;
 
     @Override
     public String execute(HttpServletRequest request) {
 
         try{
-            validator.validateUpdateRequest(request);
 
-            Retailer retailer = mapper.buildEntity(request);
+            String token = authService.extractToken(request);
+            authService.isAuthenticated(token);
 
-            String password = request.getParameter("password");
-            String hashedPassword = PasswordUtils.hashPassword(password);
-            retailer.setPassword(hashedPassword);
+            UUID userId = authService.getUserId(token);
+            UUID retailerId = UUID.fromString(request.getParameter("retailerId"));
 
+            mapper.mapUpdateRequestDto(request, userId.toString());
+
+            Retailer retailer = repository.findById(retailerId);
+
+            authService.isAllowed(token,retailer.getId());
+
+            UpdateRetailerCommandDto dto = mapper.mapUpdateRequestDto(request, userId.toString());
+
+            retailer.setImageLocation(dto.getImageLocation());
+            retailer.setName(dto.getName());
+            retailer.setUpdatedAt(dto.getUpdatedAt());
+            retailer.setUpdatedBy(dto.getUpdatedBy());
 
             repository.update(retailer);
 
             addSuccessMessage(request,UPDATE_SUCCESS_MESSAGE);
 
-        } catch(DAOException| MappingException ex){
+        } catch(DAOException | MappingException ex){
 
-            //logger.error(ex.getMessage());
+            Logger.error(this.getClass().getName(), ex.getMessage());
             page = PAGE_RETAILER_FORM;
 
             setException(request, ex);

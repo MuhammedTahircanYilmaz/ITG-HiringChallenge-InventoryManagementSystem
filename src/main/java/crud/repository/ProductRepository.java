@@ -19,13 +19,15 @@ public class ProductRepository implements BaseRepository<Product> {
     private Connection connection;
 
 
-    private static final String SQL_INSERT = "INSERT INTO Products (Id, SupplierId, Name, Description, StockQuantity, Price, Discount, ImagePath) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-    private static final String SQL_UPDATE = "UPDATE Products SET SupplierId = ?, Name = ?, Description = ?, StockQuantity = ?, Price = ?, Discount = ?, ImagePath = ? WHERE Id = ?";
-    private static final String SQL_DELETE = "DELETE FROM Products WHERE Id = ?";
-    private static final String SQL_FIND_ALL = "SELECT * FROM Products";
-    private static final String SQL_FIND_BY_ID = "SELECT * FROM Products WHERE Id = ?";
-    private static final String SQL_FIND_BY_SUPPLIER_ID = "SELECT * FROM Products WHERE SupplierId = ?";
-    private static final String SQL_FIND_BY_NAME = "SELECT * FROM Products WHERE Name LIKE ?";
+    private static final String SQL_INSERT = "INSERT INTO Products (Id, SupplierId, Name, Description, StockQuantity, Price, " +
+            "Discount, ImagePath , CreatedBy, CreatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String SQL_UPDATE = "UPDATE Products SET SupplierId = ?, Name = ?, Description = ?, StockQuantity = ?," +
+            " Price = ?, Discount = ?, ImagePath = ? , UpdatedBy = ?, UpdatedAt = ? WHERE Id = ? AND Deleted = false";
+    private static final String SQL_DELETE = "Update Products SET Deleted = True, DeletedBy = ?, DeletedAt = ? WHERE Id = ? AND Deleted = false";
+    private static final String SQL_FIND_ALL = "SELECT * FROM Products AND Deleted = false";
+    private static final String SQL_FIND_BY_ID = "SELECT * FROM Products WHERE Id = ? AND Deleted = false";
+    private static final String SQL_FIND_BY_SUPPLIER_ID = "SELECT * FROM Products WHERE SupplierId = ? AND Deleted = false";
+    private static final String SQL_FIND_BY_NAME = "SELECT * FROM Products WHERE Name LIKE ? AND Deleted = false";
 
 
 
@@ -57,6 +59,8 @@ public class ProductRepository implements BaseRepository<Product> {
             ps.setDouble(6, entity.getPrice());
             ps.setFloat(7, entity.getDiscount());
             ps.setString(8, entity.getImageLocation());
+            ps.setString(9, entity.getCreatedBy());
+            ps.setTimestamp(10, entity.getCreatedAt());
 
             ps.executeUpdate();
             connection.commit();
@@ -96,7 +100,9 @@ public class ProductRepository implements BaseRepository<Product> {
             ps.setDouble(5, entity.getPrice());
             ps.setFloat(6, entity.getDiscount());
             ps.setString(7, entity.getImageLocation());
-            ps.setString(8, entity.getId().toString());
+            ps.setString(8, entity.getUpdatedBy());
+            ps.setTimestamp(9, entity.getUpdatedAt());
+            ps.setString(10, entity.getId().toString());
 
             ps.executeUpdate();
             connection.commit();
@@ -117,9 +123,9 @@ public class ProductRepository implements BaseRepository<Product> {
     }
 
     @Override
-    public void delete(UUID id) throws DAOException {
-        if (id == null) {
-            throw new DAOException("Product ID cannot be null");
+    public void delete(Product product) throws DAOException {
+        if (product == null) {
+            throw new DAOException("Product cannot be null");
         }
 
         PreparedStatement ps = null;
@@ -127,11 +133,15 @@ public class ProductRepository implements BaseRepository<Product> {
             connection.setAutoCommit(false);
 
             ps = connection.prepareStatement(SQL_DELETE);
-            ps.setString(1, id.toString());
+            ps.setString(1, product.getDeletedBy());
+            ps.setTimestamp(2, product.getDeletedAt());
+            ps.setString(3, product.getId().toString());
+
+
 
             int rowsAffected = ps.executeUpdate();
             if (rowsAffected == 0) {
-                throw new DAOException("No Product found with ID: " + id);
+                throw new DAOException("No Product found with ID: " + product.getId());
             }
             connection.commit();
         } catch (SQLException ex) {

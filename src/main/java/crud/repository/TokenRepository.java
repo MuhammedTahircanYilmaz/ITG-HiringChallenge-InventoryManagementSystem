@@ -1,5 +1,6 @@
 package crud.repository;
 
+import crud.exception.BusinessException;
 import crud.exception.DAOException;
 import crud.infrastructure.ConnectionFactory;
 import crud.model.entities.Token;
@@ -94,6 +95,11 @@ public class TokenRepository {
             if (rs.next()) {
                 token = getToken(rs);
             }
+            if (token.getExpiry().isBefore(java.time.LocalDateTime.now()) ) {
+                delete(token.getToken());
+                throw new BusinessException("Your session has expired, please login again.");
+            }
+
             connection.commit();
 
         } catch (SQLException ex) {

@@ -1,14 +1,23 @@
 package crud.dtos.retailers.requests;
 
 import java.sql.Timestamp;
+import java.util.UUID;
 
 public class AddRetailerCommandDto {
+    private UUID id ;
     private String name;
     private String email;
     private String password;
     private String imageLocation;
     private Timestamp createdAt;
     private String createdBy;
+
+    public UUID getId() {
+        return id;
+    }
+    public void setId(UUID id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;

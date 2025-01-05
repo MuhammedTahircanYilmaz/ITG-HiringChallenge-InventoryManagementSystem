@@ -25,13 +25,13 @@ public class RetailerRepository implements BaseRepository<Retailer> {
         this.connection = connection;
     }
 
-    private static final String SQL_INSERT = "INSERT INTO Retailers (Id, Name, Email, Password, ImagePath) VALUES (?,?,?,?,?)";
-    private static final String SQL_UPDATE = "UPDATE Retailers SET Name = ?, Email = ?, Password = ?, ImagePath = ? WHERE id = ?";
-    private static final String SQL_DELETE = "DELETE FROM Retailers WHERE id = ?";
-    private static final String SQL_FIND_ALL = "SELECT * FROM Retailers";
-    private static final String SQL_FIND_BY_NAME = "SELECT * FROM Retailers WHERE Name like ?";
-    private static final String SQL_FIND_BY_EMAIL = "SELECT * FROM Retailers WHERE Email like ?";
-    private static final String SQL_FIND_BY_ID = "SELECT * FROM Retailers WHERE id = ?";
+    private static final String SQL_INSERT = "INSERT INTO Retailers (Id, Name, Email, Password, ImagePath, CreatedBy, CreatedAt) VALUES (?,?,?,?,?,?,?)";
+    private static final String SQL_UPDATE = "UPDATE Retailers SET Name = ?, Email = ?, Password = ?, ImagePath = ?, UpdatedBy = ?, UpdatedAt = ? WHERE id = ? AND Deleted = false";
+    private static final String SQL_DELETE = "UPDATE Retailers SET Deleted = true WHERE id = ? AND Deleted = false";
+    private static final String SQL_FIND_ALL = "SELECT * FROM Retailers AND Deleted = false";
+    private static final String SQL_FIND_BY_NAME = "SELECT * FROM Retailers WHERE Name like ? AND Deleted = false";
+    private static final String SQL_FIND_BY_EMAIL = "SELECT * FROM Retailers WHERE Email like ? AND Deleted = false";
+    private static final String SQL_FIND_BY_ID = "SELECT * FROM Retailers WHERE id = ? AND Deleted = false";
 
     @Override
     public Retailer add(Retailer entity) throws DAOException {
@@ -41,15 +41,16 @@ public class RetailerRepository implements BaseRepository<Retailer> {
 
         PreparedStatement ps = null;
         try {
-            UUID id = UUID.randomUUID();
             ps = connection.prepareStatement(SQL_INSERT);
             connection.setAutoCommit(false);
 
-            ps.setString(1, id.toString());
+            ps.setString(1, entity.getId().toString());
             ps.setString(2, entity.getName());
             ps.setString(3, entity.getEmail());
             ps.setString(4, entity.getPassword());
             ps.setString(5, entity.getImageLocation());
+            ps.setString(6, entity.getId().toString());
+            ps.setTimestamp(7, entity.getCreatedAt());
 
             ps.executeUpdate();
             connection.commit();
@@ -77,7 +78,9 @@ public class RetailerRepository implements BaseRepository<Retailer> {
             ps.setString(2, entity.getEmail());
             ps.setString(3, entity.getPassword());
             ps.setString(4, entity.getImageLocation());
-            ps.setString(5, entity.getId().toString());
+            ps.setString(5, entity.getUpdatedBy());
+            ps.setTimestamp(6, entity.getUpdatedAt());
+            ps.setString(7, entity.getId().toString());
 
             ps.executeUpdate();
             connection.commit();
@@ -91,20 +94,23 @@ public class RetailerRepository implements BaseRepository<Retailer> {
     }
 
     @Override
-    public void delete(UUID id) throws DAOException {
-        if (id == null) {
-            throw new DAOException("Retailer ID cannot be null");
+    public void delete(Retailer retailer) throws DAOException {
+        if (retailer == null) {
+            throw new DAOException("Retailer cannot be null");
         }
 
         PreparedStatement ps = null;
         try {
             connection.setAutoCommit(false);
             ps = connection.prepareStatement(SQL_DELETE);
-            ps.setString(1, id.toString());
+
+            ps.setString(1, retailer.getDeletedBy());
+            ps.setTimestamp(2, retailer.getDeletedAt());
+            ps.setString(3, retailer.getId().toString());
 
             int rowsAffected = ps.executeUpdate();
             if (rowsAffected == 0) {
-                throw new DAOException("No Retailer found with ID: " + id);
+                throw new DAOException("No Retailer found with ID: " + retailer.getId());
             }
             connection.commit();
 

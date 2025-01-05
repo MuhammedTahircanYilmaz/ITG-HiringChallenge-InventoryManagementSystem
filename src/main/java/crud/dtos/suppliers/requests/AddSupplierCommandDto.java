@@ -1,8 +1,10 @@
 package crud.dtos.suppliers.requests;
 
 import java.sql.Timestamp;
+import java.util.UUID;
 
 public class AddSupplierCommandDto {
+    private UUID id ;
     private String name;
     private String email;
     private String password;
@@ -10,6 +12,12 @@ public class AddSupplierCommandDto {
     private Timestamp createdAt;
     private String createdBy;
 
+    public UUID getId() {
+        return id;
+    }
+    public void setId(UUID id) {
+        this.id = id;
+    }
     public String getName() {
         return name;
     }

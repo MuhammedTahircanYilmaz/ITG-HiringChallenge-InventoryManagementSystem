@@ -1,78 +1,84 @@
 package crud.service.bills.commands;
 
+import crud.authorization.AuthService;
+import crud.dtos.bills.requests.UpdateBillCommandDto;
+import crud.exception.DAOException;
+import crud.exception.MappingException;
 import crud.model.entities.Bill;
 import crud.model.entities.Product;
 import crud.model.enums.BillStatus;
 import crud.repository.BillRepository;
 import crud.repository.ProductRepository;
 import crud.util.Logger;
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.UUID;
+
 
 public class UpdateBillStatusCommand {
-    private final BillRepository billRepository;
+    private final BillRepository repository;
     private final ProductRepository productRepository;
-    private static final Logger logger = new Logger();
+    private final AuthService authService;
+    private String page = "/bill/form.jsp";
 
-    public UpdateBillStatusCommand(BillRepository billRepository, ProductRepository productRepository) {
-        this.billRepository = billRepository;
+
+
+    public UpdateBillStatusCommand(BillRepository billRepository, ProductRepository productRepository, AuthService authService) {
+        this.repository = billRepository;
+        this.authService = authService;
         this.productRepository = productRepository;
     }
 
-    public void execute(Long billId, BillStatus newStatus, String updatedBy) throws SQLException {
-        Connection conn = null;
+    public String execute(HttpServletRequest request) {
         try {
-            conn = billRepository.getConnectionFactory().getConnection();
-            conn.setAutoCommit(false);
+            String token = authService.extractToken(request);
+            authService.isAuthenticated(token);
 
-            Bill bill = billRepository.findById(billId);
-            if (bill == null) {
-                throw new SQLException("Bill not found with id: " + billId);
+            UUID userId = authService.getUserId(token);
+            UUID billId = UUID.fromString(request.getParameter("billId"));
+
+            Bill bill = repository.findById(billId);
+            authService.isAllowed(token,bill.getRetailerId());
+
+            bill.setStatus(BillStatus.valueOf( request.getParameter("status")));
+
+            repository.update(bill);
+            if(bill.getStatus().equals(BillStatus.PAID)){
+                updateProductStock(bill);
             }
 
-            if (newStatus == BillStatus.ACCEPTED && bill.getStatus() != BillStatus.ACCEPTED) {
-                // Update product stock
-                updateProductStock(conn, bill);
-            }
+            Logger.info(this.getClass().getName(), "Status update Successful");
 
-            // Update bill status
-            bill.setStatus(newStatus);
-            bill.setUpdatedBy(updatedBy);
-            billRepository.update(bill);
+        } catch (Exception ex) {
 
-            conn.commit();
-            Logger.info(this.getClass().getName(),
-                    String.format("Bill %d status updated to %s", billId, newStatus));
-        } catch (SQLException e) {
-            if (conn != null) {
-                conn.rollback();
-            }
-            Logger.error(this.getClass().getName(),
-                    String.format("Error updating bill %d status: %s", billId, e.getMessage()));
-            throw e;
-        } finally {
-            if (conn != null) {
-                conn.close();
-            }
+            Logger.error(this.getClass().getName(), ex.getMessage());
         }
+        return page;
     }
 
-    private void updateProductStock(Connection conn, Bill bill) throws SQLException {
-        Product product = productRepository.findById(bill.getProductId());
-        if (product == null) {
-            throw new SQLException("Product not found for bill: " + bill.getId());
+    private void updateProductStock( Bill bill) throws SQLException {
+        try{
+            Product product = productRepository.findById(bill.getProductId());
+            if (product == null) {
+                throw new SQLException("Product not found for bill: " + bill.getId());
+            }
+
+            long newStock = product.getStockQuantity() - bill.getAmount();
+
+            if (newStock < 0) {
+                throw new SQLException("Insufficient stock for product: " + product.getId());
+            }
+
+            product.setStockQuantity(newStock);
+            productRepository.update(product);
+
+            Logger.info(this.getClass().getName(),
+                    String.format("Updated stock for product %d: %d -> %d",
+                            product.getId(), product.getStockQuantity() + bill.getAmount(), newStock));
+        }catch (Exception ex){
+            Logger.error(this.getClass().getName(), ex.getMessage());
         }
-
-        int newStock = product.getStock() - bill.getQuantity();
-        if (newStock < 0) {
-            throw new SQLException("Insufficient stock for product: " + product.getId());
-        }
-
-        product.setStock(newStock);
-        productRepository.update(product);
-
-        Logger.info(this.getClass().getName(),
-                String.format("Updated stock for product %d: %d -> %d",
-                        product.getId(), product.getStock() + bill.getQuantity(), newStock));
     }
 }

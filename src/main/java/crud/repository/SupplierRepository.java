@@ -16,13 +16,14 @@ public class SupplierRepository implements BaseRepository<Supplier> {
 
     private final Connection connection;
 
-    private static final String SQL_INSERT = "INSERT INTO Suppliers (Id, Name, Email, Password, ImagePath) VALUES (?, ?, ?, ?, ?)";
-    private static final String SQL_UPDATE = "UPDATE Suppliers SET Name = ?, Email = ?, Password = ?, ImagePath = ? WHERE Id = ?";
-    private static final String SQL_DELETE = "DELETE FROM Suppliers WHERE Id = ?";
-    private static final String SQL_FIND_ALL = "SELECT * FROM Suppliers";
-    private static final String SQL_FIND_BY_ID = "SELECT * FROM Suppliers WHERE Id = ?";
-    private static final String SQL_FIND_BY_NAME = "SELECT * FROM Suppliers WHERE Name like ?";
-    private static final String SQL_FIND_BY_EMAIL = "SELECT * FROM Suppliers WHERE Email like ?";
+    private static final String SQL_INSERT = "INSERT INTO Suppliers (Id, Name, Email, Password, ImagePath, CreatedBy, CreatedAt) VALUES (?,?,?,?,?,?,?)";
+    private static final String SQL_UPDATE = "UPDATE Suppliers SET Name = ?, Email = ?, Password = ?, ImagePath = ?, UpdatedBy = ?, UpdatedAt = ? WHERE id = ? AND Deleted = false";
+    private static final String SQL_DELETE = "UPDATE Suppliers SET Deleted = true WHERE id = ? AND Deleted = false";
+    private static final String SQL_FIND_ALL = "SELECT * FROM Suppliers AND Deleted = false";
+    private static final String SQL_FIND_BY_NAME = "SELECT * FROM Suppliers WHERE Name like ? AND Deleted = false";
+    private static final String SQL_FIND_BY_EMAIL = "SELECT * FROM Suppliers WHERE Email like ? AND Deleted = false";
+    private static final String SQL_FIND_BY_ID = "SELECT * FROM Suppliers WHERE id = ? AND Deleted = false";
+
 
     public SupplierRepository(Connection connection) {
         if (connection == null) {
@@ -40,14 +41,16 @@ public class SupplierRepository implements BaseRepository<Supplier> {
         PreparedStatement ps = null;
         try {
             connection.setAutoCommit(false);
-            UUID id = UUID.randomUUID();
+
             ps = connection.prepareStatement(SQL_INSERT);
 
-            ps.setString(1, id.toString());
+            ps.setString(1, entity.getId().toString());
             ps.setString(2, entity.getName());
             ps.setString(3, entity.getEmail());
             ps.setString(4, entity.getPassword());
             ps.setString(5, entity.getImageLocation());
+            ps.setString(6, entity.getId().toString());
+            ps.setTimestamp(7, entity.getCreatedAt());
 
             ps.executeUpdate();
             connection.commit();
@@ -75,6 +78,8 @@ public class SupplierRepository implements BaseRepository<Supplier> {
             ps.setString(2, entity.getEmail());
             ps.setString(3, entity.getPassword());
             ps.setString(4, entity.getImageLocation());
+            ps.setString(5, entity.getUpdatedBy());
+            ps.setTimestamp(6, entity.getUpdatedAt());
             ps.setString(5, entity.getId().toString());
 
             ps.executeUpdate();
@@ -89,20 +94,22 @@ public class SupplierRepository implements BaseRepository<Supplier> {
     }
 
     @Override
-    public void delete(UUID id) throws DAOException {
-        if (id == null) {
-            throw new DAOException("Supplier ID cannot be null");
+    public void delete(Supplier supplier) throws DAOException {
+        if (supplier == null) {
+            throw new DAOException("Supplier cannot be null");
         }
 
         PreparedStatement ps = null;
         try {
             connection.setAutoCommit(false);
             ps = connection.prepareStatement(SQL_DELETE);
-            ps.setString(1, id.toString());
+            ps.setString(1, supplier.getDeletedBy());
+            ps.setTimestamp(2, supplier.getDeletedAt());
+            ps.setString(3, supplier.getId().toString());
 
             int rowsAffected = ps.executeUpdate();
             if (rowsAffected == 0) {
-                throw new DAOException("No Supplier found with ID: " + id);
+                throw new DAOException("No Supplier found with ID: " + supplier.getId());
             }
             connection.commit();
 

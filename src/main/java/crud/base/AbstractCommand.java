@@ -34,6 +34,7 @@ public abstract class AbstractCommand implements BaseService {
     protected static final String PAGE_PRODUCT_LIST = "/product/list.jsp";
     protected static final String PAGE_PRODUCT_FORM = "/product/form.jsp";
 
+
     protected UUID getId(HttpServletRequest request) throws ServletException {
         try {
             String id = request.getParameter("id");

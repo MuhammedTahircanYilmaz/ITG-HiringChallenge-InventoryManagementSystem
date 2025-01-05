@@ -22,7 +22,7 @@ public class JwtFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         try {
-            String token = new AuthService(null, null, null, jwtUtil).extractToken(httpRequest);
+            String token = new AuthService(null, null, null,  jwtUtil, null).extractToken(httpRequest);
             jwtUtil.validateToken(token);
             chain.doFilter(request, response);
         } catch (Exception e) {

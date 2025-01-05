@@ -1,6 +1,7 @@
 package crud.repository;
 
 import crud.base.BaseRepository;
+import crud.dtos.bills.requests.DeleteBillCommandDto;
 import crud.exception.DAOException;
 import crud.infrastructure.ConnectionFactory;
 import crud.model.entities.Bill;
@@ -14,14 +15,15 @@ public class BillRepository implements BaseRepository<Bill> {
 
     private Connection connection;
 
-    private static final String SQL_INSERT = "INSERT INTO Bills (Id, SupplierId, RetailerId, ProductId, Amount, CurrrentPrice, Date) VALUES (?,?,?,?,?,?,?)";
-    private static final String SQL_UPDATE = "UPDATE Bills SET SupplierId = ?, RetailerId = ?, ProductId = ?, Amount = ? , CurrentPrice = ?, Date = ? WHERE Id = ?";
-    private static final String SQL_DELETE = "DELETE FROM Bills WHERE Id = ?";
-    private static final String SQL_FIND_ALL = "SELECT * FROM Bills";
-    private static final String SQL_FIND_BY_ID = "SELECT * FROM Bills WHERE Id = ?";
-    private static final String SQL_FIND_BY_SUPPLIER_ID = "SELECT * FROM Bills WHERE SupplierId = ?";
-    private static final String SQL_FIND_BY_RETAILER_ID = "SELECT * FROM Bills WHERE RetailerId = ?";
-    private static final String SQL_FIND_BY_PRODUCT_ID = "SELECT * FROM Bills WHERE ProductId = ?";
+    private static final String SQL_INSERT = "INSERT INTO Bills (Id, SupplierId, RetailerId, ProductId, Amount, CurrrentPrice," +
+            " Date, CreatedAt, CreatedBy, Status) VALUES (?,?,?,?,?,?,?,?,?,'PENDING')";
+    private static final String SQL_UPDATE = "UPDATE Bills SET SupplierId = ?, RetailerId = ?, ProductId = ?, Amount = ? , CurrentPrice = ?, Date = ?, UpdatedAt = ?, UpdatedBy = ?, Status = ? WHERE Id = ?";
+    private static final String SQL_DELETE = "UPDATE Bills SET deleted = true, deleted_at = ?, deleted_by = ? WHERE id = ? AND deleted = false";
+    private static final String SQL_FIND_ALL = "SELECT * FROM Bills WHERE Deleted = false";
+    private static final String SQL_FIND_BY_ID = "SELECT * FROM Bills WHERE Id = ? AND Deleted = false";
+    private static final String SQL_FIND_BY_SUPPLIER_ID = "SELECT * FROM Bills WHERE SupplierId = ? AND Deleted = false";
+    private static final String SQL_FIND_BY_RETAILER_ID = "SELECT * FROM Bills WHERE RetailerId = ? AND Deleted = false";
+    private static final String SQL_FIND_BY_PRODUCT_ID = "SELECT * FROM Bills WHERE ProductId = ? AND Deleted = false";
 
 
     public BillRepository(Connection connection) {
@@ -52,6 +54,8 @@ public class BillRepository implements BaseRepository<Bill> {
             ps.setLong(5, entity.getAmount());
             ps.setDouble(6, entity.getCurrentPrice());
             ps.setTimestamp(7, entity.getDate());
+            ps.setTimestamp(8, entity.getCreatedAt ());
+            ps.setString(9, entity.getCreatedBy());
 
             ps.executeUpdate();
             connection.commit();
@@ -81,7 +85,10 @@ public class BillRepository implements BaseRepository<Bill> {
             ps.setLong( 4, entity.getAmount());
             ps.setDouble(5,entity.getCurrentPrice());
             ps.setTimestamp(6,entity.getDate());
-            ps.setString(7, entity.getId().toString());
+            ps.setTimestamp(7, entity.getUpdatedAt());
+            ps.setString(8, entity.getUpdatedBy());
+            ps.setString(9, entity.getStatus().toString());
+            ps.setString(10, entity.getId().toString());
 
             ps.executeUpdate();
             connection.commit();
@@ -95,8 +102,8 @@ public class BillRepository implements BaseRepository<Bill> {
     }
 
     @Override
-    public void delete(UUID id) throws DAOException {
-        if ( id == null){
+    public void delete(Bill bill) throws DAOException {
+        if ( bill.getId() == null){
             throw new DAOException("Bill Id cannot be null");
         }
 
@@ -104,11 +111,13 @@ public class BillRepository implements BaseRepository<Bill> {
         try{
             connection.setAutoCommit(false);
             ps = connection.prepareStatement(SQL_DELETE);
-            ps.setString(1, id.toString());
+            ps.setTimestamp(1, bill.getDeletedAt());
+            ps.setString(2,bill.getDeletedBy());
+            ps.setString(3,bill.getId().toString());
 
             int rowsAffected = ps.executeUpdate();
             if (rowsAffected == 0) {
-                throw new DAOException("No Bill found with the ID: " + id);
+                throw new DAOException("No Bill found with the ID: " + bill.getId());
             }
             connection.commit();
 

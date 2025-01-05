@@ -8,7 +8,7 @@ public interface BaseRepository<TEntity extends BaseEntity>{
 
     TEntity add(TEntity entity) throws DAOException;
     TEntity update(TEntity entity) throws DAOException;
-    void delete(UUID id) throws DAOException;
+    void delete(TEntity entity) throws DAOException;
     TEntity findById(UUID id) throws DAOException;
     List<TEntity> getAll() throws DAOException;
 }

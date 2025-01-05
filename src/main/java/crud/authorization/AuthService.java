@@ -5,6 +5,7 @@ import crud.model.entities.User;
 import crud.repository.AdminRepository;
 import crud.repository.RetailerRepository;
 import crud.repository.SupplierRepository;
+import crud.repository.TokenRepository;
 import crud.util.JwtUtil;
 import crud.util.Logger;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,13 +16,16 @@ public class AuthService {
     private AdminRepository adminRepository;
     private RetailerRepository retailerRepository;
     private SupplierRepository supplierRepository;
+    private TokenRepository tokenRepository;
     private JwtUtil jwtUtil;
 
     public AuthService(AdminRepository adminRepository,
-                       RetailerRepository retailerRepository, SupplierRepository supplierRepository, JwtUtil jwtUtil) {
+                       RetailerRepository retailerRepository, SupplierRepository supplierRepository, JwtUtil jwtUtil, TokenRepository tokenRepository) {
        this.adminRepository = adminRepository;
        this.retailerRepository = retailerRepository;
        this.supplierRepository = supplierRepository;
+       this.tokenRepository = tokenRepository;
+
        this.jwtUtil = jwtUtil;
     }
 
@@ -31,6 +35,7 @@ public class AuthService {
             if (userId == null) {
                 return false;
             }
+            tokenRepository.findByUserId(userId);
         }catch ( Exception ex) {
             Logger.log("AdminRepository", ex.getMessage(), Logger.Level.ERROR);
         }
@@ -48,6 +53,20 @@ public class AuthService {
             Logger.error("AuthService", e.getMessage());
             return false;
         }
+    }
+
+    public boolean isAllowed(String token, UUID userId) {
+        try {
+            String userRole = jwtUtil.getRoleName(token);
+            return "ADMIN".equalsIgnoreCase(userRole) || jwtUtil.getUserId(token).equals(userId.toString());
+        } catch (Exception e) {
+            Logger.error("AuthService", e.getMessage());
+        }
+        return false;
+    }
+
+    public UUID getUserId(String token) {
+        return UUID.fromString(jwtUtil.getUserId(token));
     }
 
     private User userExistsWithRole(UUID userId, String role) {
