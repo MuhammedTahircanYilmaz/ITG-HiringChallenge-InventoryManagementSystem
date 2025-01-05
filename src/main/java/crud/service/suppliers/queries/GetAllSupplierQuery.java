@@ -1,21 +1,22 @@
 package crud.service.suppliers.queries;
 
 import crud.base.AbstractCommand;
-import crud.base.BaseRepository;
 import crud.exception.DAOException;
-import crud.model.Supplier;
+import crud.model.entities.Supplier;
 import crud.repository.SupplierRepository;
+import crud.service.validation.SupplierValidator;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
 
 
 public class GetAllSupplierQuery extends AbstractCommand {
-    public GetAllSupplierQuery(SupplierRepository repository) {
+    public GetAllSupplierQuery(SupplierRepository repository ) {
         this.repository = repository;
     }
 
     private SupplierRepository repository;
+
     private String page = PAGE_SUPPLIER_LIST;
 
     @Override

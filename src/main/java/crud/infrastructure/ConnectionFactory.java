@@ -12,8 +12,6 @@ public class ConnectionFactory{
     private static final String USER = "root";
     private static final String PASSWORD = "123456";
 
-     //private static final Logger logger = Logger.getLogger();
-
     protected static Connection getConnection () throws DAOException {
 
 		Connection connection = null;
@@ -42,8 +40,8 @@ public class ConnectionFactory{
 				try {
 					connection.close();
 					System.out.println("Connection closed.");
-				} catch (SQLException e) {
-					e.printStackTrace();
+				} catch (SQLException ex) {
+					ex.printStackTrace();
 				}
 			}
 		}

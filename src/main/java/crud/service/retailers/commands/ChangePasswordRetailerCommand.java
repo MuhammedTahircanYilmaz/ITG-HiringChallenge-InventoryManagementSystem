@@ -3,8 +3,9 @@ package crud.service.retailers.commands;
 import crud.base.AbstractCommand;
 import crud.exception.BusinessException;
 import crud.exception.DAOException;
-import crud.model.Retailer;
+import crud.model.entities.Retailer;
 import crud.repository.RetailerRepository;
+import crud.service.validation.RetailerValidator;
 import crud.util.PasswordUtils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,16 +13,19 @@ import jakarta.servlet.http.HttpServletRequest;
 public class ChangePasswordRetailerCommand extends AbstractCommand {
 
     private final RetailerRepository repository;
+    private final RetailerValidator validator;
     private String page = PAGE_RETAILER_LIST;
 
-    public ChangePasswordRetailerCommand(RetailerRepository repository) {
+    public ChangePasswordRetailerCommand(RetailerRepository repository , RetailerValidator validator) {
         this.repository = repository;
+        this.validator = validator;
     }
 
     @Override
     public String execute(HttpServletRequest request) {
         try{
-           // retailerValidator.validateChangePasswordRequest(request);
+
+            validator.validateChangePasswordRequest(request);
 
             Retailer retailer = repository.findById(getId(request));
 

@@ -2,24 +2,24 @@ package crud.service.suppliers.commands;
 
 import crud.base.AbstractCommand;
 import crud.base.BaseMapper;
-import crud.base.BaseRepository;
 import crud.exception.DAOException;
 import crud.exception.MappingException;
-import crud.model.Supplier;
+import crud.model.entities.Supplier;
 import crud.repository.SupplierRepository;
+import crud.service.validation.SupplierValidator;
 import crud.util.PasswordUtils;
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.util.UUID;
-
 public class UpdateSupplierCommand extends AbstractCommand {
 
-    public UpdateSupplierCommand(SupplierRepository repository, BaseMapper<Supplier> mapper) {
+    public UpdateSupplierCommand(SupplierRepository repository, BaseMapper<Supplier> mapper, SupplierValidator validator) {
         this.repository = repository;
+        this.validator = validator;
         this.mapper = mapper;
     }
 
     private String page = PAGE_SUPPLIER_LIST;
+    private SupplierValidator validator;
     private SupplierRepository repository;
     private BaseMapper<Supplier> mapper;
 
@@ -27,7 +27,7 @@ public class UpdateSupplierCommand extends AbstractCommand {
     public String execute(HttpServletRequest request) {
 
         try{
-            //SupplierValidator.validateUpdateRequest(request);
+            validator.validateUpdateRequest(request);
 
             Supplier supplier = mapper.buildEntity(request);
 

@@ -4,27 +4,30 @@ import crud.base.AbstractCommand;
 import crud.base.BaseMapper;
 import crud.exception.DAOException;
 import crud.exception.MappingException;
-import crud.model.Retailer;
+import crud.model.entities.Retailer;
 import crud.repository.RetailerRepository;
+import crud.service.validation.RetailerValidator;
 import crud.util.PasswordUtils;
 import jakarta.servlet.http.HttpServletRequest;
 
 public class UpdateRetailerCommand extends AbstractCommand {
 
-    public UpdateRetailerCommand(RetailerRepository repository, BaseMapper<Retailer> mapper) {
+    public UpdateRetailerCommand(RetailerRepository repository, BaseMapper<Retailer> mapper, RetailerValidator validator) {
         this.repository = repository;
+        this.validator = validator;
         this.mapper = mapper;
     }
 
     private String page = PAGE_RETAILER_LIST;
     private RetailerRepository repository;
+    private RetailerValidator validator;
     private BaseMapper<Retailer> mapper;
 
     @Override
     public String execute(HttpServletRequest request) {
 
         try{
-            //retailerValidator.validateUpdateRequest(request);
+            validator.validateUpdateRequest(request);
 
             Retailer retailer = mapper.buildEntity(request);
 

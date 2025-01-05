@@ -1,4 +1,4 @@
-package crud.model;
+package crud.model.entities;
 
 import crud.base.BaseEntity;
 
@@ -32,9 +32,7 @@ public class Product extends BaseEntity {
 
     public String getDescription() { return description; }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public void setDescription(String description) { this.description = description; }
 
     public Long getStockQuantity() {
         return stockQuantity;

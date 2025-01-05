@@ -1,15 +1,14 @@
 package crud.base;
 
 import crud.exception.DAOException;
-import crud.model.Retailer;
+import java.util.List;
+import java.util.UUID;
 
-import java.util.ArrayList;
+public interface BaseRepository<TEntity extends BaseEntity>{
 
-public interface BaseRepository<TEntity extends BaseEntity, TId>{
-
-    public void add(TEntity entity) throws DAOException;
-    public TEntity update(TEntity entity) throws DAOException;
-    public void delete(TId id) throws DAOException;
-    public TEntity findById(TId id) throws DAOException;
-    public ArrayList<TEntity> getAll() throws DAOException;
+    TEntity add(TEntity entity) throws DAOException;
+    TEntity update(TEntity entity) throws DAOException;
+    void delete(UUID id) throws DAOException;
+    TEntity findById(UUID id) throws DAOException;
+    List<TEntity> getAll() throws DAOException;
 }

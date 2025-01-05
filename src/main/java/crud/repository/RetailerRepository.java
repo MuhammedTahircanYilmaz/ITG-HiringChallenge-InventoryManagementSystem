@@ -1,10 +1,9 @@
 package crud.repository;
 
-import crud.base.BaseEntity;
 import crud.base.BaseRepository;
 import crud.exception.DAOException;
 import crud.infrastructure.ConnectionFactory;
-import crud.model.Retailer;
+import crud.model.entities.Retailer;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,7 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class RetailerRepository implements BaseRepository<Retailer,UUID> {
+public class RetailerRepository implements BaseRepository<Retailer> {
 
     protected RetailerRepository(){}
 
@@ -34,10 +33,8 @@ public class RetailerRepository implements BaseRepository<Retailer,UUID> {
     private static final String SQL_FIND_BY_EMAIL = "SELECT * FROM Retailers WHERE Email like ?";
     private static final String SQL_FIND_BY_ID = "SELECT * FROM Retailers WHERE id = ?";
 
-
-
     @Override
-    public void add(Retailer entity) throws DAOException {
+    public Retailer add(Retailer entity) throws DAOException {
         if (entity == null) {
             throw new DAOException("Retailer entity cannot be null");
         }
@@ -46,6 +43,7 @@ public class RetailerRepository implements BaseRepository<Retailer,UUID> {
         try {
             UUID id = UUID.randomUUID();
             ps = connection.prepareStatement(SQL_INSERT);
+            connection.setAutoCommit(false);
 
             ps.setString(1, id.toString());
             ps.setString(2, entity.getName());
@@ -54,11 +52,14 @@ public class RetailerRepository implements BaseRepository<Retailer,UUID> {
             ps.setString(5, entity.getImageLocation());
 
             ps.executeUpdate();
+            connection.commit();
+
         } catch (SQLException ex) {
             throw new DAOException("Error while adding the Retailer: " + ex.getMessage(), ex);
         } finally {
             ConnectionFactory.closeConnectionAndStatement(connection, ps);
         }
+        return entity;
     }
 
     @Override
@@ -69,6 +70,7 @@ public class RetailerRepository implements BaseRepository<Retailer,UUID> {
 
         PreparedStatement ps = null;
         try {
+            connection.setAutoCommit(false);
             ps = connection.prepareStatement(SQL_UPDATE);
 
             ps.setString(1, entity.getName());
@@ -78,6 +80,8 @@ public class RetailerRepository implements BaseRepository<Retailer,UUID> {
             ps.setString(5, entity.getId().toString());
 
             ps.executeUpdate();
+            connection.commit();
+
         } catch (SQLException ex) {
             throw new DAOException("Error while updating the Retailer: " + ex.getMessage(), ex);
         } finally {
@@ -94,6 +98,7 @@ public class RetailerRepository implements BaseRepository<Retailer,UUID> {
 
         PreparedStatement ps = null;
         try {
+            connection.setAutoCommit(false);
             ps = connection.prepareStatement(SQL_DELETE);
             ps.setString(1, id.toString());
 
@@ -101,6 +106,8 @@ public class RetailerRepository implements BaseRepository<Retailer,UUID> {
             if (rowsAffected == 0) {
                 throw new DAOException("No Retailer found with ID: " + id);
             }
+            connection.commit();
+
         } catch (SQLException ex) {
             throw new DAOException("Error while deleting the Retailer: " + ex.getMessage(), ex);
         } finally {
@@ -119,6 +126,7 @@ public class RetailerRepository implements BaseRepository<Retailer,UUID> {
         Retailer retailer = null;
 
         try {
+            connection.setAutoCommit(false);
             ps = connection.prepareStatement(SQL_FIND_BY_ID);
             ps.setString(1, id.toString());
             rs = ps.executeQuery();
@@ -126,6 +134,8 @@ public class RetailerRepository implements BaseRepository<Retailer,UUID> {
             if (rs.next()) {
                 retailer = getRetailer(rs);
             }
+            connection.commit();
+
         } catch (SQLException ex) {
             throw new DAOException("Error while finding the Retailer: " + ex.getMessage(), ex);
         } finally {
@@ -145,6 +155,7 @@ public class RetailerRepository implements BaseRepository<Retailer,UUID> {
         Retailer retailer = null;
 
         try{
+            connection.setAutoCommit(false);
             ps = connection.prepareStatement(SQL_FIND_BY_EMAIL);
             ps.setString(1,email);
 
@@ -153,6 +164,7 @@ public class RetailerRepository implements BaseRepository<Retailer,UUID> {
             retailer = getRetailer(rs);
 
             // logger koy buraya
+            connection.commit();
 
         } catch(SQLException ex){
             // logger.error("The Retailer could not be found.", ex);
@@ -175,6 +187,7 @@ public class RetailerRepository implements BaseRepository<Retailer,UUID> {
         ResultSet rs = null;
 
         try {
+            connection.setAutoCommit(false);
             ps = connection.prepareStatement(SQL_FIND_BY_NAME);
 
             ps.setString(1,"%"+name);
@@ -183,6 +196,7 @@ public class RetailerRepository implements BaseRepository<Retailer,UUID> {
             while (rs.next()) {
                 retailers.add(getRetailer(rs));
             }
+            connection.commit();
 
         } catch (SQLException ex) {
             throw new DAOException(ex);
@@ -200,12 +214,14 @@ public class RetailerRepository implements BaseRepository<Retailer,UUID> {
         ResultSet rs = null;
 
         try {
+            connection.setAutoCommit(false);
             ps = connection.prepareStatement(SQL_FIND_ALL);
             rs = ps.executeQuery();
 
             while (rs.next()) {
                 retailers.add(getRetailer(rs));
             }
+            connection.commit();
         } catch (SQLException ex) {
             throw new DAOException("Error while fetching all Retailers: " + ex.getMessage(), ex);
         } finally {

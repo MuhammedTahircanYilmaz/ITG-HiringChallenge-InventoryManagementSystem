@@ -3,7 +3,7 @@ package crud.repository;
 import crud.base.BaseRepository;
 import crud.exception.DAOException;
 import crud.infrastructure.ConnectionFactory;
-import crud.model.Supplier;
+import crud.model.entities.Supplier;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class SupplierRepository implements BaseRepository<Supplier, UUID> {
+public class SupplierRepository implements BaseRepository<Supplier> {
 
     private final Connection connection;
 
@@ -32,13 +32,14 @@ public class SupplierRepository implements BaseRepository<Supplier, UUID> {
     }
 
     @Override
-    public void add(Supplier entity) throws DAOException {
+    public Supplier add(Supplier entity) throws DAOException {
         if (entity == null) {
             throw new DAOException("Supplier entity cannot be null");
         }
 
         PreparedStatement ps = null;
         try {
+            connection.setAutoCommit(false);
             UUID id = UUID.randomUUID();
             ps = connection.prepareStatement(SQL_INSERT);
 
@@ -49,11 +50,14 @@ public class SupplierRepository implements BaseRepository<Supplier, UUID> {
             ps.setString(5, entity.getImageLocation());
 
             ps.executeUpdate();
+            connection.commit();
+
         } catch (SQLException ex) {
             throw new DAOException("Error while adding the Supplier: " + ex.getMessage(), ex);
         } finally {
             ConnectionFactory.closeConnectionAndStatement(connection, ps);
         }
+        return entity;
     }
 
     @Override
@@ -64,6 +68,7 @@ public class SupplierRepository implements BaseRepository<Supplier, UUID> {
 
         PreparedStatement ps = null;
         try {
+            connection.setAutoCommit(false);
             ps = connection.prepareStatement(SQL_UPDATE);
 
             ps.setString(1, entity.getName());
@@ -73,6 +78,8 @@ public class SupplierRepository implements BaseRepository<Supplier, UUID> {
             ps.setString(5, entity.getId().toString());
 
             ps.executeUpdate();
+            connection.commit();
+
         } catch (SQLException ex) {
             throw new DAOException("Error while updating the Supplier: " + ex.getMessage(), ex);
         } finally {
@@ -89,6 +96,7 @@ public class SupplierRepository implements BaseRepository<Supplier, UUID> {
 
         PreparedStatement ps = null;
         try {
+            connection.setAutoCommit(false);
             ps = connection.prepareStatement(SQL_DELETE);
             ps.setString(1, id.toString());
 
@@ -96,6 +104,8 @@ public class SupplierRepository implements BaseRepository<Supplier, UUID> {
             if (rowsAffected == 0) {
                 throw new DAOException("No Supplier found with ID: " + id);
             }
+            connection.commit();
+
         } catch (SQLException ex) {
             throw new DAOException("Error while deleting the Supplier: " + ex.getMessage(), ex);
         } finally {
@@ -114,6 +124,8 @@ public class SupplierRepository implements BaseRepository<Supplier, UUID> {
         Supplier supplier = null;
 
         try {
+            connection.setAutoCommit(false);
+
             ps = connection.prepareStatement(SQL_FIND_BY_ID);
             ps.setString(1, id.toString());
             rs = ps.executeQuery();
@@ -121,6 +133,8 @@ public class SupplierRepository implements BaseRepository<Supplier, UUID> {
             if (rs.next()) {
                 supplier = getSupplier(rs);
             }
+            connection.commit();
+
         } catch (SQLException ex) {
             throw new DAOException("Error while finding the Supplier: " + ex.getMessage(), ex);
         } finally {
@@ -140,6 +154,8 @@ public class SupplierRepository implements BaseRepository<Supplier, UUID> {
         Supplier supplier = null;
 
         try{
+            connection.setAutoCommit(false);
+
             ps = connection.prepareStatement(SQL_FIND_BY_EMAIL);
             ps.setString(1,email);
 
@@ -148,6 +164,7 @@ public class SupplierRepository implements BaseRepository<Supplier, UUID> {
             supplier = getSupplier(rs);
 
             // logger koy buraya
+            connection.commit();
 
         } catch(SQLException ex){
             // logger.error("The Supplier could not be found.", ex);
@@ -170,6 +187,8 @@ public class SupplierRepository implements BaseRepository<Supplier, UUID> {
         ResultSet rs = null;
 
         try {
+            connection.setAutoCommit(false);
+
             ps = connection.prepareStatement(SQL_FIND_BY_NAME);
 
             ps.setString(1,"%"+name);
@@ -178,6 +197,7 @@ public class SupplierRepository implements BaseRepository<Supplier, UUID> {
             while (rs.next()) {
                 suppliers.add(getSupplier(rs));
             }
+            connection.commit();
 
         } catch (SQLException ex) {
             throw new DAOException(ex);
@@ -195,12 +215,15 @@ public class SupplierRepository implements BaseRepository<Supplier, UUID> {
         ResultSet rs = null;
 
         try {
+            connection.setAutoCommit(false);
+
             ps = connection.prepareStatement(SQL_FIND_ALL);
             rs = ps.executeQuery();
 
             while (rs.next()) {
                 suppliers.add(getSupplier(rs));
             }
+            connection.commit();
         } catch (SQLException ex) {
             throw new DAOException("Error while fetching all Suppliers: " + ex.getMessage(), ex);
         } finally {

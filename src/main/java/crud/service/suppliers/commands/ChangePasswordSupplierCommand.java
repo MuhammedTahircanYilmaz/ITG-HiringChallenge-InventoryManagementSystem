@@ -1,31 +1,30 @@
 package crud.service.suppliers.commands;
 
 import crud.base.AbstractCommand;
-import crud.base.BaseRepository;
 import crud.exception.BusinessException;
 import crud.exception.DAOException;
-import crud.model.Supplier;
+import crud.model.entities.Supplier;
 import crud.repository.SupplierRepository;
+import crud.service.validation.SupplierValidator;
 import crud.util.PasswordUtils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.sql.SQLException;
-import java.util.UUID;
-
 public class ChangePasswordSupplierCommand extends AbstractCommand {
 
     private final SupplierRepository repository;
+    private final SupplierValidator validator;
     private String page = PAGE_SUPPLIER_LIST;
 
-    public ChangePasswordSupplierCommand(SupplierRepository repository) {
+    public ChangePasswordSupplierCommand(SupplierRepository repository, SupplierValidator validator) {
         this.repository = repository;
+        this.validator = validator;
     }
 
     @Override
     public String execute(HttpServletRequest request) {
         try{
-           // SupplierValidator.validateChangePasswordRequest(request);
+            validator.validateChangePasswordRequest(request);
 
             Supplier supplier = repository.findById(getId(request));
 

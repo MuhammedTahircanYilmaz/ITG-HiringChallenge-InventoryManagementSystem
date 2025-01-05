@@ -3,18 +3,14 @@ package crud.repository;
 import crud.base.BaseRepository;
 import crud.exception.DAOException;
 import crud.infrastructure.ConnectionFactory;
-import crud.model.Bill;
-import crud.model.Supplier;
+import crud.model.entities.Bill;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDate;
+import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class BillRepository implements BaseRepository<Bill, UUID> {
+public class BillRepository implements BaseRepository<Bill> {
 
     private Connection connection;
 
@@ -36,7 +32,7 @@ public class BillRepository implements BaseRepository<Bill, UUID> {
     }
 
     @Override
-    public void add(Bill entity) throws DAOException {
+    public Bill add(Bill entity) throws DAOException {
         if (entity == null) {
             throw new DAOException("Bill Entity cannot be null");
         }
@@ -46,6 +42,8 @@ public class BillRepository implements BaseRepository<Bill, UUID> {
         try{
             UUID id = UUID.randomUUID();
             ps = connection.prepareStatement(SQL_INSERT);
+            connection.setAutoCommit(false);
+
 
             ps.setString(1, id.toString());
             ps.setString(2, entity.getSupplierId().toString());
@@ -53,14 +51,17 @@ public class BillRepository implements BaseRepository<Bill, UUID> {
             ps.setString(4, entity.getProductId().toString());
             ps.setLong(5, entity.getAmount());
             ps.setDouble(6, entity.getCurrentPrice());
-            ps.setDate(7, entity.getDate());
+            ps.setTimestamp(7, entity.getDate());
 
             ps.executeUpdate();
+            connection.commit();
+
         } catch (SQLException ex) {
             throw new DAOException("Error while adding the bill" + ex.getMessage(), ex);
         } finally {
             ConnectionFactory.closeConnectionAndStatement(connection,ps);
         }
+        return entity;
     }
 
     @Override
@@ -71,6 +72,7 @@ public class BillRepository implements BaseRepository<Bill, UUID> {
 
         PreparedStatement ps = null;
         try{
+            connection.setAutoCommit(false);
             ps = connection.prepareStatement(SQL_UPDATE);
 
             ps.setString(1, entity.getSupplierId().toString());
@@ -78,10 +80,11 @@ public class BillRepository implements BaseRepository<Bill, UUID> {
             ps.setString(3, entity.getProductId().toString());
             ps.setLong( 4, entity.getAmount());
             ps.setDouble(5,entity.getCurrentPrice());
-            ps.setDate(6, entity.getDate());
+            ps.setTimestamp(6,entity.getDate());
             ps.setString(7, entity.getId().toString());
 
             ps.executeUpdate();
+            connection.commit();
 
         } catch (SQLException ex) {
             throw new DAOException("Error while updating the bill" + ex.getMessage(), ex);
@@ -99,6 +102,7 @@ public class BillRepository implements BaseRepository<Bill, UUID> {
 
         PreparedStatement ps = null;
         try{
+            connection.setAutoCommit(false);
             ps = connection.prepareStatement(SQL_DELETE);
             ps.setString(1, id.toString());
 
@@ -106,6 +110,8 @@ public class BillRepository implements BaseRepository<Bill, UUID> {
             if (rowsAffected == 0) {
                 throw new DAOException("No Bill found with the ID: " + id);
             }
+            connection.commit();
+
         } catch (SQLException ex) {
             throw new DAOException("Error while deleting the bill" + ex.getMessage(), ex);
         } finally {
@@ -124,6 +130,7 @@ public class BillRepository implements BaseRepository<Bill, UUID> {
         Bill bill = null;
 
         try{
+            connection.setAutoCommit(false);
             ps = connection.prepareStatement(SQL_FIND_BY_ID);
             ps.setString(1,id.toString());
             rs = ps.executeQuery();
@@ -131,6 +138,8 @@ public class BillRepository implements BaseRepository<Bill, UUID> {
             if(rs.next()){
                 bill = getBill(rs);
             }
+            connection.commit();
+
         } catch (SQLException ex) {
             throw new DAOException("Error while getting the bill by Id: " + ex.getMessage(), ex);
         } finally {
@@ -149,6 +158,7 @@ public class BillRepository implements BaseRepository<Bill, UUID> {
         ResultSet rs = null;
 
         try{
+            connection.setAutoCommit(false);
             ps = connection.prepareStatement(SQL_FIND_BY_RETAILER_ID);
             ps.setString(1,id.toString());
             rs = ps.executeQuery();
@@ -156,6 +166,7 @@ public class BillRepository implements BaseRepository<Bill, UUID> {
             while (rs.next()){
                 bills.add(getBill(rs));
             }
+            connection.commit();
 
         } catch (SQLException ex) {
             throw new DAOException("Error while getting the bill by RetailerId: " + ex.getMessage(), ex);
@@ -174,6 +185,7 @@ public class BillRepository implements BaseRepository<Bill, UUID> {
         ResultSet rs = null;
 
         try{
+            connection.setAutoCommit(false);
             ps = connection.prepareStatement(SQL_FIND_BY_SUPPLIER_ID);
             ps.setString(1,id.toString());
             rs = ps.executeQuery();
@@ -181,6 +193,7 @@ public class BillRepository implements BaseRepository<Bill, UUID> {
             while (rs.next()){
                 bills.add(getBill(rs));
             }
+            connection.commit();
 
         } catch (SQLException ex) {
             throw new DAOException("Error while getting the bill by SupplierId: " + ex.getMessage(), ex);
@@ -200,6 +213,7 @@ public class BillRepository implements BaseRepository<Bill, UUID> {
         ResultSet rs = null;
 
         try{
+            connection.setAutoCommit(false);
             ps = connection.prepareStatement(SQL_FIND_BY_PRODUCT_ID);
             ps.setString(1,id.toString());
             rs = ps.executeQuery();
@@ -207,6 +221,7 @@ public class BillRepository implements BaseRepository<Bill, UUID> {
             while (rs.next()){
                 bills.add(getBill(rs));
             }
+            connection.commit();
 
         } catch (SQLException ex) {
             throw new DAOException("Error while getting the bill by ProductId: " + ex.getMessage(), ex);
@@ -224,12 +239,15 @@ public class BillRepository implements BaseRepository<Bill, UUID> {
         ResultSet rs = null;
 
         try{
+            connection.setAutoCommit(false);
             ps = connection.prepareStatement(SQL_FIND_ALL);
             rs = ps.executeQuery();
 
             while (rs.next()){
                 bills.add(getBill(rs));
             }
+            connection.commit();
+
         } catch (SQLException ex) {
             throw new DAOException("Error while getting the bills: " + ex.getMessage(), ex);
         } finally {
@@ -243,6 +261,8 @@ public class BillRepository implements BaseRepository<Bill, UUID> {
             throw new SQLException("ResultSet cannot be null");
         }
 
+        LocalDateTime now = LocalDateTime.now();
+        Timestamp sqlTimestamp = Timestamp.valueOf(now);
         Bill bill = new Bill();
 
         bill.setId(UUID.fromString(rs.getString("Id")));
@@ -250,7 +270,7 @@ public class BillRepository implements BaseRepository<Bill, UUID> {
         bill.setRetailerId(UUID.fromString(rs.getString("RetailerId")));
         bill.setProductId(UUID.fromString(rs.getString("ProductId")));
         bill.setCurrentPrice(rs.getDouble("CurrentPrice"));
-        bill.setDate(rs.getDate("Date"));
+        bill.setDate(sqlTimestamp);
         bill.setAmount(rs.getLong("Amount"));
 
         return bill;

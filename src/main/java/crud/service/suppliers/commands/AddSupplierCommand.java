@@ -2,32 +2,32 @@ package crud.service.suppliers.commands;
 
 import crud.base.AbstractCommand;
 import crud.base.BaseMapper;
-import crud.base.BaseRepository;
 import crud.exception.DAOException;
 import crud.exception.MappingException;
-import crud.model.Supplier;
+import crud.model.entities.Supplier;
 import crud.repository.SupplierRepository;
+import crud.service.validation.SupplierValidator;
 import crud.util.PasswordUtils;
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.util.UUID;
-
 public class AddSupplierCommand extends AbstractCommand {
 
-    public AddSupplierCommand(SupplierRepository repository, BaseMapper<Supplier> mapper) {
+    public AddSupplierCommand(SupplierRepository repository, BaseMapper<Supplier> mapper, SupplierValidator validator) {
         this.repository = repository;
+        this.validator = validator;
         this.mapper = mapper;
     }
 
     private String page = PAGE_SUPPLIER_LIST;
     private SupplierRepository repository;
+    private SupplierValidator validator;
     private BaseMapper<Supplier> mapper;
 
     @Override
     public String execute(HttpServletRequest request) {
         try{
 
-   //       SupplierValidator.validateAddRequest(request);
+            validator.validateAddRequest(request);
 
             Supplier supplier = mapper.buildEntity(request);
 

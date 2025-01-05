@@ -2,7 +2,7 @@ package crud.service.retailers.queries;
 
 import crud.base.AbstractCommand;
 import crud.exception.DAOException;
-import crud.model.Retailer;
+import crud.model.entities.Retailer;
 import crud.repository.RetailerRepository;
 import jakarta.servlet.http.HttpServletRequest;
 

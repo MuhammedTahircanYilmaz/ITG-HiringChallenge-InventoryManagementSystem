@@ -1,8 +1,10 @@
-package crud.model;
+package crud.model.entities;
 
 import crud.base.BaseEntity;
+import crud.model.enums.BillStatus;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.UUID;
 
 public class Bill extends BaseEntity {
@@ -12,7 +14,8 @@ public class Bill extends BaseEntity {
     private UUID productId;
     private Long amount;
     private Double currentPrice;
-    private Date date;
+    private BillStatus status;
+    private Timestamp date;
 
     public UUID getSupplierId() {
         return supplierId;
@@ -54,17 +57,24 @@ public class Bill extends BaseEntity {
         this.currentPrice = currentPrice;
     }
 
-    public Date getDate() {
+    public Timestamp getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(Timestamp date) {
         this.date = date;
+    }
+
+    public BillStatus getStatus() {
+        return status;
+    }
+    public void setStatus(BillStatus status) {
+        this.status = status;
     }
 
     @Override
     public String toString() {
-        return "Product{" +
+        return "Bill{" +
                 "Id='" + this.getId() + '\'' +
                 ", Supplier Id='" + supplierId + '\'' +
                 ", Stock Quantity=" + retailerId + '\'' +

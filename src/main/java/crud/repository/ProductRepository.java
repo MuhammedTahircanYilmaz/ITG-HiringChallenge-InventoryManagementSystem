@@ -3,7 +3,9 @@ package crud.repository;
 import crud.base.BaseRepository;
 import crud.exception.DAOException;
 import crud.infrastructure.ConnectionFactory;
-import crud.model.Product;
+import crud.model.entities.Product;
+import crud.model.entities.Retailer;
+import crud.util.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,16 +14,19 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class ProductRepository implements BaseRepository<Product, UUID> {
+public class ProductRepository implements BaseRepository<Product> {
 
     private Connection connection;
+
 
     private static final String SQL_INSERT = "INSERT INTO Products (Id, SupplierId, Name, Description, StockQuantity, Price, Discount, ImagePath) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String SQL_UPDATE = "UPDATE Products SET SupplierId = ?, Name = ?, Description = ?, StockQuantity = ?, Price = ?, Discount = ?, ImagePath = ? WHERE Id = ?";
     private static final String SQL_DELETE = "DELETE FROM Products WHERE Id = ?";
     private static final String SQL_FIND_ALL = "SELECT * FROM Products";
     private static final String SQL_FIND_BY_ID = "SELECT * FROM Products WHERE Id = ?";
+    private static final String SQL_FIND_BY_SUPPLIER_ID = "SELECT * FROM Products WHERE SupplierId = ?";
     private static final String SQL_FIND_BY_NAME = "SELECT * FROM Products WHERE Name LIKE ?";
+
 
 
     public ProductRepository(Connection connection) {
@@ -32,13 +37,15 @@ public class ProductRepository implements BaseRepository<Product, UUID> {
     }
 
     @Override
-    public void add(Product entity) throws DAOException {
+    public Product add(Product entity) throws DAOException {
         if (entity == null) {
             throw new DAOException("Product entity cannot be null");
         }
 
         PreparedStatement ps = null;
         try {
+            connection.setAutoCommit(false);
+
             UUID id = UUID.randomUUID();
             ps = connection.prepareStatement(SQL_INSERT);
 
@@ -52,11 +59,22 @@ public class ProductRepository implements BaseRepository<Product, UUID> {
             ps.setString(8, entity.getImageLocation());
 
             ps.executeUpdate();
+            connection.commit();
+
         } catch (SQLException ex) {
+            try {
+                if (connection != null) {
+                    connection.rollback(); 
+                }
+            } catch (SQLException rollbackEx) {
+                Logger.error(this.getClass().getName(),
+                        "Error rolling back transaction: " + rollbackEx.getMessage());
+            }
             throw new DAOException("Error while adding the Product: " + ex.getMessage(), ex);
         } finally {
             ConnectionFactory.closeConnectionAndStatement(connection, ps);
         }
+        return entity;
     }
 
     @Override
@@ -67,6 +85,8 @@ public class ProductRepository implements BaseRepository<Product, UUID> {
 
         PreparedStatement ps = null;
         try {
+            connection.setAutoCommit(false);
+
             ps = connection.prepareStatement(SQL_UPDATE);
 
             ps.setString(1, entity.getSupplierId().toString());
@@ -79,9 +99,18 @@ public class ProductRepository implements BaseRepository<Product, UUID> {
             ps.setString(8, entity.getId().toString());
 
             ps.executeUpdate();
+            connection.commit();
         } catch (SQLException ex) {
-            throw new DAOException("Error while updating the Product: " + ex.getMessage(), ex);
-        } finally {
+            try {
+                if (connection != null) {
+                    connection.rollback(); 
+                }
+            } catch (SQLException rollbackEx) {
+                Logger.error(this.getClass().getName(),
+                        "Error rolling back transaction: " + rollbackEx.getMessage());
+            }
+            throw new DAOException("Error while adding the Product: " + ex.getMessage(), ex);
+        }finally {
             ConnectionFactory.closeConnectionAndStatement(connection, ps);
         }
         return entity;
@@ -95,6 +124,8 @@ public class ProductRepository implements BaseRepository<Product, UUID> {
 
         PreparedStatement ps = null;
         try {
+            connection.setAutoCommit(false);
+
             ps = connection.prepareStatement(SQL_DELETE);
             ps.setString(1, id.toString());
 
@@ -102,8 +133,17 @@ public class ProductRepository implements BaseRepository<Product, UUID> {
             if (rowsAffected == 0) {
                 throw new DAOException("No Product found with ID: " + id);
             }
+            connection.commit();
         } catch (SQLException ex) {
-            throw new DAOException("Error while deleting the Product: " + ex.getMessage(), ex);
+            try {
+                if (connection != null) {
+                    connection.rollback();  // Rollback on error
+                }
+            } catch (SQLException rollbackEx) {
+                Logger.error(this.getClass().getName(),
+                        "Error rolling back transaction: " + rollbackEx.getMessage());
+            }
+            throw new DAOException("Error while adding the Product: " + ex.getMessage(), ex);
         } finally {
             ConnectionFactory.closeConnectionAndStatement(connection, ps);
         }
@@ -120,6 +160,8 @@ public class ProductRepository implements BaseRepository<Product, UUID> {
         Product product = null;
 
         try {
+            connection.setAutoCommit(false);
+
             ps = connection.prepareStatement(SQL_FIND_BY_ID);
             ps.setString(1, id.toString());
             rs = ps.executeQuery();
@@ -127,13 +169,60 @@ public class ProductRepository implements BaseRepository<Product, UUID> {
             if (rs.next()) {
                 product = getProduct(rs);
             }
+            connection.commit();
         } catch (SQLException ex) {
-            throw new DAOException("Error while finding the Product: " + ex.getMessage(), ex);
+            try {
+                if (connection != null) {
+                    connection.rollback();  // Rollback on error
+                }
+            } catch (SQLException rollbackEx) {
+                Logger.error(this.getClass().getName(),
+                        "Error rolling back transaction: " + rollbackEx.getMessage());
+            }
+            throw new DAOException("Error while adding the Product: " + ex.getMessage(), ex);
         } finally {
             ConnectionFactory.closeAll(connection, ps, rs);
         }
         return product;
     }
+
+    public ArrayList<Product> findBySupplierId(UUID id) throws DAOException {
+        if(id == null){
+            throw new DAOException("The Supplier Id cannot be null");
+        }
+
+        ArrayList<Product> Products = new ArrayList<>();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try{
+            connection.setAutoCommit(false);
+
+            ps = connection.prepareStatement(SQL_FIND_BY_SUPPLIER_ID);
+            ps.setString(1,id.toString());
+            rs = ps.executeQuery();
+
+            while (rs.next()){
+                Products.add(getProduct(rs));
+            }
+            connection.commit();
+
+        } catch (SQLException ex) {
+            try {
+                if (connection != null) {
+                    connection.rollback();  // Rollback on error
+                }
+            } catch (SQLException rollbackEx) {
+                Logger.error(this.getClass().getName(),
+                        "Error rolling back transaction: " + rollbackEx.getMessage());
+            }
+            throw new DAOException("Error while adding the Product: " + ex.getMessage(), ex);
+        } finally {
+            ConnectionFactory.closeAll(connection,ps,rs);
+        }
+        return Products;
+    }
+
 
     public ArrayList<Product> findAllByName(String name) throws DAOException {
         if (name == null || name.trim().isEmpty()) {
@@ -145,6 +234,8 @@ public class ProductRepository implements BaseRepository<Product, UUID> {
         ResultSet rs = null;
 
         try {
+            connection.setAutoCommit(false);
+
             ps = connection.prepareStatement(SQL_FIND_BY_NAME);
             ps.setString(1, "%" + name + "%");
             rs = ps.executeQuery();
@@ -152,8 +243,18 @@ public class ProductRepository implements BaseRepository<Product, UUID> {
             while (rs.next()) {
                 products.add(getProduct(rs));
             }
+            connection.commit();
+
         } catch (SQLException ex) {
-            throw new DAOException("Error while finding Products by name: " + ex.getMessage(), ex);
+            try {
+                if (connection != null) {
+                    connection.rollback();  // Rollback on error
+                }
+            } catch (SQLException rollbackEx) {
+                Logger.error(this.getClass().getName(),
+                        "Error rolling back transaction: " + rollbackEx.getMessage());
+            }
+            throw new DAOException("Error while adding the Product: " + ex.getMessage(), ex);
         } finally {
             ConnectionFactory.closeAll(connection, ps, rs);
         }
@@ -162,7 +263,7 @@ public class ProductRepository implements BaseRepository<Product, UUID> {
 
     @Override
     public ArrayList<Product> getAll() throws DAOException {
-        ArrayList<Product> products = new ArrayList<>();
+        ArrayList<Product> retailers = new ArrayList<>();
         PreparedStatement ps = null;
         ResultSet rs = null;
 
@@ -171,15 +272,17 @@ public class ProductRepository implements BaseRepository<Product, UUID> {
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                products.add(getProduct(rs));
+                retailers.add(getProduct(rs));
             }
         } catch (SQLException ex) {
-            throw new DAOException("Error while fetching all Products: " + ex.getMessage(), ex);
+            throw new DAOException("Error while fetching all Prodcts: " + ex.getMessage(), ex);
         } finally {
             ConnectionFactory.closeAll(connection, ps, rs);
         }
-        return products;
+        return retailers;
     }
+
+
 
     private Product getProduct(ResultSet rs) throws SQLException {
         if (rs == null) {
