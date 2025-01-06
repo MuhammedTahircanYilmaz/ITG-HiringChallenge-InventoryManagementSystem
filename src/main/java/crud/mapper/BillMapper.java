@@ -22,7 +22,6 @@ import java.util.UUID;
 
 public class BillMapper implements BaseMapper <Bill, AddBillCommandDto, UpdateBillCommandDto, DeleteBillCommandDto, GetByIdBillQueryDto, BillResponseDto>{
 
-    protected BillMapper() {}
     private ProductRepository repository;
     private RetailerRepository retailerRepository;
     private SupplierRepository supplierRepository;

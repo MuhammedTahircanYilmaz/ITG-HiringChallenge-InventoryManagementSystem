@@ -1,6 +1,7 @@
 package crud.service.bills.commands;
 
 import crud.authorization.AuthService;
+import crud.base.AbstractCommand;
 import crud.dtos.bills.requests.UpdateBillCommandDto;
 import crud.exception.DAOException;
 import crud.exception.MappingException;
@@ -17,7 +18,7 @@ import java.sql.SQLException;
 import java.util.UUID;
 
 
-public class UpdateBillStatusCommand {
+public class UpdateBillStatusCommand extends AbstractCommand {
     private final BillRepository repository;
     private final ProductRepository productRepository;
     private final AuthService authService;

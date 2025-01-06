@@ -18,7 +18,6 @@ public class RetailerMapper implements BaseMapper<Retailer, AddRetailerCommandDt
 
     private static final String MAPPER_ERROR_MESSAGE = "Error mapping request data.";
 
-    protected RetailerMapper() {}
 
     @Override
     public AddRetailerCommandDto mapAddRequestDto(HttpServletRequest request, String userId) throws MappingException {

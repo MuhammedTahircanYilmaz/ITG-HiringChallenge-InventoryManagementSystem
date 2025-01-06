@@ -19,7 +19,7 @@ public class    ProductMapper implements BaseMapper<Product, AddProductCommandDt
 
     private SupplierRepository supplierRepository;
 
-    protected ProductMapper( SupplierRepository supplierRepository) {
+    public ProductMapper(SupplierRepository supplierRepository) {
         this.supplierRepository = supplierRepository;
     }
 

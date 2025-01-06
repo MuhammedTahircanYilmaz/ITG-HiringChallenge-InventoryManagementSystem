@@ -19,7 +19,6 @@ public class SupplierMapper implements BaseMapper<Supplier, AddSupplierCommandDt
 
     private static final String MAPPER_ERROR_MESSAGE = "Error mapping request data.";
 
-    protected SupplierMapper() {}
 
     @Override
     public AddSupplierCommandDto mapAddRequestDto(HttpServletRequest request, String userId) throws MappingException {

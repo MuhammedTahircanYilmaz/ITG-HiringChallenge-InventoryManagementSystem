@@ -20,7 +20,7 @@ public class AddProductCommand extends AbstractCommand {
 
     private String page = PAGE_PRODUCT_FORM;
 
-    public AddProductCommand(ProductRepository repository, ProductRepository productRepository, ProductMapper mapper, ProductValidator validator , AuthService authService) {
+    public AddProductCommand(ProductRepository repository, ProductMapper mapper, ProductValidator validator , AuthService authService) {
         this.repository = repository;
         this.validator = validator;
         this.authService = authService;

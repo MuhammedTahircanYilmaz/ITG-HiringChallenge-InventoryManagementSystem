@@ -1,9 +1,13 @@
-package crud.service.validation;
+package crud.infrastructure;
 
 import crud.service.bills.rules.BillBusinessRules;
 import crud.service.products.rules.ProductBusinessRules;
 import crud.service.retailers.rules.RetailerBusinessRules;
 import crud.service.suppliers.rules.SupplierBusinessRules;
+import crud.service.validation.BillValidator;
+import crud.service.validation.ProductValidator;
+import crud.service.validation.RetailerValidator;
+import crud.service.validation.SupplierValidator;
 
 public class ValidatorFactory {
 

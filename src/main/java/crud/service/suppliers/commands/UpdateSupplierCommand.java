@@ -31,7 +31,6 @@ public class UpdateSupplierCommand extends AbstractCommand {
 
     @Override
     public String execute(HttpServletRequest request) {
-
         try{
 
             String token = authService.extractToken(request);
@@ -66,5 +65,4 @@ public class UpdateSupplierCommand extends AbstractCommand {
         }
         return page;
     }
-
 }
