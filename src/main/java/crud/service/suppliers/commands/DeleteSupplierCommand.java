@@ -2,6 +2,7 @@ package crud.service.suppliers.commands;
 
 import crud.authorization.AuthService;
 import crud.base.AbstractCommand;
+import crud.base.ServiceResult;
 import crud.dtos.suppliers.requests.DeleteSupplierCommandDto;
 import crud.exception.AuthenticationException;
 import crud.exception.DAOException;
@@ -23,7 +24,7 @@ public class DeleteSupplierCommand extends AbstractCommand {
     private final SupplierValidator validator;
     private final AuthService authService;
     private final SupplierMapper mapper;
-    private String page = PAGE_SUPPLIER_LIST;
+    private String page = "";
 
     public DeleteSupplierCommand(SupplierRepository repository, SupplierValidator validator, AuthService authService, SupplierMapper mapper) {
         this.repository = repository;
@@ -33,7 +34,7 @@ public class DeleteSupplierCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(HttpServletRequest request) {
+    public ServiceResult execute(HttpServletRequest request) {
         try{
             String token = authService.extractToken(request);
             authService.isAuthenticated(token);
@@ -56,9 +57,9 @@ public class DeleteSupplierCommand extends AbstractCommand {
 
         } catch (DAOException | MappingException ex){
             Logger.error(this.getClass().getName(), ex.getMessage());
-            page = PAGE_SUPPLIER_FORM;
+            page = "";
             setException(request, ex);
         }
-        return page;
+        return createView(page);
     }
 }

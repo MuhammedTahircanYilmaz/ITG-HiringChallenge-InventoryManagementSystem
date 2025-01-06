@@ -3,6 +3,7 @@ package crud.service.products.commands;
 
 import crud.authorization.AuthService;
 import crud.base.AbstractCommand;
+import crud.base.ServiceResult;
 import crud.dtos.products.requests.UpdateProductCommandDto;
 import crud.exception.DAOException;
 import crud.exception.MappingException;
@@ -24,14 +25,14 @@ public class UpdateProductStockCommand extends AbstractCommand {
         this.mapper = mapper;
     }
 
-    private String page = PAGE_PRODUCT_LIST;
+    private String page = PRODUCT;
     private final ProductRepository repository;
     private final ProductValidator validator ;
     private final ProductMapper mapper;
     private final AuthService authService;
 
     @Override
-    public String execute(HttpServletRequest request) {
+    public ServiceResult execute(HttpServletRequest request) {
 
         try{
             String token = authService.extractToken(request);
@@ -57,11 +58,11 @@ public class UpdateProductStockCommand extends AbstractCommand {
         } catch(DAOException | MappingException ex){
 
             Logger.error(this.getClass().getName(), ex.getMessage());
-            page = PAGE_PRODUCT_FORM;
+            page = PRODUCT;
 
             setException(request, ex);
         }
-        return page;
+        return createView(page);
     }
 
 }

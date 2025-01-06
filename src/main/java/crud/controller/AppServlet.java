@@ -106,7 +106,7 @@ public class AppServlet extends HttpServlet {
         }
 
         try {
-            String view = command.execute(request);
+            String view = command.execute(request).getView();
             if (view != null) {
                 RequestDispatcher dispatcher = request.getRequestDispatcher(view);
                 dispatcher.forward(request, response);

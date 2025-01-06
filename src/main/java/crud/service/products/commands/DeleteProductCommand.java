@@ -2,6 +2,7 @@ package crud.service.products.commands;
 
 import crud.authorization.AuthService;
 import crud.base.AbstractCommand;
+import crud.base.ServiceResult;
 import crud.dtos.bills.requests.DeleteBillCommandDto;
 import crud.dtos.products.requests.DeleteProductCommandDto;
 import crud.exception.DAOException;
@@ -22,7 +23,7 @@ public class DeleteProductCommand extends AbstractCommand {
     private final ProductValidator validator;
     private final ProductMapper mapper;
     private final AuthService authService;
-    private String page = PAGE_PRODUCT_LIST;
+    private String page = SUPPLIER_PRODUCTS;
 
     public DeleteProductCommand(ProductRepository repository, ProductValidator validator, ProductMapper mapper, AuthService authService) {
         this.repository = repository;
@@ -32,7 +33,7 @@ public class DeleteProductCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(HttpServletRequest request) {
+    public ServiceResult execute(HttpServletRequest request) {
         try{
             String token = authService.extractToken(request);
             authService.isAuthenticated(token);
@@ -53,9 +54,9 @@ public class DeleteProductCommand extends AbstractCommand {
 
         }  catch (DAOException | MappingException ex){
             Logger.error(this.getClass().getName(), ex.getMessage());
-            page = PAGE_BILL_FORM;
+            page = SUPPLIER_PRODUCTS;
             setException(request, ex);
         }
-        return page;
+        return createView( page);
     }
 }

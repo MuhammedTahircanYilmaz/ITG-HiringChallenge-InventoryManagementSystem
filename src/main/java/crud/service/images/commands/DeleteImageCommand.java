@@ -2,6 +2,7 @@ package crud.service.images.commands;
 
 import crud.authorization.AuthService;
 import crud.base.AbstractCommand;
+import crud.base.ServiceResult;
 import crud.dtos.suppliers.requests.DeleteSupplierCommandDto;
 import crud.exception.AuthenticationException;
 import crud.exception.DAOException;
@@ -15,7 +16,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.UUID;
 
 public class DeleteImageCommand extends AbstractCommand {
-    private String page = PAGE_PRODUCT_LIST;
+    private String page = SUPPLIER_PRODUCTS;
     private ImageRepository repository;
     private AuthService authService;
 
@@ -25,7 +26,7 @@ public class DeleteImageCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(HttpServletRequest request) {
+    public ServiceResult execute(HttpServletRequest request) {
         try{
             String token = authService.extractToken(request);
             authService.isAuthenticated(token);
@@ -42,9 +43,9 @@ public class DeleteImageCommand extends AbstractCommand {
 
         } catch (DAOException ex){
             Logger.error(this.getClass().getName(), ex.getMessage());
-            page = PAGE_SUPPLIER_FORM;
+            page = SUPPLIER_PRODUCTS;
             setException(request, ex);
         }
-        return page;
+        return createView(page);
     }
 }

@@ -3,6 +3,7 @@ package crud.service.bills.queries;
 
 import crud.authorization.AuthService;
 import crud.base.AbstractCommand;
+import crud.base.ServiceResult;
 import crud.dtos.bills.responses.BillResponseDto;
 import crud.exception.AuthenticationException;
 import crud.exception.DAOException;
@@ -21,7 +22,7 @@ public class GetByIdBillQuery extends AbstractCommand {
     private final BillValidator validator;
     private final AuthService authService;
     private final BillMapper mapper;
-    private String page = PAGE_BILL_FORM;
+    private String page = "";
 
     public GetByIdBillQuery(BillRepository repository, BillValidator validator, AuthService authService , BillMapper mapper) {
         this.repository = repository;
@@ -31,7 +32,7 @@ public class GetByIdBillQuery extends AbstractCommand {
     }
 
     @Override
-    public String execute(HttpServletRequest request) {
+    public ServiceResult execute(HttpServletRequest request) {
         try{
             String token = authService.extractToken(request);
             authService.isAuthenticated(token);
@@ -44,15 +45,15 @@ public class GetByIdBillQuery extends AbstractCommand {
                 throw new AuthenticationException("You are not allowed to view this bill");
             }
             BillResponseDto dto = mapper.mapEntityToEntityResponseDto(bill);
-            setEntity(request, dto);
+            return createJsonResponse(dto);
 
         } catch (DAOException | ServletException | MappingException ex){
 
             Logger.error(this.getClass().getName(),ex.getMessage());
-            page = PAGE_BILL_LIST;
+                page = "";
 
             setException(request, ex);
         }
-        return page;
+        return createView(page);
     }
 }

@@ -2,6 +2,7 @@ package crud.service.retailers.commands;
 
 import crud.authorization.AuthService;
 import crud.base.AbstractCommand;
+import crud.base.ServiceResult;
 import crud.exception.BusinessException;
 import crud.exception.DAOException;
 import crud.mapper.RetailerMapper;
@@ -21,7 +22,7 @@ public class ChangePasswordRetailerCommand extends AbstractCommand {
     private final RetailerValidator validator;
     private final AuthService authService;
     private final RetailerMapper mapper;
-    private String page = PAGE_RETAILER_LIST;
+    private String page = PROFILE;
 
     public ChangePasswordRetailerCommand(RetailerRepository repository , RetailerValidator validator, AuthService authService, RetailerMapper mapper) {
         this.repository = repository;
@@ -31,7 +32,7 @@ public class ChangePasswordRetailerCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(HttpServletRequest request) {
+    public ServiceResult execute(HttpServletRequest request) {
         try{
             String token = authService.extractToken(request);
             authService.isAuthenticated(token);
@@ -52,9 +53,9 @@ public class ChangePasswordRetailerCommand extends AbstractCommand {
         } catch (DAOException | BusinessException ex){
             Logger.error(this.getClass().getName() ,ex.getMessage());
 
-            page = PAGE_RETAILER_FORM;
+            page = PROFILE;
             setException(request, ex);
         }
-        return page;
+        return createView( page);
     }
 }

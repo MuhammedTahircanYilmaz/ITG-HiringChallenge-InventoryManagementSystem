@@ -2,6 +2,7 @@ package crud.service.images.queries;
 
 import crud.authorization.AuthService;
 import crud.base.AbstractCommand;
+import crud.base.ServiceResult;
 import crud.exception.DAOException;
 import crud.model.entities.Image;
 import crud.repository.ImageRepository;
@@ -15,7 +16,7 @@ public class GetByProductIdImageQuery extends AbstractCommand {
     private final ImageRepository repository;
     private final AuthService authService;
 
-    private String page = PAGE_PRODUCT_FORM;
+    private String page = SUPPLIER_PRODUCTS;
 
     public GetByProductIdImageQuery(ImageRepository repository, AuthService authService) {
         this.repository = repository;
@@ -23,7 +24,7 @@ public class GetByProductIdImageQuery extends AbstractCommand {
     }
 
     @Override
-    public String execute(HttpServletRequest request) {
+    public ServiceResult execute(HttpServletRequest request) {
         try {
             String token = authService.extractToken(request);
             authService.isAuthenticated(token);
@@ -36,10 +37,10 @@ public class GetByProductIdImageQuery extends AbstractCommand {
 
         } catch (DAOException ex) {
             Logger.error(this.getClass().getName(), ex.getMessage());
-            page = PAGE_PRODUCT_FORM;
+            page = SUPPLIER_PRODUCTS;
             setException(request, ex);
         }
-        return page;
+        return createView(page);
     }
 }
 

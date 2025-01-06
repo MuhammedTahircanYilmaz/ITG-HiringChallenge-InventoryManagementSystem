@@ -2,6 +2,7 @@ package crud.service.bills.queries;
 
 import crud.authorization.AuthService;
 import crud.base.AbstractCommand;
+import crud.base.ServiceResult;
 import crud.dtos.bills.responses.BillResponseDto;
 import crud.exception.AuthenticationException;
 import crud.exception.DAOException;
@@ -25,7 +26,7 @@ public class GetByRetailerIdBillQuery extends AbstractCommand {
     private final BillValidator validator;
     private final AuthService authService;
     private final BillMapper mapper;
-    private String page = PAGE_BILL_FORM;
+    private String page = PAST_PURCHASES;
 
     public GetByRetailerIdBillQuery(BillRepository repository, BillValidator validator, AuthService authService, BillMapper mapper , RetailerRepository retailerRepository) {
         this.repository = repository;
@@ -36,7 +37,7 @@ public class GetByRetailerIdBillQuery extends AbstractCommand {
     }
 
     @Override
-    public String execute(HttpServletRequest request) {
+    public ServiceResult execute(HttpServletRequest request) {
         try {
 
             String token = authService.extractToken(request);
@@ -58,17 +59,18 @@ public class GetByRetailerIdBillQuery extends AbstractCommand {
                 response.add(dto);
             }
 
-            setEntities(request, response, "");
+            return createJsonResponse(response);
+
 
         } catch (Exception ex) {
 
             Logger.error(this.getClass().getName(), ex.getMessage());
 
-            page = PAGE_BILL_LIST;
+            page = PAST_PURCHASES;
 
             setException(request, ex);
         }
-        return page;
+        return createView(page);
     }
 
 }

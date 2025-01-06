@@ -2,6 +2,7 @@ package crud.service.bills.commands;
 
 import crud.authorization.AuthService;
 import crud.base.AbstractCommand;
+import crud.base.ServiceResult;
 import crud.dtos.bills.requests.DeleteBillCommandDto;
 import crud.exception.DAOException;
 import crud.exception.MappingException;
@@ -21,7 +22,7 @@ public class DeleteBillCommand extends AbstractCommand {
     private final BillValidator validator;
     private final BillMapper mapper;
     private final AuthService authService;
-    private String page = PAGE_BILL_LIST;
+    private String page = RETAILER_MAIN;
 
 
     public DeleteBillCommand(BillRepository repository, BillValidator validator, BillMapper mapper, AuthService authSer) {
@@ -32,7 +33,7 @@ public class DeleteBillCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(HttpServletRequest request) {
+    public ServiceResult execute(HttpServletRequest request) {
         try{
             String token = authService.extractToken(request);
             authService.isAuthenticated(token);
@@ -53,9 +54,9 @@ public class DeleteBillCommand extends AbstractCommand {
 
         } catch (DAOException | MappingException ex){
             Logger.error(this.getClass().getName(), ex.getMessage());
-            page = PAGE_BILL_FORM;
+            page = RETAILER_MAIN;
             setException(request, ex);
         }
-        return page;
+        return createView(page);
     }
 }

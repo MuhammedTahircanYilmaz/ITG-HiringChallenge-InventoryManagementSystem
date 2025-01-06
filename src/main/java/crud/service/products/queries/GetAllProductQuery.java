@@ -2,6 +2,7 @@ package crud.service.products.queries;
 
 import crud.authorization.AuthService;
 import crud.base.AbstractCommand;
+import crud.base.ServiceResult;
 import crud.dtos.products.responses.ProductResponseDto;
 import crud.exception.DAOException;
 import crud.exception.MappingException;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 public class GetAllProductQuery extends AbstractCommand {
 
         private ProductRepository repository;
-        private String page = PAGE_PRODUCT_LIST;
+        private String page = SEARCH_RESULTS;
         private AuthService authService;
         private final ProductMapper mapper;
 
@@ -27,7 +28,7 @@ public class GetAllProductQuery extends AbstractCommand {
         }
 
         @Override
-        public String execute(HttpServletRequest request) {
+        public ServiceResult execute(HttpServletRequest request) {
 
             try{
                 String token = authService.extractToken(request);
@@ -48,6 +49,6 @@ public class GetAllProductQuery extends AbstractCommand {
                 setException(request, ex);
 
             }
-            return page;
+            return createView(page);
         }
     }

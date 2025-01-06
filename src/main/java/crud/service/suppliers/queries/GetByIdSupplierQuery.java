@@ -2,6 +2,7 @@ package crud.service.suppliers.queries;
 
 import crud.authorization.AuthService;
 import crud.base.AbstractCommand;
+import crud.base.ServiceResult;
 import crud.dtos.suppliers.responses.SupplierResponseDto;
 import crud.exception.DAOException;
 import crud.exception.MappingException;
@@ -22,7 +23,7 @@ public class GetByIdSupplierQuery extends AbstractCommand {
     private final SupplierValidator validator;
     private final AuthService authService ;
     private final SupplierMapper mapper;
-    private String page = PAGE_SUPPLIER_FORM;
+    private String page = PROFILE;
 
     public GetByIdSupplierQuery(SupplierRepository repository, SupplierValidator validator, AuthService authService, SupplierMapper mapper) {
         this.repository = repository;
@@ -32,7 +33,7 @@ public class GetByIdSupplierQuery extends AbstractCommand {
     }
 
     @Override
-    public String execute(HttpServletRequest request) {
+    public ServiceResult execute(HttpServletRequest request) {
         try{
             String token = authService.extractToken(request);
             authService.isAuthenticated(token);
@@ -42,15 +43,15 @@ public class GetByIdSupplierQuery extends AbstractCommand {
             Supplier Supplier = repository.findById(UUID.fromString(request.getParameter("supplierId")));
             SupplierResponseDto dto = mapper.mapEntityToEntityResponseDto(Supplier);
 
-            setEntity(request, dto);
+            return createJsonResponse(dto);
 
         } catch (DAOException | MappingException ex){
 
             Logger.error(this.getClass().getName(), ex.getMessage());
-            page = PAGE_SUPPLIER_LIST;
+            page = PROFILE;
 
             setException(request, ex);
         }
-        return page;
+        return createView( page);
     }
 }

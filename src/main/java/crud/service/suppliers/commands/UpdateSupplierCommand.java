@@ -2,6 +2,7 @@ package crud.service.suppliers.commands;
 
 import crud.authorization.AuthService;
 import crud.base.AbstractCommand;
+import crud.base.ServiceResult;
 import crud.dtos.suppliers.requests.UpdateSupplierCommandDto;
 import crud.exception.DAOException;
 import crud.exception.MappingException;
@@ -23,14 +24,14 @@ public class UpdateSupplierCommand extends AbstractCommand {
         this.mapper = mapper;
     }
 
-    private String page = PAGE_SUPPLIER_LIST;
+    private String page = PROFILE;
     private SupplierValidator validator;
     private SupplierRepository repository;
     private SupplierMapper mapper;
     private final AuthService authService;
 
     @Override
-    public String execute(HttpServletRequest request) {
+    public ServiceResult execute(HttpServletRequest request) {
         try{
 
             String token = authService.extractToken(request);
@@ -59,10 +60,10 @@ public class UpdateSupplierCommand extends AbstractCommand {
         } catch(DAOException | MappingException ex){
 
             Logger.error(this.getClass().getName(), ex.getMessage());
-            page = PAGE_SUPPLIER_FORM;
+            page = PROFILE;
 
             setException(request, ex);
         }
-        return page;
+        return createView(page);
     }
 }

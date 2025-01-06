@@ -2,6 +2,7 @@ package crud.service.retailers.queries;
 
 import crud.authorization.AuthService;
 import crud.base.AbstractCommand;
+import crud.base.ServiceResult;
 import crud.dtos.retailers.responses.RetailerResponseDto;
 import crud.exception.DAOException;
 import crud.exception.MappingException;
@@ -20,7 +21,7 @@ public class GetByNameRetailerQuery extends AbstractCommand {
     private final RetailerValidator validator;
     private final AuthService authService ;
     private final RetailerMapper mapper;
-    private String page = PAGE_RETAILER_FORM;
+    private String page = "";
 
     public GetByNameRetailerQuery(RetailerRepository repository, RetailerValidator validator, AuthService authService, RetailerMapper mapper) {
         this.repository = repository;
@@ -30,7 +31,7 @@ public class GetByNameRetailerQuery extends AbstractCommand {
     }
 
     @Override
-    public String execute(HttpServletRequest request) {
+    public ServiceResult execute(HttpServletRequest request) {
         try {
 
             String token = authService.extractToken(request);
@@ -44,16 +45,16 @@ public class GetByNameRetailerQuery extends AbstractCommand {
                 response.add(dto);
             }
 
-            setEntities(request, response,"");
+            return createJsonResponse(response);
 
         } catch (DAOException | IllegalArgumentException | MappingException ex) {
 
             Logger.error(this.getClass().getName(), ex.getMessage());
 
-            page = PAGE_RETAILER_LIST;
+            page = "";
 
             setException(request, ex);
         }
-        return page;
+        return createView(page);
     }
 }

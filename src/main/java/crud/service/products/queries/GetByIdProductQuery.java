@@ -2,6 +2,7 @@ package crud.service.products.queries;
 
 import crud.authorization.AuthService;
 import crud.base.AbstractCommand;
+import crud.base.ServiceResult;
 import crud.dtos.products.responses.ProductResponseDto;
 import crud.exception.DAOException;
 import crud.exception.MappingException;
@@ -19,7 +20,7 @@ public class GetByIdProductQuery extends AbstractCommand {
     private final ProductValidator validator;
     private final AuthService authService;
     private final ProductMapper mapper;
-    private String page = PAGE_PRODUCT_FORM;
+    private String page = PRODUCT;
 
 
     public GetByIdProductQuery(ProductRepository repository, ProductValidator validator, AuthService authService, ProductMapper mapper) {
@@ -30,7 +31,7 @@ public class GetByIdProductQuery extends AbstractCommand {
     }
 
     @Override
-    public String execute(HttpServletRequest request) {
+    public ServiceResult execute(HttpServletRequest request) {
         try{
             String token = authService.extractToken(request);
             authService.isAuthenticated(token);
@@ -39,14 +40,15 @@ public class GetByIdProductQuery extends AbstractCommand {
             Product product = repository.findById(getId(request));
             ProductResponseDto dto = mapper.mapEntityToEntityResponseDto(product);
 
-            setEntity(request, dto);
+            return createJsonResponse(dto);
+
         } catch (DAOException | ServletException | MappingException ex){
 
             Logger.error(this.getClass().getName(), ex.getMessage());
-            page = PAGE_PRODUCT_LIST;
+            page = PRODUCT;
 
             setException(request, ex);
         }
-        return page;
+        return createView(page);
     }
 }

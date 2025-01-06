@@ -2,6 +2,7 @@ package crud.service.retailers.queries;
 
 import crud.authorization.AuthService;
 import crud.base.AbstractCommand;
+import crud.base.ServiceResult;
 import crud.dtos.retailers.responses.RetailerResponseDto;
 import crud.exception.DAOException;
 import crud.exception.MappingException;
@@ -21,7 +22,7 @@ public class GetByIdRetailerQuery extends AbstractCommand {
     private final RetailerValidator validator;
     private final AuthService authService ;
     private final RetailerMapper mapper;
-    private String page = PAGE_RETAILER_LIST;
+    private String page = PROFILE;
 
     public GetByIdRetailerQuery(RetailerRepository repository , RetailerValidator validator, AuthService authService, RetailerMapper mapper) {
         this.repository = repository;
@@ -31,7 +32,7 @@ public class GetByIdRetailerQuery extends AbstractCommand {
     }
 
     @Override
-    public String execute(HttpServletRequest request) {
+    public ServiceResult execute(HttpServletRequest request) {
         try{
             String token = authService.extractToken(request);
             authService.isAuthenticated(token);
@@ -41,14 +42,14 @@ public class GetByIdRetailerQuery extends AbstractCommand {
             Retailer retailer = repository.findById(UUID.fromString(request.getParameter("retailerId")));
             RetailerResponseDto dto = mapper.mapEntityToEntityResponseDto(retailer);
 
-            setEntity(request, dto);
+            return createJsonResponse(dto);
         } catch (DAOException | MappingException ex){
 
             Logger.error(this.getClass().getName(), ex.getMessage());
-            page = PAGE_RETAILER_LIST;
+            page = PROFILE;
 
             setException(request, ex);
         }
-        return page;
+        return createView(page);
     }
 }

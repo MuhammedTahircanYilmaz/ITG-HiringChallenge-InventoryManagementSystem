@@ -2,6 +2,7 @@ package crud.service.bills.commands;
 
 import crud.authorization.AuthService;
 import crud.base.AbstractCommand;
+import crud.base.ServiceResult;
 import crud.dtos.bills.requests.UpdateBillCommandDto;
 import crud.exception.DAOException;
 import crud.exception.MappingException;
@@ -22,7 +23,7 @@ public class UpdateBillStatusCommand extends AbstractCommand {
     private final BillRepository repository;
     private final ProductRepository productRepository;
     private final AuthService authService;
-    private String page = "/bill/form.jsp";
+    private String page = PENDING_BILLS;
 
 
 
@@ -32,7 +33,7 @@ public class UpdateBillStatusCommand extends AbstractCommand {
         this.productRepository = productRepository;
     }
 
-    public String execute(HttpServletRequest request) {
+    public ServiceResult execute(HttpServletRequest request) {
         try {
             String token = authService.extractToken(request);
             authService.isAuthenticated(token);
@@ -47,7 +48,7 @@ public class UpdateBillStatusCommand extends AbstractCommand {
 
             if (bill.getStatus().toString().equals("REJECTED")){
                 repository.delete(bill);
-                return page;
+                return createView(page);
             }
                 repository.update(bill);
 
@@ -57,7 +58,7 @@ public class UpdateBillStatusCommand extends AbstractCommand {
 
             Logger.error(this.getClass().getName(), ex.getMessage());
         }
-        return page;
+        return createView(page);
     }
 
 

@@ -1,7 +1,6 @@
 package crud.util;
 import crud.exception.BusinessException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import sun.security.validator.ValidatorException;
 
 
 public class PasswordUtils {

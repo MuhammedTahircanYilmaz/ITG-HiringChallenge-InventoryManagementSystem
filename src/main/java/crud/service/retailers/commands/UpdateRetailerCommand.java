@@ -3,6 +3,7 @@ package crud.service.retailers.commands;
 import crud.authorization.AuthService;
 import crud.base.AbstractCommand;
 import crud.base.BaseMapper;
+import crud.base.ServiceResult;
 import crud.dtos.retailers.requests.UpdateRetailerCommandDto;
 import crud.exception.DAOException;
 import crud.exception.MappingException;
@@ -25,14 +26,14 @@ public class UpdateRetailerCommand extends AbstractCommand {
         this.mapper = mapper;
     }
 
-    private String page = PAGE_RETAILER_LIST;
+    private String page = PROFILE;
     private RetailerRepository repository;
     private RetailerValidator validator;
     private RetailerMapper mapper;
     private final AuthService authService;
 
     @Override
-    public String execute(HttpServletRequest request) {
+    public ServiceResult execute(HttpServletRequest request) {
 
         try{
 
@@ -62,11 +63,11 @@ public class UpdateRetailerCommand extends AbstractCommand {
         } catch(DAOException | MappingException ex){
 
             Logger.error(this.getClass().getName(), ex.getMessage());
-            page = PAGE_RETAILER_FORM;
+            page = PROFILE;
 
             setException(request, ex);
         }
-        return page;
+        return createView(page);
     }
 
 }

@@ -2,6 +2,7 @@ package crud.service.suppliers.commands;
 
 import crud.authorization.AuthService;
 import crud.base.AbstractCommand;
+import crud.base.ServiceResult;
 import crud.exception.BusinessException;
 import crud.exception.DAOException;
 import crud.model.entities.Supplier;
@@ -20,7 +21,7 @@ public class ChangePasswordSupplierCommand extends AbstractCommand {
     private final SupplierRepository repository;
     private final SupplierValidator validator;
     private final AuthService authService;
-    private String page = PAGE_SUPPLIER_LIST;
+    private String page = PROFILE;
 
     public ChangePasswordSupplierCommand(SupplierRepository repository, SupplierValidator validator, AuthService authService) {
         this.repository = repository;
@@ -29,7 +30,7 @@ public class ChangePasswordSupplierCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(HttpServletRequest request) {
+    public ServiceResult execute(HttpServletRequest request) {
         try{
             String token = authService.extractToken(request);
             authService.isAuthenticated(token);
@@ -50,9 +51,9 @@ public class ChangePasswordSupplierCommand extends AbstractCommand {
         } catch (DAOException | BusinessException ex){
             Logger.error(this.getClass().getName() ,ex.getMessage());
 
-            page = PAGE_SUPPLIER_FORM;
+            page = PROFILE;
             setException(request, ex);
         }
-        return page;
+        return createView(page);
     }
 }

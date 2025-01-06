@@ -2,6 +2,7 @@ package crud.service.suppliers.queries;
 
 import crud.authorization.AuthService;
 import crud.base.AbstractCommand;
+import crud.base.ServiceResult;
 import crud.dtos.suppliers.responses.SupplierResponseDto;
 import crud.exception.DAOException;
 import crud.exception.MappingException;
@@ -21,7 +22,7 @@ public class GetByNameSupplierQuery extends AbstractCommand {
     private final SupplierValidator validator;
     private final AuthService authService ;
     private final SupplierMapper mapper;
-    private String page = PAGE_SUPPLIER_FORM;
+    private String page = "";
 
     public GetByNameSupplierQuery(SupplierRepository repository, SupplierValidator validator, AuthService authService, SupplierMapper mapper) {
         this.repository = repository;
@@ -31,7 +32,7 @@ public class GetByNameSupplierQuery extends AbstractCommand {
     }
 
     @Override
-    public String execute(HttpServletRequest request) {
+    public ServiceResult execute(HttpServletRequest request) {
         try {
 
             String token = authService.extractToken(request);
@@ -45,16 +46,16 @@ public class GetByNameSupplierQuery extends AbstractCommand {
                 response.add(dto);
             }
 
-            setEntities(request, response,"");
+            return createJsonResponse(response);
 
         } catch (DAOException | IllegalArgumentException | MappingException ex) {
 
             Logger.error(this.getClass().getName(), ex.getMessage());
 
-            page = PAGE_SUPPLIER_LIST;
+            page = "";
 
             setException(request, ex);
         }
-        return page;
+        return createView(page);
     }
 }

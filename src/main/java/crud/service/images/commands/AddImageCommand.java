@@ -2,6 +2,7 @@ package crud.service.images.commands;
 
 import crud.authorization.AuthService;
 import crud.base.AbstractCommand;
+import crud.base.ServiceResult;
 import crud.exception.BusinessException;
 import crud.exception.DAOException;
 import crud.model.entities.Image;
@@ -19,7 +20,7 @@ public class AddImageCommand extends AbstractCommand {
     private final AuthService authService;
     private final String uploadDir;
 
-    private String page = PAGE_PRODUCT_FORM;
+    private String page = PRODUCT;
 
     public AddImageCommand(ImageRepository repository, AuthService authService, String uploadDir) {
         this.repository = repository;
@@ -28,7 +29,7 @@ public class AddImageCommand extends AbstractCommand {
     }
 
     @Override
-    public String execute(HttpServletRequest request) {
+    public ServiceResult execute(HttpServletRequest request) {
         try {
             String token = authService.extractToken(request);
             authService.isAuthenticated(token);
@@ -52,9 +53,9 @@ public class AddImageCommand extends AbstractCommand {
 
         } catch (Exception ex) {
             Logger.error(this.getClass().getName(), ex.getMessage());
-            page = PAGE_PRODUCT_FORM;
+            page = PRODUCT;
             setException(request, ex);
         }
-        return page;
+        return createView(page);
     }
 }

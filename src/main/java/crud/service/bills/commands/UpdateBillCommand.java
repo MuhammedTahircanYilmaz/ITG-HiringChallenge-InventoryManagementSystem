@@ -3,6 +3,7 @@ package crud.service.bills.commands;
 import crud.authorization.AuthService;
 import crud.base.AbstractCommand;
 import crud.base.BaseMapper;
+import crud.base.ServiceResult;
 import crud.dtos.bills.requests.AddBillCommandDto;
 import crud.dtos.bills.requests.UpdateBillCommandDto;
 import crud.exception.DAOException;
@@ -20,7 +21,7 @@ import java.util.UUID;
 
 public class UpdateBillCommand  extends AbstractCommand {
 
-    private String page = PAGE_BILL_FORM;
+    private String page = RETAILER_MAIN;
     private BillRepository repository;
     private ProductRepository productRepository;
     private BillValidator validator;
@@ -36,7 +37,7 @@ public class UpdateBillCommand  extends AbstractCommand {
     }
 
     @Override
-    public String execute(HttpServletRequest request) {
+    public ServiceResult execute(HttpServletRequest request) {
         try {
             String token = authService.extractToken(request);
             authService.isAuthenticated(token);
@@ -60,10 +61,10 @@ public class UpdateBillCommand  extends AbstractCommand {
         } catch (DAOException | MappingException ex) {
 
             Logger.error(this.getClass().getName(), ex.getMessage());
-            page = PAGE_BILL_FORM;
+            page = RETAILER_MAIN;
 
             setException(request, ex);
         }
-        return page;
+       return createView(page);
     }
 }
