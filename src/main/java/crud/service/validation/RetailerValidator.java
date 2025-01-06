@@ -20,7 +20,7 @@ public class RetailerValidator extends BaseValidator<Retailer, RetailerBusinessR
         String password = request.getParameter("password");
 
         if(!rules.isValidEmail(email) || !rules.isValidPassword(password) || !rules.isValidName(name)){
-            return false;
+            throw new IllegalArgumentException("There are problems with the data. Please try again");
         }
         return true;
     }
@@ -32,7 +32,7 @@ public class RetailerValidator extends BaseValidator<Retailer, RetailerBusinessR
         String password = request.getParameter("password");
 
         if(!rules.isValidEmail(email) || !rules.isValidPassword(password) || !rules.isValidName(name)){
-            return false;
+            throw new IllegalArgumentException("There are problems with the data. Please try again");
         }
         return true;
     }
@@ -48,7 +48,7 @@ public class RetailerValidator extends BaseValidator<Retailer, RetailerBusinessR
         String confirmPassword = request.getParameter("confirmPassword");
 
         if(!rules.isValidPassword(oldPassword) || !rules.isValidPassword(newPassword) || !rules.isValidPassword(confirmPassword)){
-            return false;
+            throw new IllegalArgumentException("There are problems with the data. Please try again");
         }
 
         if(!newPassword.equals(confirmPassword)){

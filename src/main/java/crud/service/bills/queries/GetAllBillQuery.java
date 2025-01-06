@@ -7,6 +7,7 @@ import crud.exception.DAOException;
 import crud.exception.MappingException;
 import crud.mapper.BillMapper;
 import crud.model.entities.Bill;
+import crud.model.enums.Roles;
 import crud.repository.BillRepository;
 import crud.util.Logger;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,7 +33,7 @@ public class GetAllBillQuery extends AbstractCommand {
         try{
             String token = authService.extractToken(request);
             authService.isAuthenticated(token);
-            authService.hasRole(token, "ADMIN");
+            authService.hasRole(token, Roles.ADMIN.name());
             ArrayList<Bill> bills = repository.getAll();
             ArrayList<BillResponseDto> response = new ArrayList<BillResponseDto>();
             for (Bill bill : bills) {

@@ -1,5 +1,6 @@
 package crud.base;
 
+import crud.exception.BusinessException;
 import crud.exception.DAOException;
 import crud.exception.NotFoundException;
 
@@ -12,12 +13,10 @@ public class BaseBusinessRules<TEntity extends BaseEntity, TRepository extends B
 
         try {
             TEntity entity = (TEntity) repository.findById(id);
-
             if (entity == null) {
-                return false;
-            } else {
-                return true;
+                throw new BusinessException("The entity does not exist");
             }
+            return true;
         } catch (DAOException ex){
             throw new NotFoundException(ex.getMessage());
         }

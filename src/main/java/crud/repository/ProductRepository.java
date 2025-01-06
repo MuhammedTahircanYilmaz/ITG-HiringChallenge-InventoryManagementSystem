@@ -19,17 +19,15 @@ public class ProductRepository implements BaseRepository<Product> {
     private Connection connection;
 
 
-    private static final String SQL_INSERT = "INSERT INTO Products (Id, SupplierId, Name, Description, StockQuantity, Price, " +
-            "Discount, ImagePath , CreatedBy, CreatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String SQL_INSERT = "INSERT INTO Products (Id, SupplierId, Name, Description, StockQuantity, Price, InStock " +
+            "Discount, ImagePath , CreatedBy, CreatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,true)";
     private static final String SQL_UPDATE = "UPDATE Products SET SupplierId = ?, Name = ?, Description = ?, StockQuantity = ?," +
-            " Price = ?, Discount = ?, ImagePath = ? , UpdatedBy = ?, UpdatedAt = ? WHERE Id = ? AND Deleted = false";
+            " Price = ?, Discount = ?, ImagePath = ? , UpdatedBy = ?, UpdatedAt = ? , InStock = ?, WHERE Id = ? AND Deleted = false";
     private static final String SQL_DELETE = "Update Products SET Deleted = True, DeletedBy = ?, DeletedAt = ? WHERE Id = ? AND Deleted = false";
     private static final String SQL_FIND_ALL = "SELECT * FROM Products AND Deleted = false";
     private static final String SQL_FIND_BY_ID = "SELECT * FROM Products WHERE Id = ? AND Deleted = false";
     private static final String SQL_FIND_BY_SUPPLIER_ID = "SELECT * FROM Products WHERE SupplierId = ? AND Deleted = false";
     private static final String SQL_FIND_BY_NAME = "SELECT * FROM Products WHERE Name LIKE ? AND Deleted = false";
-
-
 
     public ProductRepository(Connection connection) {
         if (connection == null) {
@@ -102,7 +100,8 @@ public class ProductRepository implements BaseRepository<Product> {
             ps.setString(7, entity.getImageLocation());
             ps.setString(8, entity.getUpdatedBy());
             ps.setTimestamp(9, entity.getUpdatedAt());
-            ps.setString(10, entity.getId().toString());
+            ps.setBoolean(10, entity.isInStock());
+            ps.setString(11, entity.getId().toString());
 
             ps.executeUpdate();
             connection.commit();
@@ -136,8 +135,6 @@ public class ProductRepository implements BaseRepository<Product> {
             ps.setString(1, product.getDeletedBy());
             ps.setTimestamp(2, product.getDeletedAt());
             ps.setString(3, product.getId().toString());
-
-
 
             int rowsAffected = ps.executeUpdate();
             if (rowsAffected == 0) {

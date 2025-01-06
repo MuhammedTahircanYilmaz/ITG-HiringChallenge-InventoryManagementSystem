@@ -1,6 +1,7 @@
 package crud.service.validation;
 
 import crud.base.BaseValidator;
+import crud.exception.BusinessException;
 import crud.model.entities.Supplier;
 import crud.repository.SupplierRepository;
 import crud.service.suppliers.rules.SupplierBusinessRules;
@@ -45,15 +46,12 @@ public class SupplierValidator extends BaseValidator<Supplier, SupplierBusinessR
     public boolean validateChangePasswordRequest(HttpServletRequest request){
         String oldPassword = request.getParameter("oldPassword");
         String newPassword = request.getParameter("newPassword");
-        String confirmPassword = request.getParameter("confirmPassword");
 
-        if(!rules.isValidPassword(oldPassword) || !rules.isValidPassword(newPassword) || !rules.isValidPassword(confirmPassword)){
-            return false;
+
+        if(!rules.isValidPassword(oldPassword) || !rules.isValidPassword(newPassword)){
+            throw new BusinessException("There are problems with the password");
         }
 
-        if(!newPassword.equals(confirmPassword)){
-            return false;
-        }
         return true;
     }
 

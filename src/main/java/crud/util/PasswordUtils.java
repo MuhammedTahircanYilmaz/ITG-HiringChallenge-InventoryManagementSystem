@@ -16,6 +16,7 @@ public class PasswordUtils {
     // Verify the password
     public static boolean verifyPassword(String plainPassword, String hashedPassword) throws BusinessException {
         boolean isPasswordAMatch = passwordEncoder.matches(plainPassword, hashedPassword);
+
         if (!isPasswordAMatch) {
             throw new BusinessException("The password does not match");
         }

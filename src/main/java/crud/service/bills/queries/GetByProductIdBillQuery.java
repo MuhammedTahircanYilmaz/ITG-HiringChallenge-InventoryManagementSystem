@@ -45,7 +45,7 @@ public class GetByProductIdBillQuery extends AbstractCommand {
 
             validator.validateGetByIdRequest(request);
 
-            UUID ProductId = UUID.fromString(request.getParameter("ProductId"));
+            UUID ProductId = UUID.fromString(request.getParameter("productId"));
             Product product = productRepository.findById(ProductId);
 
             if(product.getSupplierId().equals(authService.getUserId(token)) ){

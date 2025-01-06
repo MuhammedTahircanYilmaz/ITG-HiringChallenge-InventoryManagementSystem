@@ -25,7 +25,7 @@ public class RetailerRepository implements BaseRepository<Retailer> {
         this.connection = connection;
     }
 
-    private static final String SQL_INSERT = "INSERT INTO Retailers (Id, Name, Email, Password, ImagePath, CreatedBy, CreatedAt) VALUES (?,?,?,?,?,?,?)";
+    private static final String SQL_INSERT = "INSERT INTO Retailers (Id, Name, Email, Password, ImagePath, CreatedBy, CreatedAt, RoleName) VALUES (?,?,?,?,?,?,?,?)";
     private static final String SQL_UPDATE = "UPDATE Retailers SET Name = ?, Email = ?, Password = ?, ImagePath = ?, UpdatedBy = ?, UpdatedAt = ? WHERE id = ? AND Deleted = false";
     private static final String SQL_DELETE = "UPDATE Retailers SET Deleted = true WHERE id = ? AND Deleted = false";
     private static final String SQL_FIND_ALL = "SELECT * FROM Retailers AND Deleted = false";
@@ -51,6 +51,7 @@ public class RetailerRepository implements BaseRepository<Retailer> {
             ps.setString(5, entity.getImageLocation());
             ps.setString(6, entity.getId().toString());
             ps.setTimestamp(7, entity.getCreatedAt());
+            ps.setString(8, entity.getRoleName().toString());
 
             ps.executeUpdate();
             connection.commit();

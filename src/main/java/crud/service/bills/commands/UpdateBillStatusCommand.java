@@ -41,14 +41,15 @@ public class UpdateBillStatusCommand extends AbstractCommand {
             UUID billId = UUID.fromString(request.getParameter("billId"));
 
             Bill bill = repository.findById(billId);
-            authService.isAllowed(token,bill.getRetailerId());
+            authService.isAllowed(token,bill.getSupplierId());
 
             bill.setStatus(BillStatus.valueOf( request.getParameter("status")));
 
-            repository.update(bill);
-            if(bill.getStatus().equals(BillStatus.PAID)){
-                updateProductStock(bill);
+            if (bill.getStatus().toString().equals("REJECTED")){
+                repository.delete(bill);
+                return page;
             }
+                repository.update(bill);
 
             Logger.info(this.getClass().getName(), "Status update Successful");
 
@@ -59,27 +60,5 @@ public class UpdateBillStatusCommand extends AbstractCommand {
         return page;
     }
 
-    private void updateProductStock( Bill bill) throws SQLException {
-        try{
-            Product product = productRepository.findById(bill.getProductId());
-            if (product == null) {
-                throw new SQLException("Product not found for bill: " + bill.getId());
-            }
 
-            long newStock = product.getStockQuantity() - bill.getAmount();
-
-            if (newStock < 0) {
-                throw new SQLException("Insufficient stock for product: " + product.getId());
-            }
-
-            product.setStockQuantity(newStock);
-            productRepository.update(product);
-
-            Logger.info(this.getClass().getName(),
-                    String.format("Updated stock for product %d: %d -> %d",
-                            product.getId(), product.getStockQuantity() + bill.getAmount(), newStock));
-        }catch (Exception ex){
-            Logger.error(this.getClass().getName(), ex.getMessage());
-        }
-    }
 }

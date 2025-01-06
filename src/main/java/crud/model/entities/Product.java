@@ -13,6 +13,7 @@ public class Product extends BaseEntity {
     private Double price;
     private Float discount;
     private String imageLocation;
+    private boolean inStock;
 
     public UUID getSupplierId() {
         return supplierId;
@@ -21,6 +22,10 @@ public class Product extends BaseEntity {
     public void setSupplierId(UUID supplierId ) {
         this.supplierId = supplierId;
         }
+
+    public boolean isInStock() { return inStock; }
+
+    public void setInStock(boolean inStock) { this.inStock = inStock; }
 
     public String getName() {
         return name;

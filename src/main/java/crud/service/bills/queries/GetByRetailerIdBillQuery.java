@@ -42,7 +42,7 @@ public class GetByRetailerIdBillQuery extends AbstractCommand {
             String token = authService.extractToken(request);
             authService.isAuthenticated(token);
 
-            Retailer retailer = retailerRepository.findById(UUID.fromString(request.getParameter("RetailerId")));
+            Retailer retailer = retailerRepository.findById(UUID.fromString(request.getParameter("retailerId")));
 
             if(!retailer.getId().equals(authService.getUserId(token)) ){
                 throw new AuthenticationException("You are not allowed to view this bill");

@@ -37,7 +37,7 @@ public class UpdateSupplierCommand extends AbstractCommand {
             authService.isAuthenticated(token);
 
             UUID userId = authService.getUserId(token);
-            UUID SupplierId = UUID.fromString(request.getParameter("SupplierId"));
+            UUID SupplierId = UUID.fromString(request.getParameter("supplierId"));
 
             mapper.mapUpdateRequestDto(request, userId.toString());
 

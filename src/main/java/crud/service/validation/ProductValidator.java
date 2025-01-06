@@ -18,7 +18,7 @@ public class ProductValidator extends BaseValidator<Product, ProductBusinessRule
 
     @Override
     public boolean validateAddRequest(HttpServletRequest request) {
-        boolean isValid = true;
+
 
         String name = request.getParameter("name");
         double price = Double.parseDouble(request.getParameter("price"));
@@ -29,14 +29,15 @@ public class ProductValidator extends BaseValidator<Product, ProductBusinessRule
                 || !rules.productPriceIsValid(price)
                 || !rules.productQuantityIsValid(quantity)
                 || !rules.productDiscountIsValid(discount)){
-            isValid = false;
+
+            throw new IllegalArgumentException("There are problems with the data. Please try again");
         }
-        return isValid;
+        return true;
     }
 
     @Override
     public boolean validateUpdateRequest(HttpServletRequest request) {
-        boolean isValid = true;
+
 
         String name = request.getParameter("name");
         double price = Double.parseDouble(request.getParameter("price"));
@@ -47,9 +48,10 @@ public class ProductValidator extends BaseValidator<Product, ProductBusinessRule
                 || !rules.productPriceIsValid(price)
                 || !rules.productQuantityIsValid(quantity)
                 || !rules.productDiscountIsValid(discount)){
-            isValid = false;
+            throw new IllegalArgumentException("There are problems with the data. Please try again");
+
         }
-        return isValid;
+        return true;
     }
 
     public boolean validateGetBySupplierIdRequest(HttpServletRequest request) {

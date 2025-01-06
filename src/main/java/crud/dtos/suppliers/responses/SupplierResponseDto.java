@@ -16,7 +16,7 @@ public class SupplierResponseDto {
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("Name cannot be null or empty.");
         }
-        if (name.length() > 50) {
+        if (name.length() > 100) {
             throw new IllegalArgumentException("Name cannot exceed 50 characters.");
         }
         this.name = name.trim();

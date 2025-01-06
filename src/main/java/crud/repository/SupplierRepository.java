@@ -16,7 +16,7 @@ public class SupplierRepository implements BaseRepository<Supplier> {
 
     private final Connection connection;
 
-    private static final String SQL_INSERT = "INSERT INTO Suppliers (Id, Name, Email, Password, ImagePath, CreatedBy, CreatedAt) VALUES (?,?,?,?,?,?,?)";
+    private static final String SQL_INSERT = "INSERT INTO Suppliers (Id, Name, Email, Password, ImagePath, CreatedBy, CreatedAt, RoleName) VALUES (?,?,?,?,?,?,?,?)";
     private static final String SQL_UPDATE = "UPDATE Suppliers SET Name = ?, Email = ?, Password = ?, ImagePath = ?, UpdatedBy = ?, UpdatedAt = ? WHERE id = ? AND Deleted = false";
     private static final String SQL_DELETE = "UPDATE Suppliers SET Deleted = true WHERE id = ? AND Deleted = false";
     private static final String SQL_FIND_ALL = "SELECT * FROM Suppliers AND Deleted = false";
@@ -51,6 +51,7 @@ public class SupplierRepository implements BaseRepository<Supplier> {
             ps.setString(5, entity.getImageLocation());
             ps.setString(6, entity.getId().toString());
             ps.setTimestamp(7, entity.getCreatedAt());
+            ps.setString(8, entity.getRoleName().toString());
 
             ps.executeUpdate();
             connection.commit();

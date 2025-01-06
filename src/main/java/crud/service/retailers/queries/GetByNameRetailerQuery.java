@@ -36,7 +36,7 @@ public class GetByNameRetailerQuery extends AbstractCommand {
             String token = authService.extractToken(request);
             authService.isAuthenticated(token);
 
-            ArrayList<Retailer> retailers = repository.findAllByName(request.getParameter("RetailerName"));
+            ArrayList<Retailer> retailers = repository.findAllByName(request.getParameter("retailerName"));
             ArrayList<RetailerResponseDto> response = new ArrayList<>();
 
             for(Retailer retailer : retailers){

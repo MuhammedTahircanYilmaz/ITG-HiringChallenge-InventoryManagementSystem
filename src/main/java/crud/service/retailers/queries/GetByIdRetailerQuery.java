@@ -38,7 +38,7 @@ public class GetByIdRetailerQuery extends AbstractCommand {
 
             validator.validateGetByIdRequest(request);
 
-            Retailer retailer = repository.findById(UUID.fromString(request.getParameter("RetailerId")));
+            Retailer retailer = repository.findById(UUID.fromString(request.getParameter("retailerId")));
             RetailerResponseDto dto = mapper.mapEntityToEntityResponseDto(retailer);
 
             setEntity(request, dto);

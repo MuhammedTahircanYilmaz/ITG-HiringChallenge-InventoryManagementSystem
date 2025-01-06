@@ -6,13 +6,13 @@ public class LoginResponse {
     private  final String token;
     private final UUID userId;
     private final String email;
-    private final String userType;
+    private final String roleName;
 
     public LoginResponse(String token, UUID userId, String email, String userType) {
         this.token = token;
         this.userId = userId;
         this.email = email;
-        this.userType = userType;
+        this.roleName = userType;
     }
 
     public String getToken() {
@@ -27,8 +27,8 @@ public class LoginResponse {
         return email;
     }
 
-    public String getUserType() {
-        return userType;
+    public String getRoleName() {
+        return roleName;
     }
 }
 

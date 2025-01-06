@@ -5,7 +5,6 @@ import crud.exception.DAOException;
 public class ApplicationFactory {
     public final AuthorizationFactory authorizationFactory;
     public final BusinessRulesFactory businessRulesFactory;
-    public final ConnectionFactory connectionFactory;
     public final MapperFactory mapperFactory;
     public final RepositoryFactory repositoryFactory;
     public final ServiceFactory serviceFactory;
@@ -13,7 +12,6 @@ public class ApplicationFactory {
 
 
     public ApplicationFactory() throws DAOException {
-        this.connectionFactory = new ConnectionFactory();
         this.repositoryFactory = new RepositoryFactory();
         this.authorizationFactory = new AuthorizationFactory(
                 repositoryFactory.getRetailerRepository(),
@@ -52,9 +50,6 @@ public class ApplicationFactory {
     public BusinessRulesFactory getBusinessRulesFactory() {
         return businessRulesFactory;
     }
-    public ConnectionFactory getConnectionFactory() {
-        return connectionFactory;
-    }
     public MapperFactory getMapperFactory() {
         return mapperFactory;
     }
@@ -67,5 +62,4 @@ public class ApplicationFactory {
     public ValidatorFactory getValidatorFactory() {
         return validatorFactory;
     }
-
 }

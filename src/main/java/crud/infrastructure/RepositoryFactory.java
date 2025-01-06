@@ -12,6 +12,7 @@ public class RepositoryFactory {
     private final SupplierRepository supplierRepository;
     private final TokenRepository tokenRepository;
     private final AdminRepository adminRepository;
+    private final ImageRepository imageRepository;
 
     public RepositoryFactory() throws DAOException {
         this.billRepository = new BillRepository(ConnectionFactory.getConnection());
@@ -20,6 +21,7 @@ public class RepositoryFactory {
         this.supplierRepository = new SupplierRepository(ConnectionFactory.getConnection());
         this.tokenRepository = new TokenRepository(ConnectionFactory.getConnection());
         this.adminRepository = new AdminRepository(ConnectionFactory.getConnection());
+        this.imageRepository = new ImageRepository(ConnectionFactory.getConnection());
     }
 
     public BillRepository getBillRepository() {
@@ -43,5 +45,8 @@ public class RepositoryFactory {
     }
     public AdminRepository getAdminRepository() {
         return adminRepository;
+    }
+    public ImageRepository getImageRepository() {
+        return imageRepository;
     }
 }

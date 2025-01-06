@@ -2,14 +2,13 @@ package crud.base;
 
 //import org.apache.log4j.Logger;
 
+import crud.util.Logger;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.UUID;
 
 public abstract class AbstractCommand implements BaseService {
-
- //   private static final Logger logger = Logger.getLogger(AbstractCommand.class);
 
     private static final String ENTITY_KEY = "entity";
     private static final String ENTITY_LIST_KEY = "entityList";
@@ -33,7 +32,6 @@ public abstract class AbstractCommand implements BaseService {
     protected static final String PAGE_BILL_FORM = "/bill/form.jsp";
     protected static final String PAGE_PRODUCT_LIST = "/product/list.jsp";
     protected static final String PAGE_PRODUCT_FORM = "/product/form.jsp";
-
 
     protected UUID getId(HttpServletRequest request) throws ServletException {
         try {
@@ -88,6 +86,6 @@ public abstract class AbstractCommand implements BaseService {
 
     private void setAttributeException(HttpServletRequest request, Exception exception) {
         request.setAttribute(ERROR_MESSAGE_KEY, UNEXPECTED_ERROR_ATTRIBUTE_MESSAGE);
-        //logger.error(UNEXPECTED_ERROR_ATTRIBUTE_MESSAGE, exception);
+        Logger.error(this.getClass().getName() , UNEXPECTED_ERROR_ATTRIBUTE_MESSAGE);
     }
 }

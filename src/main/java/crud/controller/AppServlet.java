@@ -71,6 +71,12 @@ public class AppServlet extends HttpServlet {
             commands.put("GET_SUPPLIER_BY_ID", serviceFactory.createGetSupplierByIdQuery());
             commands.put("GET_SUPPLIER_BY_NAME", serviceFactory.createGetSupplierByNameQuery());
 
+            // Images
+            commands.put("ADD_IMAGE", serviceFactory.createAddImageCommand());
+            commands.put("DELETE_IMAGE", serviceFactory.createDeleteImageCommand());
+            commands.put("GET_IMAGE_BY_PRODUCT_ID", serviceFactory.createGetByProductIdImageQuery());
+
+
         } catch (Exception e) {
             throw new ServletException("Error initializing commands", e);
         }

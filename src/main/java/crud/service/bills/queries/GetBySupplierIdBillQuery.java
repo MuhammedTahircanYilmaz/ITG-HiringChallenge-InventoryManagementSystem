@@ -42,7 +42,7 @@ public class GetBySupplierIdBillQuery extends AbstractCommand {
             String token = authService.extractToken(request);
             authService.isAuthenticated(token);
 
-            Supplier Supplier = SupplierRepository.findById(UUID.fromString(request.getParameter("SupplierId")));
+            Supplier Supplier = SupplierRepository.findById(UUID.fromString(request.getParameter("supplierId")));
 
             if(!Supplier.getId().equals(authService.getUserId(token)) ){
                 throw new AuthenticationException("You are not allowed to view this bill");

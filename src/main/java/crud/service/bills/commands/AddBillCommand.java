@@ -8,6 +8,8 @@ import crud.exception.DAOException;
 import crud.exception.MappingException;
 import crud.mapper.BillMapper;
 import crud.model.entities.Bill;
+import crud.model.entities.Product;
+import crud.model.enums.Roles;
 import crud.repository.AdminRepository;
 import crud.repository.BillRepository;
 import crud.repository.ProductRepository;
@@ -15,6 +17,8 @@ import crud.service.validation.BillValidator;
 import crud.util.JwtUtil;
 import crud.util.Logger;
 import jakarta.servlet.http.HttpServletRequest;
+
+import java.sql.SQLException;
 
 
 public class AddBillCommand extends AbstractCommand {
@@ -32,7 +36,6 @@ public class AddBillCommand extends AbstractCommand {
         this.productRepository = productRepository;
         this.validator = validator;
         this.authService = authService;
-
     }
 
     @Override
@@ -41,16 +44,18 @@ public class AddBillCommand extends AbstractCommand {
             String token = authService.extractToken(request);
             authService.isAuthenticated(token);
 
-            if(!authService.hasRole(token, "Retailer") ){
+            if(!authService.hasRole(token, Roles.RETAILER.toString()) ){
                 throw new AuthenticationException("The User is not allowed to add a Bill");
             }
 
             AddBillCommandDto dto = mapper.mapAddRequestDto(request, authService.getUserId(token).toString());
             Bill bill = mapper.mapAddEntityDtoToEntity(dto);
+            updateProductStock(bill);
             repository.add(bill);
 
             addSuccessMessage(request, ADD_SUCCESS_MESSAGE);
-        } catch(MappingException| DAOException ex)
+
+        } catch(MappingException| DAOException |SQLException ex)
         {
             Logger.error(this.getClass().getName(),ex.getMessage() );
             page = PAGE_BILL_FORM;
@@ -58,6 +63,35 @@ public class AddBillCommand extends AbstractCommand {
         }
         return page;
 
+    }
+    private void updateProductStock( Bill bill) throws SQLException {
+        try{
+            Product product = productRepository.findById(bill.getProductId());
+            if (product == null) {
+                throw new SQLException("Product not found for bill: " + bill.getId());
+            }
+
+            long newStock = product.getStockQuantity() - bill.getAmount();
+
+            if (newStock < 0) {
+                throw new SQLException("Insufficient stock for product: " + product.getId());
+            }
+
+            product.setStockQuantity(newStock);
+
+            if (newStock == 0) {
+                product.setInStock(false);
+            }
+
+            productRepository.update(product);
+
+            Logger.info(this.getClass().getName(),
+                    String.format("Updated stock for product %d: %d -> %d",
+                            product.getId(), product.getStockQuantity() + bill.getAmount(), newStock));
+
+        }catch (Exception ex){
+            Logger.error(this.getClass().getName(), ex.getMessage());
+        }
     }
 }
 

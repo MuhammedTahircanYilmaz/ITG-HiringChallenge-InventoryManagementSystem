@@ -3,6 +3,9 @@ package crud.infrastructure;
 
 import crud.service.bills.commands.*;
 import crud.service.bills.queries.*;
+import crud.service.images.commands.AddImageCommand;
+import crud.service.images.commands.DeleteImageCommand;
+import crud.service.images.queries.GetByProductIdImageQuery;
 import crud.service.products.commands.*;
 import crud.service.products.queries.*;
 import crud.service.retailers.commands.*;
@@ -208,7 +211,6 @@ public class ServiceFactory {
                 validatorFactory.getProductValidator(),
                 authorizationFactory.getAuthService(),
                 mapperFactory.getProductMapper()
-
         );
     }
 
@@ -274,6 +276,22 @@ public class ServiceFactory {
                 authorizationFactory.getAuthService(),
                 mapperFactory.getSupplierMapper()
         );
+    }
+    public AddImageCommand createAddImageCommand(){
+        return new AddImageCommand(
+                repositoryFactory.getImageRepository(),
+                authorizationFactory.getAuthService(),
+                "C:/Users/Administrator/Desktop/Java/ITG-HiringChallenge-InventoryManagementSystem/images/defaultImages/");
+    }
+    public DeleteImageCommand createDeleteImageCommand(){
+        return new DeleteImageCommand(
+                repositoryFactory.getImageRepository(),
+                authorizationFactory.getAuthService());
+    }
+    public GetByProductIdImageQuery createGetByProductIdImageQuery(){
+        return new GetByProductIdImageQuery(
+                repositoryFactory.getImageRepository(),
+                authorizationFactory.getAuthService());
     }
 
 

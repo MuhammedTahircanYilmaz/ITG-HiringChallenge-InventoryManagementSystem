@@ -37,7 +37,7 @@ public class GetByNameSupplierQuery extends AbstractCommand {
             String token = authService.extractToken(request);
             authService.isAuthenticated(token);
 
-            ArrayList<Supplier> Suppliers = repository.findAllByName(request.getParameter("SupplierName"));
+            ArrayList<Supplier> Suppliers = repository.findAllByName(request.getParameter("supplierName"));
             ArrayList<SupplierResponseDto> response = new ArrayList<>();
 
             for(Supplier Supplier : Suppliers){

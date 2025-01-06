@@ -5,6 +5,7 @@ import crud.dtos.bills.requests.DeleteBillCommandDto;
 import crud.exception.DAOException;
 import crud.infrastructure.ConnectionFactory;
 import crud.model.entities.Bill;
+import crud.util.Logger;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -19,6 +20,7 @@ public class BillRepository implements BaseRepository<Bill> {
             " Date, CreatedAt, CreatedBy, Status) VALUES (?,?,?,?,?,?,?,?,?,'PENDING')";
     private static final String SQL_UPDATE = "UPDATE Bills SET SupplierId = ?, RetailerId = ?, ProductId = ?, Amount = ? , CurrentPrice = ?, Date = ?, UpdatedAt = ?, UpdatedBy = ?, Status = ? WHERE Id = ?";
     private static final String SQL_DELETE = "UPDATE Bills SET deleted = true, deleted_at = ?, deleted_by = ? WHERE id = ? AND deleted = false";
+    private static final String SQL_DELETE_REJECTED = "DELETE from Bills WHERE Id = ?";
     private static final String SQL_FIND_ALL = "SELECT * FROM Bills WHERE Deleted = false";
     private static final String SQL_FIND_BY_ID = "SELECT * FROM Bills WHERE Id = ? AND Deleted = false";
     private static final String SQL_FIND_BY_SUPPLIER_ID = "SELECT * FROM Bills WHERE SupplierId = ? AND Deleted = false";
@@ -45,7 +47,6 @@ public class BillRepository implements BaseRepository<Bill> {
             UUID id = UUID.randomUUID();
             ps = connection.prepareStatement(SQL_INSERT);
             connection.setAutoCommit(false);
-
 
             ps.setString(1, id.toString());
             ps.setString(2, entity.getSupplierId().toString());
@@ -125,6 +126,24 @@ public class BillRepository implements BaseRepository<Bill> {
             throw new DAOException("Error while deleting the bill" + ex.getMessage(), ex);
         } finally {
             ConnectionFactory.closeConnectionAndStatement(connection,ps);
+        }
+    }
+    public void deleteRejected(Bill bill) throws DAOException {
+        if ( bill.getId() == null){
+            throw new DAOException("Bill Id cannot be null");
+        }
+        PreparedStatement ps = null;
+        try{
+
+            connection.setAutoCommit(false);
+            ps = connection.prepareStatement(SQL_DELETE);
+            ps.setString(1, bill.getId().toString());
+
+            ps.executeUpdate();
+            connection.commit();
+
+        } catch (SQLException ex) {
+            Logger.error(this.getClass().getName(), ex.getMessage());
         }
     }
 

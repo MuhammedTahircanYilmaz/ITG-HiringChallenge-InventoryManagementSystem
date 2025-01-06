@@ -25,15 +25,15 @@ public class LoginServlet extends HttpServlet {
         try {
             String email = request.getParameter("email");
             String password = request.getParameter("password");
-            String userType = request.getParameter("userType");
+            String roleName = request.getParameter("roleName");
 
-            if (email == null || password == null || userType == null) {
+            if (email == null || password == null || roleName == null) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 response.getWriter().write("{\"error\":\"Missing required parameters\"}");
                 return;
             }
 
-            LoginResponse loginResponse = loginService.login(email, password, userType);
+            LoginResponse loginResponse = loginService.login(email, password, roleName);
 
             if (loginResponse.getToken() == null) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -42,11 +42,11 @@ public class LoginServlet extends HttpServlet {
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.getWriter().write(
                         String.format(
-                                "{\"token\":\"%s\", \"userId\":\"%s\", \"email\":\"%s\", \"userType\":\"%s\"}",
+                                "{\"token\":\"%s\", \"userId\":\"%s\", \"email\":\"%s\", \"roleName\":\"%s\"}",
                                 loginResponse.getToken(),
                                 loginResponse.getUserId(),
                                 loginResponse.getEmail(),
-                                loginResponse.getUserType()
+                                loginResponse.getRoleName()
                         )
                 );
             }

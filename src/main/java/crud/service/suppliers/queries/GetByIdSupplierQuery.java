@@ -39,7 +39,7 @@ public class GetByIdSupplierQuery extends AbstractCommand {
 
             validator.validateGetByIdRequest(request);
 
-            Supplier Supplier = repository.findById(UUID.fromString(request.getParameter("SupplierId")));
+            Supplier Supplier = repository.findById(UUID.fromString(request.getParameter("supplierId")));
             SupplierResponseDto dto = mapper.mapEntityToEntityResponseDto(Supplier);
 
             setEntity(request, dto);
