@@ -14,6 +14,7 @@ public class ProductValidator extends BaseValidator<Product, ProductBusinessRule
 
     public ProductValidator(ProductBusinessRules rules) {
         super(rules);
+        this.rules = rules;
     }
 
     @Override

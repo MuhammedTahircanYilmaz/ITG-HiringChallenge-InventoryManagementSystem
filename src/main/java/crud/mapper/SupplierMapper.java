@@ -3,6 +3,7 @@ package crud.mapper;
 import crud.base.BaseMapper;
 import crud.exception.MappingException;
 import crud.model.entities.Supplier;
+import crud.model.enums.Roles;
 import jakarta.servlet.http.HttpServletRequest;
 import crud.dtos.suppliers.requests.AddSupplierCommandDto;
 import crud.dtos.suppliers.requests.DeleteSupplierCommandDto;
@@ -28,6 +29,7 @@ public class SupplierMapper implements BaseMapper<Supplier, AddSupplierCommandDt
             dto.setName(request.getParameter("name"));
             dto.setEmail(request.getParameter("email"));
             dto.setPassword(request.getParameter("password"));
+            dto.setId(UUID.fromString(userId));
             dto.setCreatedAt(new java.sql.Timestamp(System.currentTimeMillis()));
             dto.setCreatedBy(userId);
 
@@ -92,6 +94,9 @@ public class SupplierMapper implements BaseMapper<Supplier, AddSupplierCommandDt
             supplier.setPassword(addSupplierCommandDto.getPassword());
             supplier.setCreatedBy(addSupplierCommandDto.getEmail());
             supplier.setCreatedAt(new java.sql.Timestamp(System.currentTimeMillis()));
+            supplier.setId(addSupplierCommandDto.getId());
+            supplier.setRoleName(Roles.valueOf(addSupplierCommandDto.getRoleName()));
+
         } catch (Exception ex) {
             throw new MappingException(MAPPER_ERROR_MESSAGE, ex);
         }

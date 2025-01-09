@@ -12,6 +12,7 @@ public class SupplierValidator extends BaseValidator<Supplier, SupplierBusinessR
 
     public SupplierValidator(SupplierBusinessRules rules) {
         super(rules);
+        this.rules = rules;
     }
 
     @Override

@@ -2,9 +2,8 @@ package crud.controller;
 
 import crud.exception.BusinessException;
 import crud.authorization.login.LoginResponse;
-import crud.authorization.login.LoginService;
+import crud.authorization.login.LoginCommand;
 import crud.util.Logger;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -12,14 +11,17 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class LoginServlet extends HttpServlet {
-    private final LoginService loginService;
 
-    public LoginServlet(LoginService loginService) {
-        this.loginService = loginService;
+    public LoginServlet(){}
+
+    private LoginCommand loginCommand;
+    public LoginServlet(LoginCommand loginCommand) {
+        this.loginCommand = loginCommand;
     }
 
+
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json");
 
         try {
@@ -33,7 +35,7 @@ public class LoginServlet extends HttpServlet {
                 return;
             }
 
-            LoginResponse loginResponse = loginService.login(email, password, roleName);
+            LoginResponse loginResponse =(LoginResponse) loginCommand.execute(request).getData();
 
             if (loginResponse.getToken() == null) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

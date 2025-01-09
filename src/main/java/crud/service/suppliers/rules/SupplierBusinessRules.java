@@ -31,7 +31,7 @@ public class SupplierBusinessRules extends BaseBusinessRules<Supplier, SupplierR
             return false;
         }
 
-        return password != null && password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^\\w\\d\\s])[A-Za-z\\d@$!%*?&]{8,}$");
+        return password != null && password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^\\w\\d\\s])[A-Za-z\\d@$!%.*?&]{8,}$");
     }
 
 }

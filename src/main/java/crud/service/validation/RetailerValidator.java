@@ -11,6 +11,7 @@ public class RetailerValidator extends BaseValidator<Retailer, RetailerBusinessR
 
     public RetailerValidator(RetailerBusinessRules rules) {
         super(rules);
+        this.rules = rules;
     }
 
     @Override

@@ -3,6 +3,7 @@ package crud.mapper;
 import crud.base.BaseMapper;
 import crud.exception.MappingException;
 import crud.model.entities.Retailer;
+import crud.model.enums.Roles;
 import crud.service.retailers.commands.ChangePasswordRetailerCommand;
 import jakarta.servlet.http.HttpServletRequest;
 import crud.dtos.retailers.requests.AddRetailerCommandDto;
@@ -24,7 +25,7 @@ public class RetailerMapper implements BaseMapper<Retailer, AddRetailerCommandDt
         AddRetailerCommandDto dto = new AddRetailerCommandDto();
 
         try {
-
+            dto.setId(UUID.fromString(userId));
             dto.setName(request.getParameter("name"));
             dto.setEmail(request.getParameter("email"));
             dto.setPassword(request.getParameter("password"));
@@ -88,6 +89,8 @@ public class RetailerMapper implements BaseMapper<Retailer, AddRetailerCommandDt
             Retailer.setName(addRetailerCommandDto.getName());
             Retailer.setEmail(addRetailerCommandDto.getEmail());
             Retailer.setPassword(addRetailerCommandDto.getPassword());
+            Retailer.setId(addRetailerCommandDto.getId());
+            Retailer.setRoleName(Roles.valueOf(addRetailerCommandDto.getRoleName()));
         } catch (Exception ex) {
             throw new MappingException(MAPPER_ERROR_MESSAGE, ex);
         }

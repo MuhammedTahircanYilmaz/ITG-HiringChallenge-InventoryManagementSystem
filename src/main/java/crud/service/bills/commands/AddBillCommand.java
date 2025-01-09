@@ -27,15 +27,13 @@ public class AddBillCommand extends AbstractCommand {
     private final BillRepository repository;
     private final BillMapper mapper;
     private final ProductRepository productRepository;
-    private final BillValidator validator;
     private final AuthService authService;
     private String page = CURRENT_PURCHASES;
 
-    public AddBillCommand(BillRepository repository, ProductRepository productRepository, BillMapper mapper, BillValidator validator, AuthService authService) {
+    public AddBillCommand(BillRepository repository, ProductRepository productRepository, BillMapper mapper, AuthService authService) {
         this.repository = repository;
         this.mapper = mapper;
         this.productRepository = productRepository;
-        this.validator = validator;
         this.authService = authService;
     }
 

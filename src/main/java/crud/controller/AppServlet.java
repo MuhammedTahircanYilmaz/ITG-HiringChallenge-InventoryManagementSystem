@@ -19,7 +19,11 @@ import java.util.Map;
 public class AppServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private final Map<String, AbstractCommand> commands = new HashMap<>();
+    private ApplicationFactory applicationFactory = new ApplicationFactory();
     private ServiceFactory serviceFactory;
+
+    public AppServlet() throws DAOException {
+    }
 
 
     @Override
@@ -75,6 +79,8 @@ public class AppServlet extends HttpServlet {
             commands.put("ADD_IMAGE", serviceFactory.createAddImageCommand());
             commands.put("DELETE_IMAGE", serviceFactory.createDeleteImageCommand());
             commands.put("GET_IMAGE_BY_PRODUCT_ID", serviceFactory.createGetByProductIdImageQuery());
+
+            commands.put("LOGIN", serviceFactory.createLoginCommand());
 
 
         } catch (Exception e) {

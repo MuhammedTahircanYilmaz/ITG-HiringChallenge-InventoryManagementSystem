@@ -62,7 +62,7 @@ public class AddSupplierCommandDto {
 
     public void setPassword(String password) {
         if (password == null || password.length() < 8
-                || !password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^\\w\\d\\s])[A-Za-z\\d@$!%*?&]{8,}$")) {
+                || !password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^\\w\\d\\s])[A-Za-z\\d@$!%.*?&]{8,}$")) {
             throw new IllegalArgumentException("Password must be at least 6 characters long.");
         }
         this.password = password;
@@ -80,7 +80,7 @@ public class AddSupplierCommandDto {
     }
 
     public String getRoleName() {
-        return "ROLE_SUPPLIER";
+        return "SUPPLIER";
     }
 
 }

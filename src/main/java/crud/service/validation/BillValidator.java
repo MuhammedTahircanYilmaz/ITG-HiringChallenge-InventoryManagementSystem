@@ -15,6 +15,7 @@ public class BillValidator extends BaseValidator<Bill, BillBusinessRules, BillRe
 
     public BillValidator(BillBusinessRules rules) {
         super(rules);
+        this.rules = rules;
     }
 
     @Override

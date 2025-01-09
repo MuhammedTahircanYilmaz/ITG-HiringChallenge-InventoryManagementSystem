@@ -19,16 +19,14 @@ import java.util.UUID;
 
 public class UpdateRetailerCommand extends AbstractCommand {
 
-    public UpdateRetailerCommand(RetailerRepository repository, RetailerMapper mapper, RetailerValidator validator, AuthService authService) {
+    public UpdateRetailerCommand(RetailerRepository repository, RetailerMapper mapper, AuthService authService) {
         this.repository = repository;
-        this.validator = validator;
         this.authService = authService;
         this.mapper = mapper;
     }
 
     private String page = PROFILE;
     private RetailerRepository repository;
-    private RetailerValidator validator;
     private RetailerMapper mapper;
     private final AuthService authService;
 

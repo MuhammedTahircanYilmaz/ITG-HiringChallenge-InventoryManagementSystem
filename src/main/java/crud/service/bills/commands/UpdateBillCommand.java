@@ -23,16 +23,12 @@ public class UpdateBillCommand  extends AbstractCommand {
 
     private String page = RETAILER_MAIN;
     private BillRepository repository;
-    private ProductRepository productRepository;
-    private BillValidator validator;
     private BillMapper mapper;
     private AuthService authService;
 
-    public UpdateBillCommand(BillRepository repository, BillMapper mapper , ProductRepository productRepository , BillValidator validator, AuthService authService) {
+    public UpdateBillCommand(BillRepository repository, BillMapper mapper , AuthService authService) {
         this.repository = repository;
-        this.validator = validator;
         this.mapper = mapper;
-        this.productRepository = productRepository;
         this.authService = authService;
     }
 

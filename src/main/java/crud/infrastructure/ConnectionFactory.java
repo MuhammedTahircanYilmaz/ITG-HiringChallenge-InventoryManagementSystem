@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 public class ConnectionFactory{
 
     private static final String DATABASE = "Itg_challenge";
-    private static final String STR_CON = "jdbc:mysql://localhost:3303/" + DATABASE;
+    private static final String STR_CON = "jdbc:mysql://localhost:3303/" + DATABASE + "?useSSL=false";
     private static final String USER = "root";
     private static final String PASSWORD = "123456";
 
@@ -19,9 +19,9 @@ public class ConnectionFactory{
 		String message = "Connection with the data base has been completed successfully";
 
 		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
 
 			connection = DriverManager.getConnection(STR_CON, USER, PASSWORD);
-			connection.setAutoCommit(false);
 
 			System.out.println(message);
 
@@ -35,16 +35,10 @@ public class ConnectionFactory{
 
 			throw new DAOException(message, ex);
 
-		} finally {
-			if (connection != null) {
-				try {
-					connection.close();
-					System.out.println("Connection closed.");
-				} catch (SQLException ex) {
-					ex.printStackTrace();
-				}
-			}
-		}
+		} catch (ClassNotFoundException e) {
+			System.err.println("MySQL driver not found");
+            throw new RuntimeException(e);
+        }
 	}
 
     public static void closeConnection ( Connection connection) throws DAOException {

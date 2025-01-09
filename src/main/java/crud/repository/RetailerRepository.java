@@ -39,10 +39,15 @@ public class RetailerRepository implements BaseRepository<Retailer> {
             throw new DAOException("Retailer entity cannot be null");
         }
 
+
         PreparedStatement ps = null;
         try {
-            ps = connection.prepareStatement(SQL_INSERT);
+            if (connection.isClosed()) {
+                throw new DAOException("Database connection is not established.");
+            }
             connection.setAutoCommit(false);
+            ps = connection.prepareStatement(SQL_INSERT);
+
 
             ps.setString(1, entity.getId().toString());
             ps.setString(2, entity.getName());
@@ -55,13 +60,13 @@ public class RetailerRepository implements BaseRepository<Retailer> {
 
             ps.executeUpdate();
             connection.commit();
+            return entity;
 
         } catch (SQLException ex) {
             throw new DAOException("Error while adding the Retailer: " + ex.getMessage(), ex);
         } finally {
             ConnectionFactory.closeConnectionAndStatement(connection, ps);
         }
-        return entity;
     }
 
     @Override

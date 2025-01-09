@@ -14,17 +14,8 @@ public class BusinessRulesFactory {
     private final SupplierBusinessRules supplierBusinessRules;
     private final ProductBusinessRules productBusinessRules;
     private final BillBusinessRules billBusinessRules;
-    private final RetailerRepository retailerRepository;
-    private final ProductRepository productRepository;
-    private final SupplierRepository supplierRepository;
-    private final BillRepository billRepository;
 
     public BusinessRulesFactory(RetailerRepository retailerRepository, ProductRepository productRepository, SupplierRepository supplierRepository, BillRepository billRepository) {
-        this.retailerRepository = retailerRepository;
-        this.productRepository = productRepository;
-        this.supplierRepository = supplierRepository;
-        this.billRepository = billRepository;
-
         this.retailerBusinessRules = new RetailerBusinessRules(retailerRepository);
         this.supplierBusinessRules = new SupplierBusinessRules(supplierRepository);
         this.productBusinessRules = new ProductBusinessRules(productRepository);

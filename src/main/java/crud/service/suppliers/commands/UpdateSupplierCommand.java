@@ -17,15 +17,13 @@ import java.util.UUID;
 
 public class UpdateSupplierCommand extends AbstractCommand {
 
-    public UpdateSupplierCommand(SupplierRepository repository, SupplierMapper mapper, SupplierValidator validator, AuthService authService) {
+    public UpdateSupplierCommand(SupplierRepository repository, SupplierMapper mapper, AuthService authService) {
         this.repository = repository;
         this.authService = authService;
-        this.validator = validator;
         this.mapper = mapper;
     }
 
     private String page = PROFILE;
-    private SupplierValidator validator;
     private SupplierRepository repository;
     private SupplierMapper mapper;
     private final AuthService authService;

@@ -55,13 +55,13 @@ public class SupplierRepository implements BaseRepository<Supplier> {
 
             ps.executeUpdate();
             connection.commit();
+            return entity;
 
         } catch (SQLException ex) {
             throw new DAOException("Error while adding the Supplier: " + ex.getMessage(), ex);
         } finally {
             ConnectionFactory.closeConnectionAndStatement(connection, ps);
         }
-        return entity;
     }
 
     @Override

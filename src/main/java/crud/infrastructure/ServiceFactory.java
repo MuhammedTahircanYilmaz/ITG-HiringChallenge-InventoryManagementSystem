@@ -1,6 +1,7 @@
 package crud.infrastructure;
 
 
+import crud.authorization.login.LoginCommand;
 import crud.service.bills.commands.*;
 import crud.service.bills.queries.*;
 import crud.service.images.commands.AddImageCommand;
@@ -12,6 +13,7 @@ import crud.service.retailers.commands.*;
 import crud.service.retailers.queries.*;
 import crud.service.suppliers.commands.*;
 import crud.service.suppliers.queries.*;
+import crud.util.JwtUtil;
 
 public class ServiceFactory {
     private final ValidatorFactory validatorFactory;
@@ -32,7 +34,6 @@ public class ServiceFactory {
                 repositoryFactory.getBillRepository(),
                 repositoryFactory.getProductRepository(),
                 mapperFactory.getBillMapper(),
-                validatorFactory.getBillValidator(),
                 authorizationFactory.getAuthService()
         );
     }
@@ -41,8 +42,6 @@ public class ServiceFactory {
         return new UpdateBillCommand(
                 repositoryFactory.getBillRepository(),
                 mapperFactory.getBillMapper(),
-                repositoryFactory.getProductRepository(),
-                validatorFactory.getBillValidator(),
                 authorizationFactory.getAuthService()
         );
     }
@@ -50,7 +49,6 @@ public class ServiceFactory {
     public DeleteBillCommand createDeleteBillCommand() {
         return new DeleteBillCommand(
                 repositoryFactory.getBillRepository(),
-                validatorFactory.getBillValidator(),
                 mapperFactory.getBillMapper(),
                 authorizationFactory.getAuthService()
         );
@@ -59,7 +57,6 @@ public class ServiceFactory {
     public UpdateBillStatusCommand createUpdateBillStatusCommand() {
         return new UpdateBillStatusCommand(
                 repositoryFactory.getBillRepository(),
-                repositoryFactory.getProductRepository(),
                 authorizationFactory.getAuthService()
         );
     }
@@ -105,7 +102,6 @@ public class ServiceFactory {
         return new UpdateRetailerCommand(
                 repositoryFactory.getRetailerRepository(),
                 mapperFactory.getRetailerMapper(),
-                validatorFactory.getRetailerValidator(),
                 authorizationFactory.getAuthService()
         );
     }
@@ -124,8 +120,7 @@ public class ServiceFactory {
         return new AddSupplierCommand(
                 repositoryFactory.getSupplierRepository(),
                 mapperFactory.getSupplierMapper(),
-                validatorFactory.getSupplierValidator(),
-                authorizationFactory.getAuthService()
+                validatorFactory.getSupplierValidator()
         );
     }
 
@@ -133,7 +128,6 @@ public class ServiceFactory {
         return new UpdateSupplierCommand(
                 repositoryFactory.getSupplierRepository(),
                 mapperFactory.getSupplierMapper(),
-                validatorFactory.getSupplierValidator(),
                 authorizationFactory.getAuthService()
         );
     }
@@ -179,7 +173,6 @@ public class ServiceFactory {
     public GetByRetailerIdBillQuery createGetBillsByRetailerQuery() {
         return new GetByRetailerIdBillQuery(
                 repositoryFactory.getBillRepository(),
-                validatorFactory.getBillValidator(),
                 authorizationFactory.getAuthService(),
                 mapperFactory.getBillMapper(),
                 repositoryFactory.getRetailerRepository()
@@ -219,8 +212,7 @@ public class ServiceFactory {
                 repositoryFactory.getProductRepository(),
                 validatorFactory.getProductValidator(),
                 authorizationFactory.getAuthService(),
-                mapperFactory.getProductMapper(),
-                repositoryFactory.getSupplierRepository()
+                mapperFactory.getProductMapper()
         );
     }
 
@@ -245,7 +237,6 @@ public class ServiceFactory {
     public GetByNameRetailerQuery createGetRetailerByNameQuery() {
         return new GetByNameRetailerQuery(
                 repositoryFactory.getRetailerRepository(),
-                validatorFactory.getRetailerValidator(),
                 authorizationFactory.getAuthService(),
                 mapperFactory.getRetailerMapper()
         );
@@ -272,7 +263,6 @@ public class ServiceFactory {
     public GetByNameSupplierQuery createGetSupplierByNameQuery() {
         return new GetByNameSupplierQuery(
                 repositoryFactory.getSupplierRepository(),
-                validatorFactory.getSupplierValidator(),
                 authorizationFactory.getAuthService(),
                 mapperFactory.getSupplierMapper()
         );
@@ -294,5 +284,11 @@ public class ServiceFactory {
                 authorizationFactory.getAuthService());
     }
 
-
+    public LoginCommand createLoginCommand(){
+        return new LoginCommand(
+                repositoryFactory.getRetailerRepository(),
+                repositoryFactory.getSupplierRepository(),
+                repositoryFactory.getAdminRepository(),
+                new JwtUtil());
+    }
 }

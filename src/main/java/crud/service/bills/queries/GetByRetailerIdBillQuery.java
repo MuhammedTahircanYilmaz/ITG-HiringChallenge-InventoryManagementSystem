@@ -23,14 +23,12 @@ public class GetByRetailerIdBillQuery extends AbstractCommand {
 
     private final BillRepository repository;
     private final RetailerRepository retailerRepository;
-    private final BillValidator validator;
     private final AuthService authService;
     private final BillMapper mapper;
     private String page = PAST_PURCHASES;
 
-    public GetByRetailerIdBillQuery(BillRepository repository, BillValidator validator, AuthService authService, BillMapper mapper , RetailerRepository retailerRepository) {
+    public GetByRetailerIdBillQuery(BillRepository repository, AuthService authService, BillMapper mapper , RetailerRepository retailerRepository) {
         this.repository = repository;
-        this.validator = validator;
         this.retailerRepository = retailerRepository;
         this.authService = authService;
         this.mapper = mapper;

@@ -18,14 +18,12 @@ import java.util.ArrayList;
 public class GetByNameRetailerQuery extends AbstractCommand {
 
     private final RetailerRepository repository;
-    private final RetailerValidator validator;
     private final AuthService authService ;
     private final RetailerMapper mapper;
     private String page = "";
 
-    public GetByNameRetailerQuery(RetailerRepository repository, RetailerValidator validator, AuthService authService, RetailerMapper mapper) {
+    public GetByNameRetailerQuery(RetailerRepository repository, AuthService authService, RetailerMapper mapper) {
         this.repository = repository;
-        this.validator = validator;
         this.authService = authService;
         this.mapper = mapper;
     }

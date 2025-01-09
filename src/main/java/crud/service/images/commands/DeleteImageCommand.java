@@ -17,8 +17,8 @@ import java.util.UUID;
 
 public class DeleteImageCommand extends AbstractCommand {
     private String page = SUPPLIER_PRODUCTS;
-    private ImageRepository repository;
-    private AuthService authService;
+    private final ImageRepository repository;
+    private final AuthService authService;
 
     public DeleteImageCommand(ImageRepository repository, AuthService authService) {
         this.repository = repository;

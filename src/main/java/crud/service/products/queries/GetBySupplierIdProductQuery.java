@@ -26,15 +26,13 @@ public class GetBySupplierIdProductQuery extends AbstractCommand {
     private final ProductValidator validator;
     private final ProductMapper mapper;
     private final AuthService authService;
-    private final SupplierRepository supplierRepos;
 
     private String page = "";
 
-    public GetBySupplierIdProductQuery(ProductRepository repository, ProductValidator validator, AuthService authService, ProductMapper mapper, SupplierRepository supplierRepos) {
+    public GetBySupplierIdProductQuery(ProductRepository repository, ProductValidator validator, AuthService authService, ProductMapper mapper) {
         this.repository = repository;
         this.validator = validator;
         this.authService = authService;
-        this.supplierRepos = supplierRepos;
         this.mapper = mapper;
     }
 

@@ -19,17 +19,15 @@ import java.util.UUID;
 public class DeleteBillCommand extends AbstractCommand {
 
     private final BillRepository repository;
-    private final BillValidator validator;
     private final BillMapper mapper;
     private final AuthService authService;
     private String page = RETAILER_MAIN;
 
 
-    public DeleteBillCommand(BillRepository repository, BillValidator validator, BillMapper mapper, AuthService authSer) {
+    public DeleteBillCommand(BillRepository repository, BillMapper mapper, AuthService authSer) {
         this.repository = repository;
         this.authService = authSer;
         this.mapper = mapper;
-        this.validator = validator;
     }
 
     @Override

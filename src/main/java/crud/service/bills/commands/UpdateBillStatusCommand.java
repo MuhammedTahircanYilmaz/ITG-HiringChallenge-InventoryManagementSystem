@@ -21,16 +21,14 @@ import java.util.UUID;
 
 public class UpdateBillStatusCommand extends AbstractCommand {
     private final BillRepository repository;
-    private final ProductRepository productRepository;
     private final AuthService authService;
     private String page = PENDING_BILLS;
 
 
 
-    public UpdateBillStatusCommand(BillRepository billRepository, ProductRepository productRepository, AuthService authService) {
+    public UpdateBillStatusCommand(BillRepository billRepository, AuthService authService) {
         this.repository = billRepository;
         this.authService = authService;
-        this.productRepository = productRepository;
     }
 
     public ServiceResult execute(HttpServletRequest request) {
@@ -38,7 +36,6 @@ public class UpdateBillStatusCommand extends AbstractCommand {
             String token = authService.extractToken(request);
             authService.isAuthenticated(token);
 
-            UUID userId = authService.getUserId(token);
             UUID billId = UUID.fromString(request.getParameter("billId"));
 
             Bill bill = repository.findById(billId);

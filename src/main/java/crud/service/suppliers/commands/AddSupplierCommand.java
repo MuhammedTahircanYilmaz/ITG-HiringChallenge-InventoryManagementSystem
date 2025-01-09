@@ -18,9 +18,8 @@ import java.util.UUID;
 
 public class AddSupplierCommand extends AbstractCommand {
 
-    public AddSupplierCommand(SupplierRepository repository, SupplierMapper mapper, SupplierValidator validator, AuthService authService) {
+    public AddSupplierCommand(SupplierRepository repository, SupplierMapper mapper, SupplierValidator validator) {
         this.repository = repository;
-        this.authService = authService;
         this.validator = validator;
         this.mapper = mapper;
     }
@@ -28,7 +27,6 @@ public class AddSupplierCommand extends AbstractCommand {
     private String page = REGISTER;
     private SupplierRepository repository;
     private SupplierValidator validator;
-    private AuthService authService;
     private SupplierMapper mapper;
 
     @Override

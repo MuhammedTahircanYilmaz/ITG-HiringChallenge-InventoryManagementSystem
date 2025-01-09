@@ -19,14 +19,12 @@ import java.util.ArrayList;
 public class GetByNameSupplierQuery extends AbstractCommand {
 
     private final SupplierRepository repository;
-    private final SupplierValidator validator;
     private final AuthService authService ;
     private final SupplierMapper mapper;
     private String page = "";
 
-    public GetByNameSupplierQuery(SupplierRepository repository, SupplierValidator validator, AuthService authService, SupplierMapper mapper) {
+    public GetByNameSupplierQuery(SupplierRepository repository, AuthService authService, SupplierMapper mapper) {
         this.repository = repository;
-        this.validator = validator;
         this.authService = authService;
         this.mapper = mapper;
     }
