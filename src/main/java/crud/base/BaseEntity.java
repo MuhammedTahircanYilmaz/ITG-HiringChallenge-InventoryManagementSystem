@@ -8,12 +8,12 @@ import java.sql.Timestamp;
 public abstract class BaseEntity {
     private UUID id;
     private Timestamp createdAt;
-    private Timestamp updatedAt;
     private String createdBy;
+    private Timestamp updatedAt;
     private String updatedBy;
-    private boolean deleted;
     private Timestamp deletedAt;
     private String deletedBy;
+    private boolean deleted;
 
     public UUID getId() {
         return id;

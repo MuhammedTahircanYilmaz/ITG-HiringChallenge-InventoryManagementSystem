@@ -3,5 +3,6 @@ package crud.model.enums;
 public enum BillStatus {
     PENDING,
     ACCEPTED,
-    CANCELLED
+    CANCELLED,
+    COMPLETED
 }

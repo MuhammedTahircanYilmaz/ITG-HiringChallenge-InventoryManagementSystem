@@ -35,8 +35,6 @@ public class Logger {
 
             pw.println(logMessage);
 
-            // Also print to console for development
-            System.out.println(logMessage);
         } catch (IOException e) {
             System.err.println("Error writing to log file: " + e.getMessage());
         }

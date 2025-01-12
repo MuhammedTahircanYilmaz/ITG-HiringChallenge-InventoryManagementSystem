@@ -271,7 +271,7 @@ public class ServiceFactory {
         return new AddImageCommand(
                 repositoryFactory.getImageRepository(),
                 authorizationFactory.getAuthService(),
-                "C:/Users/Administrator/Desktop/Java/ITG-HiringChallenge-InventoryManagementSystem/images/defaultImages/");
+                "C:/Users/Administrator/Desktop/Java/ITG-HiringChallenge-InventoryManagementSystem/images/");
     }
     public DeleteImageCommand createDeleteImageCommand(){
         return new DeleteImageCommand(

@@ -16,7 +16,7 @@ public class BillRepository implements BaseRepository<Bill> {
 
     private Connection connection;
 
-    private static final String SQL_INSERT = "INSERT INTO Bills (Id, SupplierId, RetailerId, ProductId, Amount, CurrrentPrice," +
+    private static final String SQL_INSERT = "INSERT INTO Bills (Id, SupplierId, RetailerId, ProductId, Amount, CurrentPrice," +
             " Date, CreatedAt, CreatedBy, Status) VALUES (?,?,?,?,?,?,?,?,?,'PENDING')";
     private static final String SQL_UPDATE = "UPDATE Bills SET SupplierId = ?, RetailerId = ?, ProductId = ?, Amount = ? , CurrentPrice = ?, Date = ?, UpdatedAt = ?, UpdatedBy = ?, Status = ? WHERE Id = ?";
     private static final String SQL_DELETE = "UPDATE Bills SET deleted = true, deleted_at = ?, deleted_by = ? WHERE id = ? AND deleted = false";

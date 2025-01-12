@@ -33,7 +33,7 @@ public class JwtUtil {
                     .build();
             return verifier.verify(token);
         }   catch (JWTVerificationException ex) {
-            //logger.log
+            Logger.error(this.getClass().getName(), ex.getMessage());
         }
         return null;
     }
