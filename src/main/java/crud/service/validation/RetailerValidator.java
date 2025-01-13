@@ -2,11 +2,11 @@ package crud.service.validation;
 
 import crud.base.BaseValidator;
 import crud.model.entities.Retailer;
-import crud.repository.RetailerRepository;
+import crud.repository.retailer.RetailerRepositoryImpl;
 import crud.service.retailers.rules.RetailerBusinessRules;
 import jakarta.servlet.http.HttpServletRequest;
 
-public class RetailerValidator extends BaseValidator<Retailer, RetailerBusinessRules, RetailerRepository> {
+public class RetailerValidator extends BaseValidator<Retailer, RetailerBusinessRules, RetailerRepositoryImpl> {
     private RetailerBusinessRules rules;
 
     public RetailerValidator(RetailerBusinessRules rules) {

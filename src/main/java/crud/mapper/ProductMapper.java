@@ -9,7 +9,7 @@ import crud.dtos.products.responses.ProductResponseDto;
 import crud.exception.MappingException;
 import crud.model.entities.Product;
 import crud.model.entities.Supplier;
-import crud.repository.SupplierRepository;
+import crud.repository.supplier.SupplierRepositoryImpl;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.UUID;
@@ -17,9 +17,9 @@ import java.util.UUID;
 public class    ProductMapper implements BaseMapper<Product, AddProductCommandDto, UpdateProductCommandDto,
         DeleteProductCommandDto, GetByIdProductQueryDto, ProductResponseDto> {
 
-    private SupplierRepository supplierRepository;
+    private SupplierRepositoryImpl supplierRepository;
 
-    public ProductMapper(SupplierRepository supplierRepository) {
+    public ProductMapper(SupplierRepositoryImpl supplierRepository) {
         this.supplierRepository = supplierRepository;
     }
 
@@ -101,7 +101,7 @@ public class    ProductMapper implements BaseMapper<Product, AddProductCommandDt
             product.setStockQuantity(addProductCommandDto.getStockQuantity());
             product.setPrice(addProductCommandDto.getPrice());
             product.setDiscount(addProductCommandDto.getDiscount());
-            product.setImageLocation(addProductCommandDto.getImageLocation());
+            product.setImagePath(addProductCommandDto.getImageLocation());
 
         } catch (Exception ex) {
             throw new MappingException(MAPPER_ERROR_MESSAGE, ex);
@@ -121,7 +121,7 @@ public class    ProductMapper implements BaseMapper<Product, AddProductCommandDt
             dto.setSupplierName(supplier.getName());
             dto.setPrice(entity.getPrice());
             dto.setDiscount(entity.getDiscount());
-            dto.setImageLocation(entity.getImageLocation());
+            dto.setImageLocation(entity.getImagePath());
 
             return dto;
         } catch (Exception ex) {

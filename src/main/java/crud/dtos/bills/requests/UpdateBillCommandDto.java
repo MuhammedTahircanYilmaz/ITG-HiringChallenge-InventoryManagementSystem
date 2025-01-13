@@ -5,7 +5,6 @@ import java.util.UUID;
 
 public class UpdateBillCommandDto {
     private UUID id;
-    private UUID productId;
     private Long amount;
     private Double currentPrice;
     private String updatedBy;
@@ -13,10 +12,6 @@ public class UpdateBillCommandDto {
 
     public UUID getId() {
         return id;
-    }
-
-    public UUID getProductId() {
-        return productId;
     }
 
     public Long getAmount() {
@@ -47,11 +42,6 @@ public class UpdateBillCommandDto {
         this.id = id;
     }
 
-    public void setProductId(UUID productId) {
-        if (productId != null) {
-            this.productId = productId;
-        }
-    }
 
     public void setAmount(Long amount) {
         if (amount != null && amount > 0) {

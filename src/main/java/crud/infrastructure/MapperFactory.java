@@ -1,18 +1,18 @@
 package crud.infrastructure;
 
 import crud.mapper.*;
-import crud.repository.ProductRepository;
-import crud.repository.SupplierRepository;
+import crud.repository.product.impl.ProductRepositoryImpl;
+import crud.repository.supplier.SupplierRepositoryImpl;
 
 public class MapperFactory {
     private final BillMapper billMapper;
     private final ProductMapper productMapper;
     private final RetailerMapper retailerMapper;
     private final SupplierMapper supplierMapper;
-    private final SupplierRepository supplierRepository;
-    private final ProductRepository productRepository;
+    private final SupplierRepositoryImpl supplierRepository;
+    private final ProductRepositoryImpl productRepository;
 
-    public MapperFactory( ProductRepository productRepository, SupplierRepository supplierRepository) {
+    public MapperFactory(ProductRepositoryImpl productRepository, SupplierRepositoryImpl supplierRepository) {
         this.productRepository = productRepository;
         this.supplierRepository = supplierRepository;
         this.billMapper = new BillMapper(productRepository);

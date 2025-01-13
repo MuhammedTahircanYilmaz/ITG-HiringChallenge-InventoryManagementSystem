@@ -2,18 +2,13 @@ package crud.service.bills.commands;
 
 import crud.authorization.AuthService;
 import crud.base.AbstractCommand;
-import crud.base.BaseMapper;
 import crud.base.ServiceResult;
-import crud.dtos.bills.requests.AddBillCommandDto;
 import crud.dtos.bills.requests.UpdateBillCommandDto;
 import crud.exception.DAOException;
 import crud.exception.MappingException;
 import crud.mapper.BillMapper;
 import crud.model.entities.Bill;
-import crud.model.entities.Product;
-import crud.repository.BillRepository;
-import crud.repository.ProductRepository;
-import crud.service.validation.BillValidator;
+import crud.repository.bill.impl.BillRepositoryImpl;
 import crud.util.Logger;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -22,11 +17,11 @@ import java.util.UUID;
 public class UpdateBillCommand  extends AbstractCommand {
 
     private String page = RETAILER_MAIN;
-    private BillRepository repository;
+    private BillRepositoryImpl repository;
     private BillMapper mapper;
     private AuthService authService;
 
-    public UpdateBillCommand(BillRepository repository, BillMapper mapper , AuthService authService) {
+    public UpdateBillCommand(BillRepositoryImpl repository, BillMapper mapper , AuthService authService) {
         this.repository = repository;
         this.mapper = mapper;
         this.authService = authService;

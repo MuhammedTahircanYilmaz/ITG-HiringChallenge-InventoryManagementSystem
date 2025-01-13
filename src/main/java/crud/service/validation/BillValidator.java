@@ -3,13 +3,13 @@ package crud.service.validation;
 import crud.base.BaseValidator;
 import crud.exception.BusinessException;
 import crud.model.entities.Bill;
-import crud.repository.BillRepository;
+import crud.repository.bill.impl.BillRepositoryImpl;
 import crud.service.bills.rules.BillBusinessRules;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.UUID;
 
-public class BillValidator extends BaseValidator<Bill, BillBusinessRules, BillRepository> {
+public class BillValidator extends BaseValidator<Bill, BillBusinessRules, BillRepositoryImpl> {
 
     private BillBusinessRules rules;
 

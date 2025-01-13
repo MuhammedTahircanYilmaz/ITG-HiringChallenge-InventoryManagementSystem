@@ -10,7 +10,7 @@ import crud.exception.DAOException;
 import crud.exception.MappingException;
 import crud.mapper.BillMapper;
 import crud.model.entities.Bill;
-import crud.repository.BillRepository;
+import crud.repository.bill.impl.BillRepositoryImpl;
 import crud.service.validation.BillValidator;
 import crud.util.Logger;
 import jakarta.servlet.ServletException;
@@ -18,13 +18,13 @@ import jakarta.servlet.http.HttpServletRequest;
 
 public class GetByIdBillQuery extends AbstractCommand {
 
-    private final BillRepository repository;
+    private final BillRepositoryImpl repository;
     private final BillValidator validator;
     private final AuthService authService;
     private final BillMapper mapper;
     private String page = "";
 
-    public GetByIdBillQuery(BillRepository repository, BillValidator validator, AuthService authService , BillMapper mapper) {
+    public GetByIdBillQuery(BillRepositoryImpl repository, BillValidator validator, AuthService authService , BillMapper mapper) {
         this.repository = repository;
         this.validator = validator;
         this.authService = authService;

@@ -8,22 +8,21 @@ import crud.exception.DAOException;
 import crud.exception.MappingException;
 import crud.mapper.RetailerMapper;
 import crud.model.entities.Retailer;
-import crud.repository.RetailerRepository;
+import crud.repository.retailer.RetailerRepositoryImpl;
 import crud.util.Logger;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
-import java.util.UUID;
 
 
 public class GetAllRetailerQuery extends AbstractCommand {
-    public GetAllRetailerQuery(RetailerRepository repository, AuthService authService, RetailerMapper mapper) {
+    public GetAllRetailerQuery(RetailerRepositoryImpl repository, AuthService authService, RetailerMapper mapper) {
         this.repository = repository;
         this.authService = authService;
         this.mapper = mapper;
     }
 
-    private RetailerRepository repository;
+    private RetailerRepositoryImpl repository;
     private final AuthService authService;
     private final RetailerMapper mapper;
     private String page = "";
@@ -35,7 +34,7 @@ public class GetAllRetailerQuery extends AbstractCommand {
             authService.isAuthenticated(token);
 
 
-            ArrayList<Retailer> retailers = repository.getAll();
+            ArrayList<Retailer> retailers = repository.findAll();
             ArrayList<RetailerResponseDto> response = new ArrayList<>();
             for(Retailer retailer : retailers){
                 RetailerResponseDto dto = mapper.mapEntityToEntityResponseDto(retailer);

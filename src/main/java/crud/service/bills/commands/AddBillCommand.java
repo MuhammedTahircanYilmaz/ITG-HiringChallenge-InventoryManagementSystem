@@ -11,11 +11,8 @@ import crud.mapper.BillMapper;
 import crud.model.entities.Bill;
 import crud.model.entities.Product;
 import crud.model.enums.Roles;
-import crud.repository.AdminRepository;
-import crud.repository.BillRepository;
-import crud.repository.ProductRepository;
-import crud.service.validation.BillValidator;
-import crud.util.JwtUtil;
+import crud.repository.bill.impl.BillRepositoryImpl;
+import crud.repository.product.impl.ProductRepositoryImpl;
 import crud.util.Logger;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -24,13 +21,13 @@ import java.sql.SQLException;
 
 public class AddBillCommand extends AbstractCommand {
 
-    private final BillRepository repository;
+    private final BillRepositoryImpl repository;
     private final BillMapper mapper;
-    private final ProductRepository productRepository;
+    private final ProductRepositoryImpl productRepository;
     private final AuthService authService;
     private String page = CURRENT_PURCHASES;
 
-    public AddBillCommand(BillRepository repository, ProductRepository productRepository, BillMapper mapper, AuthService authService) {
+    public AddBillCommand(BillRepositoryImpl repository, ProductRepositoryImpl productRepository, BillMapper mapper, AuthService authService) {
         this.repository = repository;
         this.mapper = mapper;
         this.productRepository = productRepository;

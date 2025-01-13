@@ -3,11 +3,11 @@ package crud.service.validation;
 import crud.base.BaseValidator;
 import crud.exception.BusinessException;
 import crud.model.entities.Supplier;
-import crud.repository.SupplierRepository;
+import crud.repository.supplier.SupplierRepositoryImpl;
 import crud.service.suppliers.rules.SupplierBusinessRules;
 import jakarta.servlet.http.HttpServletRequest;
 
-public class SupplierValidator extends BaseValidator<Supplier, SupplierBusinessRules, SupplierRepository> {
+public class SupplierValidator extends BaseValidator<Supplier, SupplierBusinessRules, SupplierRepositoryImpl> {
     private SupplierBusinessRules rules;
 
     public SupplierValidator(SupplierBusinessRules rules) {

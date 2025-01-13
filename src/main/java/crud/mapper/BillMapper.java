@@ -10,9 +10,9 @@ import crud.model.entities.Product;
 import crud.model.entities.Retailer;
 import crud.model.entities.Supplier;
 import crud.model.enums.BillStatus;
-import crud.repository.ProductRepository;
-import crud.repository.RetailerRepository;
-import crud.repository.SupplierRepository;
+import crud.repository.product.impl.ProductRepositoryImpl;
+import crud.repository.retailer.RetailerRepositoryImpl;
+import crud.repository.supplier.SupplierRepositoryImpl;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.sql.Timestamp;
@@ -21,11 +21,11 @@ import java.util.UUID;
 
 public class BillMapper implements BaseMapper <Bill, AddBillCommandDto, UpdateBillCommandDto, DeleteBillCommandDto, GetByIdBillQueryDto, BillResponseDto>{
 
-    private ProductRepository repository;
-    private RetailerRepository retailerRepository;
-    private SupplierRepository supplierRepository;
+    private ProductRepositoryImpl repository;
+    private RetailerRepositoryImpl retailerRepository;
+    private SupplierRepositoryImpl supplierRepository;
 
-    public BillMapper(ProductRepository repository) {
+    public BillMapper(ProductRepositoryImpl repository) {
         this.repository = repository;
     }
 
@@ -66,7 +66,6 @@ public class BillMapper implements BaseMapper <Bill, AddBillCommandDto, UpdateBi
             LocalDateTime now = LocalDateTime.now();
             Timestamp sqlTimestamp = Timestamp.valueOf(now);
 
-            dto.setProductId(UUID.fromString(request.getParameter("productId")));
             dto.setAmount(Long.parseLong(request.getParameter("amount")));
             dto.setCurrentPrice( product.getPrice()*(100-product.getDiscount())/100*dto.getAmount());
             dto.setUpdatedAt(sqlTimestamp);

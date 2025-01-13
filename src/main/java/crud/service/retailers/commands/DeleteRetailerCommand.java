@@ -3,30 +3,28 @@ package crud.service.retailers.commands;
 import crud.authorization.AuthService;
 import crud.base.AbstractCommand;
 import crud.base.ServiceResult;
-import crud.dtos.bills.requests.DeleteBillCommandDto;
 import crud.dtos.retailers.requests.DeleteRetailerCommandDto;
 import crud.exception.AuthenticationException;
 import crud.exception.DAOException;
 import crud.exception.MappingException;
 import crud.mapper.RetailerMapper;
 import crud.model.entities.Retailer;
-import crud.repository.RetailerRepository;
+import crud.repository.retailer.RetailerRepositoryImpl;
 import crud.service.validation.RetailerValidator;
 import crud.util.Logger;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.UUID;
 
 public class DeleteRetailerCommand extends AbstractCommand {
 
-    private final RetailerRepository repository;
+    private final RetailerRepositoryImpl repository;
     private final RetailerValidator validator;
     private final AuthService authService;
     private final RetailerMapper mapper;
     private String page = "";
 
-    public DeleteRetailerCommand(RetailerRepository repository , RetailerValidator validator, AuthService authService, RetailerMapper mapper) {
+    public DeleteRetailerCommand(RetailerRepositoryImpl repository , RetailerValidator validator, AuthService authService, RetailerMapper mapper) {
         this.repository = repository;
         this.authService = authService;
         this.mapper = mapper;

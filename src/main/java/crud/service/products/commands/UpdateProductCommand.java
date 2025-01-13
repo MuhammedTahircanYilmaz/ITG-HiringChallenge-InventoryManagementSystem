@@ -2,14 +2,13 @@ package crud.service.products.commands;
 
 import crud.authorization.AuthService;
 import crud.base.AbstractCommand;
-import crud.base.BaseMapper;
 import crud.base.ServiceResult;
 import crud.dtos.products.requests.UpdateProductCommandDto;
 import crud.exception.DAOException;
 import crud.exception.MappingException;
 import crud.mapper.ProductMapper;
 import crud.model.entities.Product;
-import crud.repository.ProductRepository;
+import crud.repository.product.impl.ProductRepositoryImpl;
 import crud.service.validation.ProductValidator;
 import crud.util.Logger;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,7 +17,7 @@ import java.util.UUID;
 
 public class UpdateProductCommand extends AbstractCommand {
 
-    public UpdateProductCommand(ProductRepository repository, ProductMapper mapper, ProductValidator validator, AuthService authService) {
+    public UpdateProductCommand(ProductRepositoryImpl repository, ProductMapper mapper, ProductValidator validator, AuthService authService) {
         this.repository = repository;
         this.authService = authService;
         this.validator = validator;
@@ -26,7 +25,7 @@ public class UpdateProductCommand extends AbstractCommand {
     }
 
     private String page = PRODUCT;
-    private final ProductRepository repository;
+    private final ProductRepositoryImpl repository;
     private final ProductValidator validator ;
     private final ProductMapper mapper;
     private final AuthService authService;
@@ -53,7 +52,7 @@ public class UpdateProductCommand extends AbstractCommand {
             product.setName(dto.getName());
             product.setPrice(dto.getPrice());
             product.setDiscount(dto.getDiscount());
-            product.setImageLocation(dto.getImageLocation());
+            product.setImagePath(dto.getImageLocation());
             product.setDescription(dto.getDescription());
 
             repository.update(product);

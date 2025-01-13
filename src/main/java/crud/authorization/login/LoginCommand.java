@@ -4,26 +4,25 @@ import crud.base.AbstractCommand;
 import crud.base.ServiceResult;
 import crud.exception.BusinessException;
 import crud.model.entities.User;
-import crud.repository.AdminRepository;
-import crud.repository.RetailerRepository;
-import crud.repository.SupplierRepository;
+import crud.repository.admin.impl.AdminRepositoryImpl;
+import crud.repository.retailer.RetailerRepositoryImpl;
+import crud.repository.supplier.SupplierRepositoryImpl;
 import crud.util.JwtUtil;
 import crud.util.PasswordUtils;
 import crud.util.Logger;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 public class LoginCommand extends AbstractCommand {
-    private final RetailerRepository retailerRepository;
-    private final SupplierRepository supplierRepository;
-    private final AdminRepository adminRepository;
+    private final RetailerRepositoryImpl retailerRepository;
+    private final SupplierRepositoryImpl supplierRepository;
+    private final AdminRepositoryImpl adminRepositoryImpl;
     private final JwtUtil jwtUtil;
 
-    public LoginCommand(RetailerRepository retailerRepository, SupplierRepository supplierRepository,
-                        AdminRepository adminRepository, JwtUtil jwtUtil) {
+    public LoginCommand(RetailerRepositoryImpl retailerRepository, SupplierRepositoryImpl supplierRepository,
+                        AdminRepositoryImpl adminRepositoryImpl, JwtUtil jwtUtil) {
         this.retailerRepository = retailerRepository;
         this.supplierRepository = supplierRepository;
-        this.adminRepository = adminRepository;
+        this.adminRepositoryImpl = adminRepositoryImpl;
         this.jwtUtil = jwtUtil;
     }
 
@@ -45,7 +44,7 @@ public class LoginCommand extends AbstractCommand {
             } else if ("SUPPLIER".equalsIgnoreCase(roleName)) {
                 user = supplierRepository.findByEmail(email);
             } else if ("ADMIN".equalsIgnoreCase(roleName)) {
-                user = adminRepository.findByEmail(email);
+                user = adminRepositoryImpl.findByEmail(email);
             } else {
                 throw new BusinessException("Invalid user role");
             }

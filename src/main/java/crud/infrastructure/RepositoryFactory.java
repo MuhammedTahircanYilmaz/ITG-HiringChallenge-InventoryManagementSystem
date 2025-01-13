@@ -3,50 +3,56 @@ package crud.infrastructure;
 import crud.exception.DAOException;
 
 import crud.repository.*;
+import crud.repository.admin.impl.AdminRepositoryImpl;
+import crud.repository.bill.impl.BillRepositoryImpl;
+import crud.repository.image.impl.ImageRepositoryImpl;
+import crud.repository.product.impl.ProductRepositoryImpl;
+import crud.repository.retailer.RetailerRepositoryImpl;
+import crud.repository.supplier.SupplierRepositoryImpl;
 
 
 public class RepositoryFactory {
-    private final BillRepository billRepository;
-    private final ProductRepository productRepository;
-    private final RetailerRepository retailerRepository;
-    private final SupplierRepository supplierRepository;
-    private final TokenRepository tokenRepository;
-    private final AdminRepository adminRepository;
-    private final ImageRepository imageRepository;
+    private final BillRepositoryImpl billRepositoryImpl;
+    private final ProductRepositoryImpl productRepository;
+    private final RetailerRepositoryImpl retailerRepository;
+    private final SupplierRepositoryImpl supplierRepository;
+    private final TokenRepositoryImpl tokenRepository;
+    private final AdminRepositoryImpl adminRepositoryImpl;
+    private final ImageRepositoryImpl imageRepository;
 
     public RepositoryFactory() throws DAOException {
-        this.billRepository = new BillRepository(ConnectionFactory.getConnection());
-        this.productRepository = new ProductRepository(ConnectionFactory.getConnection());
-        this.retailerRepository = new RetailerRepository(ConnectionFactory.getConnection());
-        this.supplierRepository = new SupplierRepository(ConnectionFactory.getConnection());
-        this.tokenRepository = new TokenRepository(ConnectionFactory.getConnection());
-        this.adminRepository = new AdminRepository(ConnectionFactory.getConnection());
-        this.imageRepository = new ImageRepository(ConnectionFactory.getConnection());
+        this.billRepositoryImpl = new BillRepositoryImpl(ConnectionFactory.getConnection());
+        this.productRepository = new ProductRepositoryImpl(ConnectionFactory.getConnection());
+        this.retailerRepository = new RetailerRepositoryImpl(ConnectionFactory.getConnection());
+        this.supplierRepository = new SupplierRepositoryImpl(ConnectionFactory.getConnection());
+        this.tokenRepository = new TokenRepositoryImpl(ConnectionFactory.getConnection());
+        this.adminRepositoryImpl = new AdminRepositoryImpl(ConnectionFactory.getConnection());
+        this.imageRepository = new ImageRepositoryImpl(ConnectionFactory.getConnection());
     }
 
-    public BillRepository getBillRepository() {
-        return billRepository;
+    public BillRepositoryImpl getBillRepository() {
+        return billRepositoryImpl;
     }
 
-    public ProductRepository getProductRepository() {
+    public ProductRepositoryImpl getProductRepository() {
         return productRepository;
     }
 
-    public RetailerRepository getRetailerRepository() {
+    public RetailerRepositoryImpl getRetailerRepository() {
         return retailerRepository;
     }
 
-    public SupplierRepository getSupplierRepository() {
+    public SupplierRepositoryImpl getSupplierRepository() {
         return supplierRepository;
     }
 
-    public TokenRepository getTokenRepository() {
+    public TokenRepositoryImpl getTokenRepository() {
         return tokenRepository;
     }
-    public AdminRepository getAdminRepository() {
-        return adminRepository;
+    public AdminRepositoryImpl getAdminRepository() {
+        return adminRepositoryImpl;
     }
-    public ImageRepository getImageRepository() {
+    public ImageRepositoryImpl getImageRepository() {
         return imageRepository;
     }
 }

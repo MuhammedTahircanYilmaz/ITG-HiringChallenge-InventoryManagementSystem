@@ -1,37 +1,35 @@
-package crud.repository;
+package crud.repository.retailer;
 
+import crud.base.AbstractRepository;
 import crud.base.BaseRepository;
 import crud.exception.DAOException;
 import crud.infrastructure.ConnectionFactory;
 import crud.model.entities.Retailer;
+import crud.util.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.UUID;
 
-public class RetailerRepository implements BaseRepository<Retailer> {
+public class RetailerRepositoryImpl extends AbstractRepository implements RetailerRepository {
 
-    protected RetailerRepository(){}
+    protected RetailerRepositoryImpl(){}
 
     private Connection connection;
 
-    public RetailerRepository(Connection connection) {
+    public RetailerRepositoryImpl(Connection connection) {
         if (connection == null) {
             throw new IllegalArgumentException("Connection cannot be null");
         }
         this.connection = connection;
     }
 
-    private static final String SQL_INSERT = "INSERT INTO Retailers (Id, Name, Email, Password, ImagePath, CreatedBy, CreatedAt, RoleName) VALUES (?,?,?,?,?,?,?,?)";
-    private static final String SQL_UPDATE = "UPDATE Retailers SET Name = ?, Email = ?, Password = ?, ImagePath = ?, UpdatedBy = ?, UpdatedAt = ? WHERE id = ? AND Deleted = false";
-    private static final String SQL_DELETE = "UPDATE Retailers SET Deleted = true WHERE id = ? AND Deleted = false";
-    private static final String SQL_FIND_ALL = "SELECT * FROM Retailers AND Deleted = false";
-    private static final String SQL_FIND_BY_NAME = "SELECT * FROM Retailers WHERE Name like ? AND Deleted = false";
-    private static final String SQL_FIND_BY_EMAIL = "SELECT * FROM Retailers WHERE Email like ? AND Deleted = false";
-    private static final String SQL_FIND_BY_ID = "SELECT * FROM Retailers WHERE id = ? AND Deleted = false";
+    private final String tableName = "retailers";
+    private final String className = this.getClass().getName();
 
     @Override
     public Retailer add(Retailer entity) throws DAOException {
@@ -41,12 +39,13 @@ public class RetailerRepository implements BaseRepository<Retailer> {
 
 
         PreparedStatement ps = null;
+        String query = "INSERT INTO retailers (id, name, email, password, image_path, created_by, created_at, role_name) VALUES (?,?,?,?,?,?,?,?)";
         try {
             if (connection.isClosed()) {
                 throw new DAOException("Database connection is not established.");
             }
             connection.setAutoCommit(false);
-            ps = connection.prepareStatement(SQL_INSERT);
+            ps = connection.prepareStatement(query);
 
 
             ps.setString(1, entity.getId().toString());
@@ -76,9 +75,11 @@ public class RetailerRepository implements BaseRepository<Retailer> {
         }
 
         PreparedStatement ps = null;
+        String query = "UPDATE retailers SET name = ?, email = ?, password = ?, image_path = ?, updated_by = ?, updated_at = ? WHERE id = ? AND deleted = false";
+
         try {
             connection.setAutoCommit(false);
-            ps = connection.prepareStatement(SQL_UPDATE);
+            ps = connection.prepareStatement(query);
 
             ps.setString(1, entity.getName());
             ps.setString(2, entity.getEmail());
@@ -105,14 +106,15 @@ public class RetailerRepository implements BaseRepository<Retailer> {
             throw new DAOException("Retailer cannot be null");
         }
 
+        String query;
         PreparedStatement ps = null;
         try {
             connection.setAutoCommit(false);
-            ps = connection.prepareStatement(SQL_DELETE);
+            query = softDeleteQuery(tableName, retailer.getId().toString());
+            ps = connection.prepareStatement(query);
 
             ps.setString(1, retailer.getDeletedBy());
             ps.setTimestamp(2, retailer.getDeletedAt());
-            ps.setString(3, retailer.getId().toString());
 
             int rowsAffected = ps.executeUpdate();
             if (rowsAffected == 0) {
@@ -136,11 +138,19 @@ public class RetailerRepository implements BaseRepository<Retailer> {
         PreparedStatement ps = null;
         ResultSet rs = null;
         Retailer retailer = null;
-
+        String query;
         try {
             connection.setAutoCommit(false);
-            ps = connection.prepareStatement(SQL_FIND_BY_ID);
-            ps.setString(1, id.toString());
+
+            HashMap<String, String > columns = new HashMap<>();
+
+            columns.put("id", id.toString());
+            columns.put("deleted", "false");
+
+            query = findByColumnsQuery(tableName,columns);
+
+            ps = connection.prepareStatement(query);
+
             rs = ps.executeQuery();
 
             if (rs.next()) {
@@ -165,21 +175,28 @@ public class RetailerRepository implements BaseRepository<Retailer> {
         PreparedStatement ps = null;
         ResultSet rs = null;
         Retailer retailer = null;
-
+        String query;
         try{
             connection.setAutoCommit(false);
-            ps = connection.prepareStatement(SQL_FIND_BY_EMAIL);
-            ps.setString(1,email);
+
+
+            HashMap<String, String > columns = new HashMap<>();
+
+            columns.put("email", email);
+            columns.put("deleted", "false");
+
+            query = findByColumnsQuery(tableName,columns);
+
+            ps = connection.prepareStatement(query);
 
             rs = ps.executeQuery();
 
             retailer = getRetailer(rs);
 
-            // logger koy buraya
             connection.commit();
 
         } catch(SQLException ex){
-            // logger.error("The Retailer could not be found.", ex);
+            Logger.error(className, ex.getMessage());
             throw new DAOException(ex);
         } finally {
             ConnectionFactory.closeAll(connection, ps, rs);
@@ -197,12 +214,18 @@ public class RetailerRepository implements BaseRepository<Retailer> {
 
         PreparedStatement ps = null;
         ResultSet rs = null;
-
+        String query;
         try {
             connection.setAutoCommit(false);
-            ps = connection.prepareStatement(SQL_FIND_BY_NAME);
 
-            ps.setString(1,"%"+name);
+            HashMap<String, String > columns = new HashMap<>();
+
+            columns.put("name", "%"+name+"%");
+            columns.put("deleted", "false");
+
+            query = findByColumnsQuery(tableName,columns);
+            ps = connection.prepareStatement(query);
+
             rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -220,14 +243,17 @@ public class RetailerRepository implements BaseRepository<Retailer> {
     }
 
     @Override
-    public ArrayList<Retailer> getAll() throws DAOException {
+    public ArrayList<Retailer> findAll() throws DAOException {
         ArrayList<Retailer> retailers = new ArrayList<>();
         PreparedStatement ps = null;
         ResultSet rs = null;
+        String query ;
 
         try {
             connection.setAutoCommit(false);
-            ps = connection.prepareStatement(SQL_FIND_ALL);
+            query = findAllQuery(tableName);
+            ps = connection.prepareStatement(query);
+
             rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -250,10 +276,10 @@ public class RetailerRepository implements BaseRepository<Retailer> {
         Retailer retailer = new Retailer();
 
         retailer.setId(UUID.fromString(rs.getString("Id")));
-        retailer.setName(rs.getString("Name"));
-        retailer.setEmail(rs.getString("Email"));
-        retailer.setPassword(rs.getString("Password"));
-        retailer.setImageLocation(rs.getString("ImagePath"));
+        retailer.setName(rs.getString("name"));
+        retailer.setEmail(rs.getString("email"));
+        retailer.setPassword(rs.getString("password"));
+        retailer.setImageLocation(rs.getString("image_path"));
 
         return retailer;
     }

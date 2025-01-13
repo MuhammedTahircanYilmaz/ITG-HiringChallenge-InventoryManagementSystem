@@ -1,9 +1,10 @@
-package crud.repository;
+package crud.repository.image.impl;
 
-import crud.base.BaseRepository;
+import crud.base.AbstractRepository;
 import crud.exception.DAOException;
 import crud.infrastructure.ConnectionFactory;
 import crud.model.entities.Image;
+import crud.repository.image.ImageRepository;
 import crud.util.Logger;
 
 import java.sql.Connection;
@@ -11,20 +12,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-public class ImageRepository implements BaseRepository<Image> {
-    private static final String SQL_INSERT = "INSERT INTO Images (Id, ImageLocation CreatedBy, CreatedAt, ProductId) VALUES (?, ?, ?, ?, ?)";
-    private static final String SQL_FIND_ALL_BY_PRODUCT_ID = "SELECT i.Id, i.ImageLocation FROM Images i " +
-                                      "JOIN ProductImages pi ON i.Id = pi.ImageId WHERE p.ProductId = ? ";
-    private static final String SQL_DELETE = "DELETE FROM Images WHERE Id = ?";
+public class ImageRepositoryImpl extends AbstractRepository implements ImageRepository {
 
-    protected ImageRepository(){}
+    protected ImageRepositoryImpl(){}
 
     private Connection connection;
+    private static final String tableName = "images";
+    private final String className = this.getClass().getName();
 
-    public ImageRepository(Connection connection) {
+    public ImageRepositoryImpl(Connection connection) {
         if (connection == null) {
             throw new IllegalArgumentException("Connection cannot be null");
         }
@@ -33,24 +33,28 @@ public class ImageRepository implements BaseRepository<Image> {
 
     @Override
     public Image add(Image entity) throws DAOException {
+
         PreparedStatement ps = null;
-        PreparedStatement ps2 = null;
+
+        String query = "INSERT INTO Images (Id, ImageLocation CreatedBy, CreatedAt, ProductId) VALUES (?, ?, ?, ?, ?)";
+
         try{
-             ps = connection.prepareStatement(SQL_INSERT);
-             ps2 = connection.prepareStatement("INSERT into ProductImages(ImageId, ProductId) VALUES (?, ?)");
+             ps = connection.prepareStatement(query);
+
+             String imageId = entity.getId().toString();
+             String productId = entity.getProductId();
+
             connection.setAutoCommit(false);
 
-            ps.setString(1, entity.getId().toString());
+            ps.setString(1, imageId);
             ps.setString(2, entity.getImageLocation());
             ps.setString(3, entity.getCreatedBy());
             ps.setTimestamp(4, entity.getCreatedAt());
-            ps.setString(5, entity.getProductId());
+            ps.setString(5, productId);
 
             ps.executeUpdate();
 
-            ps2.setString(1, entity.getId().toString());
-            ps2.setString(2, entity.getProductId());
-            ps2.executeUpdate();
+            addImageToTheProductImages(imageId, productId);
 
             connection.commit();
             return entity;
@@ -61,7 +65,7 @@ public class ImageRepository implements BaseRepository<Image> {
                     connection.rollback();  // Rollback on error
                 }
             } catch (SQLException rollbackEx) {
-                Logger.error(this.getClass().getName(),
+                Logger.error(className,
                         "Error rolling back transaction: " + rollbackEx.getMessage());
             }
             throw new DAOException("Error while adding the Product: " + ex.getMessage(), ex);
@@ -79,13 +83,14 @@ public class ImageRepository implements BaseRepository<Image> {
         }
 
         PreparedStatement ps = null;
-
+        String query;
         try {
             connection.setAutoCommit(false);
+            query = hardDeleteQuery(tableName, entity.getId().toString());
 
-            ps = connection.prepareStatement(SQL_DELETE);
-            ps.setString(1,entity.getId().toString());
+            ps = connection.prepareStatement(query);
             int rowsAffected = ps.executeUpdate();
+
             if (rowsAffected == 0) {
                 throw new DAOException("No Image found with ID: " + entity.getId());
             }
@@ -96,7 +101,7 @@ public class ImageRepository implements BaseRepository<Image> {
                     connection.rollback();
                 }
             } catch (SQLException rollbackEx) {
-                Logger.error(this.getClass().getName(),
+                Logger.error(className,
                         "Error rolling back transaction: " + rollbackEx.getMessage());
             }
             throw new DAOException("Error while adding the Product: " + ex.getMessage(), ex);
@@ -107,19 +112,22 @@ public class ImageRepository implements BaseRepository<Image> {
 
     public ArrayList<Image> findAllByProductId(UUID id) throws DAOException{
         PreparedStatement ps = null;
-
+        String query;
         try {
-            ps = connection.prepareStatement(SQL_FIND_ALL_BY_PRODUCT_ID);
-            connection.setAutoCommit(false);
+            HashMap<String, String> columns = new HashMap<>();
+            columns.put("product_id", id.toString());
+            columns.put("deleted", "false");
+            query = findByColumnsQuery(tableName, columns);
 
-            ps.setString(1, id.toString());
+            ps = connection.prepareStatement(query);
+            connection.setAutoCommit(false);
 
             ArrayList<Image> images = new ArrayList<>();
             ResultSet rs = ps.executeQuery();
             while (rs.next()){
                 Image image = new Image();
-                image.setId(UUID.fromString(rs.getString("Id")));
-                image.setImageLocation(rs.getString("ImageLocation"));
+                image.setId(UUID.fromString(rs.getString("id")));
+                image.setImageLocation(rs.getString("image_location"));
                 images.add(image);
             }
             connection.commit();
@@ -131,7 +139,7 @@ public class ImageRepository implements BaseRepository<Image> {
                 connection.rollback();
             }
         } catch (SQLException rollbackEx) {
-            Logger.error(this.getClass().getName(),
+            Logger.error(className,
                     "Error rolling back transaction: " + rollbackEx.getMessage());
         }
         throw new DAOException("Error while adding the Product: " + ex.getMessage(), ex);
@@ -139,6 +147,28 @@ public class ImageRepository implements BaseRepository<Image> {
             ConnectionFactory.closeConnectionAndStatement(connection, ps);
         }
     }
+
+    @Override
+    public void addImageToTheProductImages(String imageId, String productId) throws DAOException {
+        PreparedStatement ps = null;
+
+        try{
+            connection.setAutoCommit(false);
+            ps = connection.prepareStatement("INSERT into ProductImages(ImageId, ProductId) VALUES (?, ?)");
+
+            ps.setString(1, imageId);
+            ps.setString(2, productId);
+            ps.executeUpdate();
+
+            connection.commit();
+
+        } catch (SQLException ex){
+            Logger.error(className, ex.getMessage());
+        } finally {
+            ConnectionFactory.closeConnectionAndStatement(connection, ps);
+        }
+    }
+
 
     @Override
     public Image update(Image entity) throws DAOException {
@@ -151,7 +181,7 @@ public class ImageRepository implements BaseRepository<Image> {
     }
 
     @Override
-    public List<Image> getAll() throws DAOException {
+    public List<Image> findAll() throws DAOException {
         return null;
     }
 }

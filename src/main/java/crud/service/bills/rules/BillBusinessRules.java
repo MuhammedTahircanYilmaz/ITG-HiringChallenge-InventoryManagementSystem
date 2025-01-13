@@ -2,11 +2,11 @@ package crud.service.bills.rules;
 
 import crud.base.BaseBusinessRules;
 import crud.model.entities.Bill;
-import crud.repository.BillRepository;
+import crud.repository.bill.impl.BillRepositoryImpl;
 
-public class BillBusinessRules extends BaseBusinessRules<Bill, BillRepository> {
+public class BillBusinessRules extends BaseBusinessRules<Bill, BillRepositoryImpl> {
 
-    public BillBusinessRules(BillRepository repository) {
+    public BillBusinessRules(BillRepositoryImpl repository) {
         super(repository);
     }
 

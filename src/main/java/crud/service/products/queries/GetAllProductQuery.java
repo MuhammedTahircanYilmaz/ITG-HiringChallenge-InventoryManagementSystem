@@ -8,7 +8,7 @@ import crud.exception.DAOException;
 import crud.exception.MappingException;
 import crud.mapper.ProductMapper;
 import crud.model.entities.Product;
-import crud.repository.ProductRepository;
+import crud.repository.product.impl.ProductRepositoryImpl;
 import crud.util.Logger;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -16,12 +16,12 @@ import java.util.ArrayList;
 
 public class GetAllProductQuery extends AbstractCommand {
 
-        private ProductRepository repository;
+        private ProductRepositoryImpl repository;
         private String page = SEARCH_RESULTS;
         private AuthService authService;
         private final ProductMapper mapper;
 
-        public GetAllProductQuery(ProductRepository repository, AuthService authService, ProductMapper mapper) {
+        public GetAllProductQuery(ProductRepositoryImpl repository, AuthService authService, ProductMapper mapper) {
             this.repository = repository;
             this.mapper = mapper;
             this.authService = authService;
@@ -34,7 +34,7 @@ public class GetAllProductQuery extends AbstractCommand {
                 String token = authService.extractToken(request);
                 authService.isAuthenticated(token);
 
-                ArrayList<Product> products = repository.getAll();
+                ArrayList<Product> products = repository.findAll();
                 ArrayList<ProductResponseDto> response = new ArrayList<>();
 
                 for(Product product : products){

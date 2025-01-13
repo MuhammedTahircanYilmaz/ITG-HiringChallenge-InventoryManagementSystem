@@ -2,10 +2,10 @@ package crud.authorization;
 
 import crud.exception.DAOException;
 import crud.model.entities.User;
-import crud.repository.AdminRepository;
-import crud.repository.RetailerRepository;
-import crud.repository.SupplierRepository;
-import crud.repository.TokenRepository;
+import crud.repository.admin.impl.AdminRepositoryImpl;
+import crud.repository.retailer.RetailerRepositoryImpl;
+import crud.repository.supplier.SupplierRepositoryImpl;
+import crud.repository.TokenRepositoryImpl;
 import crud.util.JwtUtil;
 import crud.util.Logger;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,15 +13,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.UUID;
 
 public class AuthService {
-    private AdminRepository adminRepository;
-    private RetailerRepository retailerRepository;
-    private SupplierRepository supplierRepository;
-    private TokenRepository tokenRepository;
+    private AdminRepositoryImpl adminRepositoryImpl;
+    private RetailerRepositoryImpl retailerRepository;
+    private SupplierRepositoryImpl supplierRepository;
+    private TokenRepositoryImpl tokenRepository;
     private JwtUtil jwtUtil;
 
-    public AuthService(AdminRepository adminRepository,
-                       RetailerRepository retailerRepository, SupplierRepository supplierRepository, JwtUtil jwtUtil, TokenRepository tokenRepository) {
-       this.adminRepository = adminRepository;
+    public AuthService(AdminRepositoryImpl adminRepositoryImpl,
+                       RetailerRepositoryImpl retailerRepository, SupplierRepositoryImpl supplierRepository, JwtUtil jwtUtil, TokenRepositoryImpl tokenRepository) {
+       this.adminRepositoryImpl = adminRepositoryImpl;
        this.retailerRepository = retailerRepository;
        this.supplierRepository = supplierRepository;
        this.tokenRepository = tokenRepository;
@@ -77,7 +77,7 @@ public class AuthService {
             } else if ("SUPPLIER".equalsIgnoreCase(role)) {
                 return supplierRepository.findById(userId);
             } else if ("ADMIN".equalsIgnoreCase(role)) {
-                return adminRepository.findById(userId);
+                return adminRepositoryImpl.findById(userId);
             }
             return null;
         } catch (DAOException ex){

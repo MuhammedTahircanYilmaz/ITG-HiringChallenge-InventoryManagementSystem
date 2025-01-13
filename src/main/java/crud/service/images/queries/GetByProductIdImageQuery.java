@@ -5,7 +5,7 @@ import crud.base.AbstractCommand;
 import crud.base.ServiceResult;
 import crud.exception.DAOException;
 import crud.model.entities.Image;
-import crud.repository.ImageRepository;
+import crud.repository.image.impl.ImageRepositoryImpl;
 import crud.util.Logger;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -13,12 +13,12 @@ import java.util.List;
 import java.util.UUID;
 
 public class GetByProductIdImageQuery extends AbstractCommand {
-    private final ImageRepository repository;
+    private final ImageRepositoryImpl repository;
     private final AuthService authService;
 
     private String page = SUPPLIER_PRODUCTS;
 
-    public GetByProductIdImageQuery(ImageRepository repository, AuthService authService) {
+    public GetByProductIdImageQuery(ImageRepositoryImpl repository, AuthService authService) {
         this.repository = repository;
         this.authService = authService;
     }

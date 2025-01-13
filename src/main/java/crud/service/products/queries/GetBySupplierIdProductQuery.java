@@ -3,16 +3,12 @@ package crud.service.products.queries;
 import crud.authorization.AuthService;
 import crud.base.AbstractCommand;
 import crud.base.ServiceResult;
-import crud.dtos.bills.responses.BillResponseDto;
 import crud.dtos.products.responses.ProductResponseDto;
 import crud.exception.DAOException;
 import crud.exception.MappingException;
 import crud.mapper.ProductMapper;
-import crud.model.entities.Bill;
 import crud.model.entities.Product;
-import crud.model.entities.Supplier;
-import crud.repository.ProductRepository;
-import crud.repository.SupplierRepository;
+import crud.repository.product.impl.ProductRepositoryImpl;
 import crud.service.validation.ProductValidator;
 import crud.util.Logger;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,14 +18,14 @@ import java.util.UUID;
 
 public class GetBySupplierIdProductQuery extends AbstractCommand {
 
-    private final ProductRepository repository;
+    private final ProductRepositoryImpl repository;
     private final ProductValidator validator;
     private final ProductMapper mapper;
     private final AuthService authService;
 
     private String page = "";
 
-    public GetBySupplierIdProductQuery(ProductRepository repository, ProductValidator validator, AuthService authService, ProductMapper mapper) {
+    public GetBySupplierIdProductQuery(ProductRepositoryImpl repository, ProductValidator validator, AuthService authService, ProductMapper mapper) {
         this.repository = repository;
         this.validator = validator;
         this.authService = authService;

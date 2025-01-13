@@ -2,15 +2,15 @@ package crud.service.validation;
 
 import crud.base.BaseValidator;
 import crud.model.entities.Product;
-import crud.repository.ProductRepository;
+import crud.repository.product.impl.ProductRepositoryImpl;
 import crud.service.products.rules.ProductBusinessRules;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.UUID;
 
-public class ProductValidator extends BaseValidator<Product, ProductBusinessRules, ProductRepository> {
+public class ProductValidator extends BaseValidator<Product, ProductBusinessRules, ProductRepositoryImpl> {
    private ProductBusinessRules rules;
-   private ProductRepository repository;
+   private ProductRepositoryImpl repository;
 
     public ProductValidator(ProductBusinessRules rules) {
         super(rules);

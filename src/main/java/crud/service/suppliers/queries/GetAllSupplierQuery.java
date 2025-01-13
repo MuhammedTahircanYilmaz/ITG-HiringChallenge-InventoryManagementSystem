@@ -8,9 +8,7 @@ import crud.exception.DAOException;
 import crud.exception.MappingException;
 import crud.mapper.SupplierMapper;
 import crud.model.entities.Supplier;
-import crud.model.entities.Supplier;
-import crud.repository.SupplierRepository;
-import crud.service.validation.SupplierValidator;
+import crud.repository.supplier.SupplierRepositoryImpl;
 import crud.util.Logger;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -18,13 +16,13 @@ import java.util.ArrayList;
 
 
 public class GetAllSupplierQuery extends AbstractCommand {
-    public GetAllSupplierQuery(SupplierRepository repository, AuthService authService, SupplierMapper mapper) {
+    public GetAllSupplierQuery(SupplierRepositoryImpl repository, AuthService authService, SupplierMapper mapper) {
         this.repository = repository;
         this.authService = authService;
         this.mapper = mapper;
     }
 
-    private SupplierRepository repository;
+    private SupplierRepositoryImpl repository;
     private final AuthService authService;
     private final SupplierMapper mapper;
 
@@ -36,7 +34,7 @@ public class GetAllSupplierQuery extends AbstractCommand {
                 String token = authService.extractToken(request);
                 authService.isAuthenticated(token);
 
-                ArrayList<Supplier> Suppliers = repository.getAll();
+                ArrayList<Supplier> Suppliers = repository.findAll();
                 ArrayList<SupplierResponseDto> response = new ArrayList<>();
 
                 for(Supplier Supplier : Suppliers){

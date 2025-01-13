@@ -8,23 +8,21 @@ import crud.exception.DAOException;
 import crud.exception.MappingException;
 import crud.mapper.BillMapper;
 import crud.model.entities.Bill;
-import crud.repository.BillRepository;
-import crud.service.validation.BillValidator;
+import crud.repository.bill.impl.BillRepositoryImpl;
 import crud.util.Logger;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.UUID;
 
 public class DeleteBillCommand extends AbstractCommand {
 
-    private final BillRepository repository;
+    private final BillRepositoryImpl repository;
     private final BillMapper mapper;
     private final AuthService authService;
     private String page = RETAILER_MAIN;
 
 
-    public DeleteBillCommand(BillRepository repository, BillMapper mapper, AuthService authSer) {
+    public DeleteBillCommand(BillRepositoryImpl repository, BillMapper mapper, AuthService authSer) {
         this.repository = repository;
         this.authService = authSer;
         this.mapper = mapper;

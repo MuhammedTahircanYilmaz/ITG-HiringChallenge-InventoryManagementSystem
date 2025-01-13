@@ -1,18 +1,18 @@
 package crud.infrastructure;
 
 import crud.authorization.AuthService;
-import crud.repository.AdminRepository;
-import crud.repository.RetailerRepository;
-import crud.repository.SupplierRepository;
-import crud.repository.TokenRepository;
+import crud.repository.admin.impl.AdminRepositoryImpl;
+import crud.repository.retailer.RetailerRepositoryImpl;
+import crud.repository.supplier.SupplierRepositoryImpl;
+import crud.repository.TokenRepositoryImpl;
 
 public class AuthorizationFactory {
 
     private final AuthService authService;
 
-    public AuthorizationFactory(RetailerRepository retailerRepository, SupplierRepository supplierRepository, AdminRepository adminRepository, TokenRepository tokenRepository) {
+    public AuthorizationFactory(RetailerRepositoryImpl retailerRepository, SupplierRepositoryImpl supplierRepository, AdminRepositoryImpl adminRepositoryImpl, TokenRepositoryImpl tokenRepository) {
 
-        this.authService = new AuthService(adminRepository, retailerRepository, supplierRepository, new crud.util.JwtUtil(), tokenRepository);
+        this.authService = new AuthService(adminRepositoryImpl, retailerRepository, supplierRepository, new crud.util.JwtUtil(), tokenRepository);
     }
 
     public AuthService getAuthService() {

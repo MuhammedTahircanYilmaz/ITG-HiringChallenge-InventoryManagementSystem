@@ -1,16 +1,13 @@
 package crud.service.products.rules;
 
 import crud.base.BaseBusinessRules;
-import crud.exception.DAOException;
 import crud.model.entities.Product;
-import crud.repository.ProductRepository;
+import crud.repository.product.impl.ProductRepositoryImpl;
 
-import java.util.UUID;
-
-public class ProductBusinessRules extends BaseBusinessRules<Product, ProductRepository> {
+public class ProductBusinessRules extends BaseBusinessRules<Product, ProductRepositoryImpl> {
 
 
-    public ProductBusinessRules(ProductRepository repository) {
+    public ProductBusinessRules(ProductRepositoryImpl repository) {
         super(repository);
     }
 

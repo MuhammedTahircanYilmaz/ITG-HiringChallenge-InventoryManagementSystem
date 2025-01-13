@@ -2,14 +2,12 @@ package crud.service.suppliers.rules;
 
 import crud.base.BaseBusinessRules;
 import crud.model.entities.Supplier;
-import crud.repository.SupplierRepository;
+import crud.repository.supplier.SupplierRepositoryImpl;
 
-import java.util.UUID;
-
-public class SupplierBusinessRules extends BaseBusinessRules<Supplier, SupplierRepository>{
+public class SupplierBusinessRules extends BaseBusinessRules<Supplier, SupplierRepositoryImpl>{
 
 
-    public SupplierBusinessRules(SupplierRepository repository) {
+    public SupplierBusinessRules(SupplierRepositoryImpl repository) {
         super(repository);
 
     }

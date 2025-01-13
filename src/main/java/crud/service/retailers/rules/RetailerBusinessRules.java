@@ -2,15 +2,12 @@ package crud.service.retailers.rules;
 
 import crud.base.BaseBusinessRules;
 import crud.model.entities.Retailer;
-import crud.repository.RetailerRepository;
-import crud.service.suppliers.rules.SupplierBusinessRules;
+import crud.repository.retailer.RetailerRepositoryImpl;
 
-import java.util.UUID;
-
-public class RetailerBusinessRules extends BaseBusinessRules<Retailer,RetailerRepository> {
+public class RetailerBusinessRules extends BaseBusinessRules<Retailer, RetailerRepositoryImpl> {
 
 
-    public RetailerBusinessRules(RetailerRepository repository) {
+    public RetailerBusinessRules(RetailerRepositoryImpl repository) {
         super(repository);
     }
 

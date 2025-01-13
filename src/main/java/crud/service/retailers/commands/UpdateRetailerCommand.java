@@ -2,31 +2,28 @@ package crud.service.retailers.commands;
 
 import crud.authorization.AuthService;
 import crud.base.AbstractCommand;
-import crud.base.BaseMapper;
 import crud.base.ServiceResult;
 import crud.dtos.retailers.requests.UpdateRetailerCommandDto;
 import crud.exception.DAOException;
 import crud.exception.MappingException;
 import crud.mapper.RetailerMapper;
 import crud.model.entities.Retailer;
-import crud.repository.RetailerRepository;
-import crud.service.validation.RetailerValidator;
+import crud.repository.retailer.RetailerRepositoryImpl;
 import crud.util.Logger;
-import crud.util.PasswordUtils;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.UUID;
 
 public class UpdateRetailerCommand extends AbstractCommand {
 
-    public UpdateRetailerCommand(RetailerRepository repository, RetailerMapper mapper, AuthService authService) {
+    public UpdateRetailerCommand(RetailerRepositoryImpl repository, RetailerMapper mapper, AuthService authService) {
         this.repository = repository;
         this.authService = authService;
         this.mapper = mapper;
     }
 
     private String page = PROFILE;
-    private RetailerRepository repository;
+    private RetailerRepositoryImpl repository;
     private RetailerMapper mapper;
     private final AuthService authService;
 

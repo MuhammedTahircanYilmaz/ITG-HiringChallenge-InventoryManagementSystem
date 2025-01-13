@@ -9,7 +9,7 @@ import crud.exception.MappingException;
 import crud.mapper.BillMapper;
 import crud.model.entities.Bill;
 import crud.model.enums.Roles;
-import crud.repository.BillRepository;
+import crud.repository.bill.impl.BillRepositoryImpl;
 import crud.util.Logger;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -17,12 +17,12 @@ import java.util.ArrayList;
 
 public class GetAllBillQuery extends AbstractCommand {
 
-    private BillRepository repository;
+    private BillRepositoryImpl repository;
     private String page = "";
     private AuthService authService;
     private final BillMapper mapper;
 
-    public GetAllBillQuery(BillRepository repository, AuthService authService, BillMapper mapper) {
+    public GetAllBillQuery(BillRepositoryImpl repository, AuthService authService, BillMapper mapper) {
         this.repository = repository;
         this.mapper = mapper;
         this.authService = authService;
@@ -35,7 +35,7 @@ public class GetAllBillQuery extends AbstractCommand {
             String token = authService.extractToken(request);
             authService.isAuthenticated(token);
             authService.hasRole(token, Roles.ADMIN.name());
-            ArrayList<Bill> bills = repository.getAll();
+            ArrayList<Bill> bills = repository.findAll();
             ArrayList<BillResponseDto> response = new ArrayList<BillResponseDto>();
             for (Bill bill : bills) {
                 BillResponseDto dto = mapper.mapEntityToEntityResponseDto(bill);

@@ -9,7 +9,7 @@ import crud.exception.DAOException;
 import crud.exception.MappingException;
 import crud.mapper.ProductMapper;
 import crud.model.entities.Product;
-import crud.repository.ProductRepository;
+import crud.repository.product.impl.ProductRepositoryImpl;
 import crud.service.validation.ProductValidator;
 import crud.util.Logger;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,7 +18,7 @@ import java.util.UUID;
 
 public class UpdateProductStockCommand extends AbstractCommand {
 
-    public UpdateProductStockCommand(ProductRepository repository, ProductMapper mapper, ProductValidator validator, AuthService authService) {
+    public UpdateProductStockCommand(ProductRepositoryImpl repository, ProductMapper mapper, ProductValidator validator, AuthService authService) {
         this.repository = repository;
         this.authService = authService;
         this.validator = validator;
@@ -26,7 +26,7 @@ public class UpdateProductStockCommand extends AbstractCommand {
     }
 
     private String page = PRODUCT;
-    private final ProductRepository repository;
+    private final ProductRepositoryImpl repository;
     private final ProductValidator validator ;
     private final ProductMapper mapper;
     private final AuthService authService;

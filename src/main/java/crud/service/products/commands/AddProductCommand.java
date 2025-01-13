@@ -8,20 +8,20 @@ import crud.exception.DAOException;
 import crud.exception.MappingException;
 import crud.mapper.ProductMapper;
 import crud.model.entities.Product;
-import crud.repository.ProductRepository;
+import crud.repository.product.impl.ProductRepositoryImpl;
 import crud.service.validation.ProductValidator;
 import crud.util.Logger;
 import jakarta.servlet.http.HttpServletRequest;
 
 public class AddProductCommand extends AbstractCommand {
-    private final ProductRepository repository;
+    private final ProductRepositoryImpl repository;
     private final ProductMapper mapper;
     private final ProductValidator validator;
     private final AuthService authService;
 
     private String page = CREATE_PRODUCT;
 
-    public AddProductCommand(ProductRepository repository, ProductMapper mapper, ProductValidator validator , AuthService authService) {
+    public AddProductCommand(ProductRepositoryImpl repository, ProductMapper mapper, ProductValidator validator , AuthService authService) {
         this.repository = repository;
         this.validator = validator;
         this.authService = authService;

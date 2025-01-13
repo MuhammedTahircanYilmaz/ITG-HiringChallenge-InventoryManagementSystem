@@ -8,8 +8,7 @@ import crud.exception.DAOException;
 import crud.exception.MappingException;
 import crud.mapper.RetailerMapper;
 import crud.model.entities.Retailer;
-import crud.repository.RetailerRepository;
-import crud.service.validation.RetailerValidator;
+import crud.repository.retailer.RetailerRepositoryImpl;
 import crud.util.Logger;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -17,12 +16,12 @@ import java.util.ArrayList;
 
 public class GetByNameRetailerQuery extends AbstractCommand {
 
-    private final RetailerRepository repository;
+    private final RetailerRepositoryImpl repository;
     private final AuthService authService ;
     private final RetailerMapper mapper;
     private String page = "";
 
-    public GetByNameRetailerQuery(RetailerRepository repository, AuthService authService, RetailerMapper mapper) {
+    public GetByNameRetailerQuery(RetailerRepositoryImpl repository, AuthService authService, RetailerMapper mapper) {
         this.repository = repository;
         this.authService = authService;
         this.mapper = mapper;

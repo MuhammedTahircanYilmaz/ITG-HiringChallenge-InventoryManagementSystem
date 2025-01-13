@@ -8,8 +8,7 @@ import crud.exception.DAOException;
 import crud.exception.MappingException;
 import crud.mapper.SupplierMapper;
 import crud.model.entities.Supplier;
-import crud.repository.SupplierRepository;
-import crud.service.validation.SupplierValidator;
+import crud.repository.supplier.SupplierRepositoryImpl;
 import crud.util.Logger;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -17,14 +16,14 @@ import java.util.UUID;
 
 public class UpdateSupplierCommand extends AbstractCommand {
 
-    public UpdateSupplierCommand(SupplierRepository repository, SupplierMapper mapper, AuthService authService) {
+    public UpdateSupplierCommand(SupplierRepositoryImpl repository, SupplierMapper mapper, AuthService authService) {
         this.repository = repository;
         this.authService = authService;
         this.mapper = mapper;
     }
 
     private String page = PROFILE;
-    private SupplierRepository repository;
+    private SupplierRepositoryImpl repository;
     private SupplierMapper mapper;
     private final AuthService authService;
 

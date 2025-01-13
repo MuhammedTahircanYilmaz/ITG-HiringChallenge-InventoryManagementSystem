@@ -12,7 +12,7 @@ public class Product extends BaseEntity {
     private Long stockQuantity;
     private Double price;
     private Float discount;
-    private String imageLocation;
+    private String imagePath;
     private boolean inStock;
 
     public UUID getSupplierId() {
@@ -63,12 +63,12 @@ public class Product extends BaseEntity {
         this.discount = discount;
         }
 
-    public String getImageLocation() {
-        return imageLocation;
+    public String getImagePath() {
+        return imagePath;
     }
 
-    public void setImageLocation(String imageLocation) {
-        this.imageLocation = imageLocation;
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
     @Override

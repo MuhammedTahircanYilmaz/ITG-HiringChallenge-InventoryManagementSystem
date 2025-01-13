@@ -11,7 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
-public class TokenRepository {
+public class TokenRepositoryImpl {
     private final Connection connection;
 
     private static final String SQL_INSERT = "INSERT INTO Tokens (Id, UserId, Token, Expiry) VALUES (?, ?, ?, ?)";
@@ -20,7 +20,7 @@ public class TokenRepository {
     private static final String SQL_FIND_BY_TOKEN = "SELECT * FROM Tokens WHERE Token = ?";
     private static final String SQL_DELETE_EXPIRED = "DELETE FROM Tokens WHERE Expiry < CURRENT_TIMESTAMP";
 
-    public TokenRepository(Connection connection) {
+    public TokenRepositoryImpl(Connection connection) {
         if (connection == null) {
             throw new IllegalArgumentException("Connection cannot be null");
         }

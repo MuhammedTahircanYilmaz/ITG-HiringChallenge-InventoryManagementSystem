@@ -5,14 +5,11 @@ import crud.base.AbstractCommand;
 import crud.base.ServiceResult;
 import crud.dtos.bills.responses.BillResponseDto;
 import crud.exception.AuthenticationException;
-import crud.exception.DAOException;
 import crud.mapper.BillMapper;
 import crud.model.entities.Bill;
 import crud.model.entities.Retailer;
-import crud.model.enums.Roles;
-import crud.repository.BillRepository;
-import crud.repository.RetailerRepository;
-import crud.service.validation.BillValidator;
+import crud.repository.bill.impl.BillRepositoryImpl;
+import crud.repository.retailer.RetailerRepositoryImpl;
 import crud.util.Logger;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -21,13 +18,13 @@ import java.util.UUID;
 
 public class GetByRetailerIdBillQuery extends AbstractCommand {
 
-    private final BillRepository repository;
-    private final RetailerRepository retailerRepository;
+    private final BillRepositoryImpl repository;
+    private final RetailerRepositoryImpl retailerRepository;
     private final AuthService authService;
     private final BillMapper mapper;
     private String page = PAST_PURCHASES;
 
-    public GetByRetailerIdBillQuery(BillRepository repository, AuthService authService, BillMapper mapper , RetailerRepository retailerRepository) {
+    public GetByRetailerIdBillQuery(BillRepositoryImpl repository, AuthService authService, BillMapper mapper , RetailerRepositoryImpl retailerRepository) {
         this.repository = repository;
         this.retailerRepository = retailerRepository;
         this.authService = authService;

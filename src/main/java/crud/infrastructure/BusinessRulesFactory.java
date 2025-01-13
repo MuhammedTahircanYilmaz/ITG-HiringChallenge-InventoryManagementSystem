@@ -1,9 +1,9 @@
 package crud.infrastructure;
 
-import crud.repository.BillRepository;
-import crud.repository.ProductRepository;
-import crud.repository.RetailerRepository;
-import crud.repository.SupplierRepository;
+import crud.repository.bill.impl.BillRepositoryImpl;
+import crud.repository.product.impl.ProductRepositoryImpl;
+import crud.repository.retailer.RetailerRepositoryImpl;
+import crud.repository.supplier.SupplierRepositoryImpl;
 import crud.service.bills.rules.BillBusinessRules;
 import crud.service.products.rules.ProductBusinessRules;
 import crud.service.retailers.rules.RetailerBusinessRules;
@@ -15,11 +15,11 @@ public class BusinessRulesFactory {
     private final ProductBusinessRules productBusinessRules;
     private final BillBusinessRules billBusinessRules;
 
-    public BusinessRulesFactory(RetailerRepository retailerRepository, ProductRepository productRepository, SupplierRepository supplierRepository, BillRepository billRepository) {
+    public BusinessRulesFactory(RetailerRepositoryImpl retailerRepository, ProductRepositoryImpl productRepository, SupplierRepositoryImpl supplierRepository, BillRepositoryImpl billRepositoryImpl) {
         this.retailerBusinessRules = new RetailerBusinessRules(retailerRepository);
         this.supplierBusinessRules = new SupplierBusinessRules(supplierRepository);
         this.productBusinessRules = new ProductBusinessRules(productRepository);
-        this.billBusinessRules = new BillBusinessRules(billRepository);
+        this.billBusinessRules = new BillBusinessRules(billRepositoryImpl);
     }
     public RetailerBusinessRules getRetailerBusinessRules() {
         return retailerBusinessRules;

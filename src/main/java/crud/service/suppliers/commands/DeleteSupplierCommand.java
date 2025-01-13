@@ -8,25 +8,23 @@ import crud.exception.AuthenticationException;
 import crud.exception.DAOException;
 import crud.exception.MappingException;
 import crud.mapper.SupplierMapper;
-import crud.mapper.SupplierMapper;
 import crud.model.entities.Supplier;
-import crud.repository.SupplierRepository;
+import crud.repository.supplier.SupplierRepositoryImpl;
 import crud.service.validation.SupplierValidator;
 import crud.util.Logger;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.UUID;
 
 public class DeleteSupplierCommand extends AbstractCommand {
 
-    private final SupplierRepository repository;
+    private final SupplierRepositoryImpl repository;
     private final SupplierValidator validator;
     private final AuthService authService;
     private final SupplierMapper mapper;
     private String page = "";
 
-    public DeleteSupplierCommand(SupplierRepository repository, SupplierValidator validator, AuthService authService, SupplierMapper mapper) {
+    public DeleteSupplierCommand(SupplierRepositoryImpl repository, SupplierValidator validator, AuthService authService, SupplierMapper mapper) {
         this.repository = repository;
         this.validator = validator;
         this.authService = authService;
