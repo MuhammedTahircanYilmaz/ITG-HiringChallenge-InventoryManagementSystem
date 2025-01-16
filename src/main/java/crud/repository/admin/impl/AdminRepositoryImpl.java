@@ -29,7 +29,7 @@ public class AdminRepositoryImpl {
         if (id == null) {
             throw new DAOException("Admin ID cannot be null");
         }
-        String query = "SELECT * FROM Admins WHERE id = ?";
+        String query = "SELECT * FROM admins WHERE id = ?";
 
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -58,7 +58,7 @@ public class AdminRepositoryImpl {
         if (email == null) {
             throw new DAOException("Retailer email cannot be null");
         }
-        String query = "SELECT * FROM Admins WHERE Email like ?";
+        String query = "SELECT * FROM admins WHERE email like ?";
         PreparedStatement ps = null;
         ResultSet rs = null;
         User admin = null;

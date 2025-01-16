@@ -9,23 +9,25 @@ import crud.exception.MappingException;
 import crud.mapper.ProductMapper;
 import crud.model.entities.Product;
 import crud.repository.product.impl.ProductRepositoryImpl;
-import crud.service.validation.ProductValidator;
+import crud.service.products.rules.ProductBusinessRules;
 import crud.util.Logger;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.UUID;
+
 public class GetByIdProductQuery extends AbstractCommand {
 
     private final ProductRepositoryImpl repository;
-    private final ProductValidator validator;
+    private final ProductBusinessRules rules;
     private final AuthService authService;
     private final ProductMapper mapper;
     private String page = PRODUCT;
 
 
-    public GetByIdProductQuery(ProductRepositoryImpl repository, ProductValidator validator, AuthService authService, ProductMapper mapper) {
+    public GetByIdProductQuery(ProductRepositoryImpl repository, ProductBusinessRules rules, AuthService authService, ProductMapper mapper) {
         this.repository = repository;
-        this.validator = validator;
+        this.rules = rules;
         this.authService = authService;
         this.mapper = mapper;
     }
@@ -36,7 +38,7 @@ public class GetByIdProductQuery extends AbstractCommand {
             String token = authService.extractToken(request);
             authService.isAuthenticated(token);
 
-            validator.validateGetByIdRequest(request);
+            rules.entityExists(UUID.fromString(request.getParameter("id")));
             Product product = repository.findById(getId(request));
             ProductResponseDto dto = mapper.mapEntityToEntityResponseDto(product);
 

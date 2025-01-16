@@ -36,7 +36,7 @@ public class GetAllBillQuery extends AbstractCommand {
             authService.isAuthenticated(token);
             authService.hasRole(token, Roles.ADMIN.name());
             ArrayList<Bill> bills = repository.findAll();
-            ArrayList<BillResponseDto> response = new ArrayList<BillResponseDto>();
+            ArrayList<BillResponseDto> response = new ArrayList<>();
             for (Bill bill : bills) {
                 BillResponseDto dto = mapper.mapEntityToEntityResponseDto(bill);
                 response.add(dto);

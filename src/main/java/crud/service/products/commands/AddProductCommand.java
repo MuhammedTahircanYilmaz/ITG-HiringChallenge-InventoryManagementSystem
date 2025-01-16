@@ -9,21 +9,18 @@ import crud.exception.MappingException;
 import crud.mapper.ProductMapper;
 import crud.model.entities.Product;
 import crud.repository.product.impl.ProductRepositoryImpl;
-import crud.service.validation.ProductValidator;
 import crud.util.Logger;
 import jakarta.servlet.http.HttpServletRequest;
 
 public class AddProductCommand extends AbstractCommand {
     private final ProductRepositoryImpl repository;
     private final ProductMapper mapper;
-    private final ProductValidator validator;
     private final AuthService authService;
 
     private String page = CREATE_PRODUCT;
 
-    public AddProductCommand(ProductRepositoryImpl repository, ProductMapper mapper, ProductValidator validator , AuthService authService) {
+    public AddProductCommand(ProductRepositoryImpl repository, ProductMapper mapper , AuthService authService) {
         this.repository = repository;
-        this.validator = validator;
         this.authService = authService;
         this.mapper = mapper;
     }
@@ -38,7 +35,6 @@ public class AddProductCommand extends AbstractCommand {
             }
 
             AddProductCommandDto dto = mapper.mapAddRequestDto(request, authService.getUserId(token).toString());
-            validator.validateAddRequest(request);
             Product product = mapper.mapAddEntityDtoToEntity(dto);
             repository.add(product);
 

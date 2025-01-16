@@ -9,7 +9,7 @@ import crud.exception.MappingException;
 import crud.mapper.ProductMapper;
 import crud.model.entities.Product;
 import crud.repository.product.impl.ProductRepositoryImpl;
-import crud.service.validation.ProductValidator;
+import crud.service.products.rules.ProductBusinessRules;
 import crud.util.Logger;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -17,16 +17,16 @@ import java.util.UUID;
 
 public class UpdateProductCommand extends AbstractCommand {
 
-    public UpdateProductCommand(ProductRepositoryImpl repository, ProductMapper mapper, ProductValidator validator, AuthService authService) {
+    public UpdateProductCommand(ProductRepositoryImpl repository, ProductMapper mapper, ProductBusinessRules rules, AuthService authService) {
         this.repository = repository;
         this.authService = authService;
-        this.validator = validator;
+        this.rules = rules;
         this.mapper = mapper;
     }
 
     private String page = PRODUCT;
     private final ProductRepositoryImpl repository;
-    private final ProductValidator validator ;
+    private final ProductBusinessRules rules;
     private final ProductMapper mapper;
     private final AuthService authService;
 
@@ -39,7 +39,7 @@ public class UpdateProductCommand extends AbstractCommand {
 
             UUID userId = authService.getUserId(token);
             UUID productId = UUID.fromString(request.getParameter("productId"));
-            validator.validateUpdateRequest(request);
+            rules.entityExists(productId);
 
             Product product = repository.findById(productId);
             authService.isAllowed(token,product.getSupplierId());

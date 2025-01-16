@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public class JwtUtil {
     private static final String SECRET = "SuperSecretTokenTokenSecretSuperSecretsecretsupertoken";
-    private static final String ISSUER = "itghiringchallenge@itg.com";
+    private static final String ISSUER = "itghiringchallenge@vitg.com";
     private static final long EXPIRATION_TIME = 3600000;
 
     public String generateToken(UUID id, String roleName) {

@@ -9,7 +9,7 @@ import crud.exception.MappingException;
 import crud.mapper.RetailerMapper;
 import crud.model.entities.Retailer;
 import crud.repository.retailer.RetailerRepositoryImpl;
-import crud.service.validation.RetailerValidator;
+import crud.service.retailers.rules.RetailerBusinessRules;
 import crud.util.Logger;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -18,16 +18,16 @@ import java.util.UUID;
 public class GetByIdRetailerQuery extends AbstractCommand {
 
     private final RetailerRepositoryImpl repository;
-    private final RetailerValidator validator;
+    private final RetailerBusinessRules BusinessRules;
     private final AuthService authService ;
     private final RetailerMapper mapper;
     private String page = PROFILE;
 
-    public GetByIdRetailerQuery(RetailerRepositoryImpl repository , RetailerValidator validator, AuthService authService, RetailerMapper mapper) {
+    public GetByIdRetailerQuery(RetailerRepositoryImpl repository , RetailerBusinessRules BusinessRules, AuthService authService, RetailerMapper mapper) {
         this.repository = repository;
         this.authService = authService;
         this.mapper = mapper;
-        this.validator = validator;
+        this.BusinessRules = BusinessRules;
     }
 
     @Override
@@ -36,7 +36,7 @@ public class GetByIdRetailerQuery extends AbstractCommand {
             String token = authService.extractToken(request);
             authService.isAuthenticated(token);
 
-            validator.validateGetByIdRequest(request);
+            BusinessRules.entityExists(UUID.fromString(request.getParameter("id")));
 
             Retailer retailer = repository.findById(UUID.fromString(request.getParameter("retailerId")));
             RetailerResponseDto dto = mapper.mapEntityToEntityResponseDto(retailer);

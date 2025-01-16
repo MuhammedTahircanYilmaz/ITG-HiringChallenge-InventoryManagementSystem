@@ -4,12 +4,13 @@ import crud.authorization.AuthService;
 import crud.base.AbstractCommand;
 import crud.base.ServiceResult;
 import crud.dtos.products.requests.DeleteProductCommandDto;
+import crud.exception.BusinessException;
 import crud.exception.DAOException;
 import crud.exception.MappingException;
 import crud.mapper.ProductMapper;
 import crud.model.entities.Product;
 import crud.repository.product.impl.ProductRepositoryImpl;
-import crud.service.validation.ProductValidator;
+import crud.service.products.rules.ProductBusinessRules;
 import crud.util.Logger;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -18,14 +19,14 @@ import java.util.UUID;
 public class DeleteProductCommand extends AbstractCommand {
 
     private final ProductRepositoryImpl repository;
-    private final ProductValidator validator;
+    private ProductBusinessRules rules;
     private final ProductMapper mapper;
     private final AuthService authService;
     private String page = SUPPLIER_PRODUCTS;
 
-    public DeleteProductCommand(ProductRepositoryImpl repository, ProductValidator validator, ProductMapper mapper, AuthService authService) {
+    public DeleteProductCommand(ProductRepositoryImpl repository, ProductBusinessRules rules, ProductMapper mapper, AuthService authService) {
         this.repository = repository;
-        this.validator = validator;
+        this.rules = rules;
         this.mapper = mapper;
         this.authService = authService;
     }
@@ -38,9 +39,9 @@ public class DeleteProductCommand extends AbstractCommand {
 
             UUID userId = authService.getUserId(token);
             UUID ProductId = UUID.fromString(request.getParameter("productId"));
-            validator.validateDeleteRequest(request);
 
             Product product = repository.findById(ProductId);
+
             authService.isAllowed(token,product.getSupplierId());
 
             DeleteProductCommandDto dto = mapper.mapDeleteRequestDto(request, userId.toString());

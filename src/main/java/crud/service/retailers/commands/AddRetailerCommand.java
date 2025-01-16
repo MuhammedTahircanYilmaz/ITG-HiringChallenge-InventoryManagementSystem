@@ -8,7 +8,6 @@ import crud.exception.MappingException;
 import crud.mapper.RetailerMapper;
 import crud.model.entities.Retailer;
 import crud.repository.retailer.RetailerRepositoryImpl;
-import crud.service.validation.RetailerValidator;
 import crud.util.Logger;
 import crud.util.PasswordUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,22 +16,19 @@ import java.util.UUID;
 
 public class AddRetailerCommand extends AbstractCommand {
 
-    public AddRetailerCommand(RetailerRepositoryImpl repository, RetailerMapper mapper, RetailerValidator validator) {
+    public AddRetailerCommand(RetailerRepositoryImpl repository, RetailerMapper mapper) {
         this.repository = repository;
-        this.validator = validator;
         this.mapper = mapper;
     }
 
     private String page = REGISTER;
     private RetailerRepositoryImpl repository;
-    private RetailerValidator validator;
     private RetailerMapper mapper;
 
     @Override
     public ServiceResult execute(HttpServletRequest request) {
         try{
 
-            validator.validateAddRequest(request);
             UUID userId = UUID.randomUUID();
             AddRetailerCommandDto dto = mapper.mapAddRequestDto(request, userId.toString());
             Retailer retailer = mapper.mapAddEntityDtoToEntity(dto);

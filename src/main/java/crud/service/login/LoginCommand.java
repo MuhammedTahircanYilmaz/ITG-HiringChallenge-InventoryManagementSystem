@@ -1,5 +1,6 @@
-package crud.authorization.login;
+package crud.service.login;
 
+import crud.authorization.login.LoginResponse;
 import crud.base.AbstractCommand;
 import crud.base.ServiceResult;
 import crud.exception.BusinessException;

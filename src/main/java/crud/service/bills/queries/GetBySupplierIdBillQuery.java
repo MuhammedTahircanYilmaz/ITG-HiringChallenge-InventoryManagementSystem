@@ -25,7 +25,7 @@ public class GetBySupplierIdBillQuery extends AbstractCommand {
     private final BillMapper mapper;
     private String page = PAST_SALES;
 
-    public GetBySupplierIdBillQuery(BillRepositoryImpl repository, BillValidator validator, AuthService authService, BillMapper mapper , SupplierRepositoryImpl SupplierRepository) {
+    public GetBySupplierIdBillQuery(BillRepositoryImpl repository, AuthService authService, BillMapper mapper , SupplierRepositoryImpl SupplierRepository) {
         this.repository = repository;
         this.SupplierRepository = SupplierRepository;
         this.authService = authService;

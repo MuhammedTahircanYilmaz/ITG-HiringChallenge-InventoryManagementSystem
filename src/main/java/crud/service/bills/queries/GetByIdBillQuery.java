@@ -11,22 +11,24 @@ import crud.exception.MappingException;
 import crud.mapper.BillMapper;
 import crud.model.entities.Bill;
 import crud.repository.bill.impl.BillRepositoryImpl;
-import crud.service.validation.BillValidator;
+import crud.service.bills.rules.BillBusinessRules;
 import crud.util.Logger;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.UUID;
+
 public class GetByIdBillQuery extends AbstractCommand {
 
     private final BillRepositoryImpl repository;
-    private final BillValidator validator;
+    private final BillBusinessRules rules;
     private final AuthService authService;
     private final BillMapper mapper;
     private String page = "";
 
-    public GetByIdBillQuery(BillRepositoryImpl repository, BillValidator validator, AuthService authService , BillMapper mapper) {
+    public GetByIdBillQuery(BillRepositoryImpl repository, BillBusinessRules rules, AuthService authService , BillMapper mapper) {
         this.repository = repository;
-        this.validator = validator;
+        this.rules = rules;
         this.authService = authService;
         this.mapper = mapper;
     }
@@ -37,7 +39,7 @@ public class GetByIdBillQuery extends AbstractCommand {
             String token = authService.extractToken(request);
             authService.isAuthenticated(token);
 
-            validator.validateGetByIdRequest(request);
+            rules.entityExists(UUID.fromString(request.getParameter("id")));
             Bill bill = repository.findById(getId(request));
 
 

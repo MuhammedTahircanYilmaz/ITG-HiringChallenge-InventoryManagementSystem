@@ -10,10 +10,10 @@ public class BillBusinessRules extends BaseBusinessRules<Bill, BillRepositoryImp
         super(repository);
     }
 
-    public boolean isAmountValid(long amount) {
-        if(amount <= 0 )
-            return false;
-        return true;
+    public boolean isAmountInvalid(long amount) {
+        if(amount <= 0  || amount > 50000)
+            return true;
+        return false;
     }
 
 }

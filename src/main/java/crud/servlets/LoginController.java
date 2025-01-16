@@ -1,27 +1,30 @@
-package crud.controller;
+package crud.servlets;
 
+import crud.base.BaseController;
 import crud.exception.BusinessException;
 import crud.authorization.login.LoginResponse;
-import crud.authorization.login.LoginCommand;
+import crud.exception.DAOException;
+import crud.service.login.LoginCommand;
 import crud.util.Logger;
-import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-public class LoginServlet extends HttpServlet {
+public class LoginController extends BaseController {
 
-    public LoginServlet(){}
+    public LoginController() throws DAOException, ServletException {
+        init();
+    }
 
     private LoginCommand loginCommand;
-    public LoginServlet(LoginCommand loginCommand) {
+    public LoginController(LoginCommand loginCommand) {
         this.loginCommand = loginCommand;
     }
 
-
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void handle(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json");
 
         try {

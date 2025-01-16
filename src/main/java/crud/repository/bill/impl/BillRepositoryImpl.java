@@ -34,8 +34,8 @@ public class BillRepositoryImpl extends AbstractRepository implements BillReposi
 
         PreparedStatement ps = null;
 
-        String query = "INSERT INTO bills (Id, SupplierId, RetailerId, ProductId, Amount, CurrentPrice," +
-                " Date, CreatedAt, CreatedBy, Status) VALUES (?,?,?,?,?,?,?,?,?,'PENDING')";
+        String query = "INSERT INTO bills (id, supplier_id, retailer_id, product_id, amount, current_price," +
+                " date, created_at, created_by, status) VALUES (?,?,?,?,?,?,?,?,?,'PENDING')";
         try{
             UUID id = UUID.randomUUID();
             ps = connection.prepareStatement(query);
@@ -213,7 +213,7 @@ public class BillRepositoryImpl extends AbstractRepository implements BillReposi
             connection.commit();
 
         } catch (SQLException ex) {
-            throw new DAOException("Error while getting the bill by RetailerId: " + ex.getMessage(), ex);
+            throw new DAOException("Error while getting the bill by Retailer Id: " + ex.getMessage(), ex);
         } finally {
             ConnectionFactory.closeAll(connection,ps,rs);
         }
@@ -247,7 +247,7 @@ public class BillRepositoryImpl extends AbstractRepository implements BillReposi
             connection.commit();
 
         } catch (SQLException ex) {
-            throw new DAOException("Error while getting the bill by SupplierId: " + ex.getMessage(), ex);
+            throw new DAOException("Error while getting the bill by Supplier Id: " + ex.getMessage(), ex);
         } finally {
             ConnectionFactory.closeAll(connection,ps,rs);
         }
@@ -281,7 +281,7 @@ public class BillRepositoryImpl extends AbstractRepository implements BillReposi
             connection.commit();
 
         } catch (SQLException ex) {
-            throw new DAOException("Error while getting the bill by ProductId: " + ex.getMessage(), ex);
+            throw new DAOException("Error while getting the bill by Product Id: " + ex.getMessage(), ex);
         } finally {
             ConnectionFactory.closeAll(connection,ps,rs);
         }
@@ -319,17 +319,15 @@ public class BillRepositoryImpl extends AbstractRepository implements BillReposi
             throw new SQLException("ResultSet cannot be null");
         }
 
-        LocalDateTime now = LocalDateTime.now();
-        Timestamp sqlTimestamp = Timestamp.valueOf(now);
         Bill bill = new Bill();
 
-        bill.setId(UUID.fromString(rs.getString("Id")));
-        bill.setSupplierId(UUID.fromString(rs.getString("SupplierId")));
-        bill.setRetailerId(UUID.fromString(rs.getString("RetailerId")));
-        bill.setProductId(UUID.fromString(rs.getString("ProductId")));
-        bill.setCurrentPrice(rs.getDouble("CurrentPrice"));
-        bill.setDate(sqlTimestamp);
-        bill.setAmount(rs.getLong("Amount"));
+        bill.setId(UUID.fromString(rs.getString("id")));
+        bill.setSupplierId(UUID.fromString(rs.getString("supplier_id")));
+        bill.setRetailerId(UUID.fromString(rs.getString("retailer_id")));
+        bill.setProductId(UUID.fromString(rs.getString("product_id")));
+        bill.setCurrentPrice(rs.getDouble("current_price"));
+        bill.setDate(rs.getTimestamp("date"));
+        bill.setAmount(rs.getLong("amount"));
 
         return bill;
     }

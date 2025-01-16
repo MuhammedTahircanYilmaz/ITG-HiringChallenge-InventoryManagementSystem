@@ -16,11 +16,11 @@
   </filter-mapping>
 
   <servlet>
-    <servlet-name>LoginServlet</servlet-name>
-    <servlet-class>crud.controller.LoginServlet</servlet-class>
+    <servlet-name>AppServlet</servlet-name>
+    <servlet-class>crud.servlets.AppServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>LoginServlet</servlet-name>
+    <servlet-name>AppServlet</servlet-name>
     <url-pattern>/app/*</url-pattern>
   </servlet-mapping>
 

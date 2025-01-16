@@ -1,7 +1,7 @@
 package crud.infrastructure;
 
 
-import crud.authorization.login.LoginCommand;
+import crud.service.login.LoginCommand;
 import crud.service.bills.commands.*;
 import crud.service.bills.queries.*;
 import crud.service.images.commands.AddImageCommand;
@@ -13,19 +13,21 @@ import crud.service.retailers.commands.*;
 import crud.service.retailers.queries.*;
 import crud.service.suppliers.commands.*;
 import crud.service.suppliers.queries.*;
+import crud.service.suppliers.rules.SupplierBusinessRules;
 import crud.util.JwtUtil;
 
 public class ServiceFactory {
-    private final ValidatorFactory validatorFactory;
     private final RepositoryFactory repositoryFactory;
     private final AuthorizationFactory authorizationFactory;
     private final MapperFactory mapperFactory;
+    private final BusinessRulesFactory businessRulesFactory;
 
-    public ServiceFactory(ValidatorFactory validatorFactory, RepositoryFactory repositoryFactory, AuthorizationFactory authorizationFactory, MapperFactory mapperFactory ) {
-        this.validatorFactory = validatorFactory;
+    public ServiceFactory( RepositoryFactory repositoryFactory, AuthorizationFactory authorizationFactory, MapperFactory mapperFactory, BusinessRulesFactory businessRulesFactory) {
+
         this.repositoryFactory = repositoryFactory;
         this.authorizationFactory = authorizationFactory;
         this.mapperFactory = mapperFactory;
+        this.businessRulesFactory = businessRulesFactory;
     }
 
     // Bill Commands
@@ -66,7 +68,6 @@ public class ServiceFactory {
         return new AddProductCommand(
                 repositoryFactory.getProductRepository(),
                 mapperFactory.getProductMapper(),
-                validatorFactory.getProductValidator(),
                 authorizationFactory.getAuthService()
         );
     }
@@ -75,7 +76,7 @@ public class ServiceFactory {
         return new UpdateProductCommand(
                 repositoryFactory.getProductRepository(),
                 mapperFactory.getProductMapper(),
-                validatorFactory.getProductValidator(),
+                businessRulesFactory.getProductBusinessRules(),
                 authorizationFactory.getAuthService()
         );
     }
@@ -83,7 +84,7 @@ public class ServiceFactory {
     public DeleteProductCommand createDeleteProductCommand() {
         return new DeleteProductCommand(
                 repositoryFactory.getProductRepository(),
-                validatorFactory.getProductValidator(),
+                businessRulesFactory.getProductBusinessRules(),
                 mapperFactory.getProductMapper(),
                 authorizationFactory.getAuthService()
         );
@@ -93,8 +94,7 @@ public class ServiceFactory {
     public AddRetailerCommand createAddRetailerCommand() {
         return new AddRetailerCommand(
                 repositoryFactory.getRetailerRepository(),
-                mapperFactory.getRetailerMapper(),
-                validatorFactory.getRetailerValidator()
+                mapperFactory.getRetailerMapper()
         );
     }
 
@@ -109,7 +109,6 @@ public class ServiceFactory {
     public DeleteRetailerCommand createDeleteRetailerCommand() {
         return new DeleteRetailerCommand(
                 repositoryFactory.getRetailerRepository(),
-                validatorFactory.getRetailerValidator(),
                 authorizationFactory.getAuthService(),
                 mapperFactory.getRetailerMapper()
         );
@@ -119,8 +118,7 @@ public class ServiceFactory {
     public AddSupplierCommand createAddSupplierCommand() {
         return new AddSupplierCommand(
                 repositoryFactory.getSupplierRepository(),
-                mapperFactory.getSupplierMapper(),
-                validatorFactory.getSupplierValidator()
+                mapperFactory.getSupplierMapper()
         );
     }
 
@@ -135,7 +133,6 @@ public class ServiceFactory {
     public DeleteSupplierCommand createDeleteSupplierCommand() {
         return new DeleteSupplierCommand(
                 repositoryFactory.getSupplierRepository(),
-                validatorFactory.getSupplierValidator(),
                 authorizationFactory.getAuthService(),
                 mapperFactory.getSupplierMapper()
         );
@@ -153,7 +150,7 @@ public class ServiceFactory {
     public GetByIdBillQuery createGetBillByIdQuery() {
         return new GetByIdBillQuery(
                 repositoryFactory.getBillRepository(),
-                validatorFactory.getBillValidator(),
+                businessRulesFactory.getBillBusinessRules(),
                 authorizationFactory.getAuthService(),
                 mapperFactory.getBillMapper()
         );
@@ -163,7 +160,7 @@ public class ServiceFactory {
     public GetByProductIdBillQuery createGetBillsByProductQuery() {
         return new GetByProductIdBillQuery(
                 repositoryFactory.getBillRepository(),
-                validatorFactory.getBillValidator(),
+                businessRulesFactory.getBillBusinessRules(),
                 authorizationFactory.getAuthService(),
                 mapperFactory.getBillMapper(),
                 repositoryFactory.getProductRepository()
@@ -182,7 +179,6 @@ public class ServiceFactory {
     public GetBySupplierIdBillQuery createGetBillsBySupplierQuery() {
         return new GetBySupplierIdBillQuery(
                 repositoryFactory.getBillRepository(),
-                validatorFactory.getBillValidator(),
                 authorizationFactory.getAuthService(),
                 mapperFactory.getBillMapper(),
                 repositoryFactory.getSupplierRepository()
@@ -201,7 +197,7 @@ public class ServiceFactory {
     public GetByIdProductQuery createGetProductByIdQuery() {
         return new GetByIdProductQuery(
                 repositoryFactory.getProductRepository(),
-                validatorFactory.getProductValidator(),
+                businessRulesFactory.getProductBusinessRules(),
                 authorizationFactory.getAuthService(),
                 mapperFactory.getProductMapper()
         );
@@ -210,7 +206,7 @@ public class ServiceFactory {
     public GetBySupplierIdProductQuery createGetProductsBySupplierQuery() {
         return new GetBySupplierIdProductQuery(
                 repositoryFactory.getProductRepository(),
-                validatorFactory.getProductValidator(),
+                businessRulesFactory.getProductBusinessRules(),
                 authorizationFactory.getAuthService(),
                 mapperFactory.getProductMapper()
         );
@@ -228,7 +224,7 @@ public class ServiceFactory {
     public GetByIdRetailerQuery createGetRetailerByIdQuery() {
         return new GetByIdRetailerQuery(
                 repositoryFactory.getRetailerRepository(),
-                validatorFactory.getRetailerValidator(),
+                businessRulesFactory.getRetailerBusinessRules(),
                 authorizationFactory.getAuthService(),
                 mapperFactory.getRetailerMapper()
         );
@@ -254,7 +250,7 @@ public class ServiceFactory {
     public GetByIdSupplierQuery createGetSupplierByIdQuery() {
         return new GetByIdSupplierQuery(
                 repositoryFactory.getSupplierRepository(),
-                validatorFactory.getSupplierValidator(),
+                businessRulesFactory.getSupplierBusinessRules(),
                 authorizationFactory.getAuthService(),
                 mapperFactory.getSupplierMapper()
         );

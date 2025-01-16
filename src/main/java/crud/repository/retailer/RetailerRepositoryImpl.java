@@ -174,7 +174,7 @@ public class RetailerRepositoryImpl extends AbstractRepository implements Retail
 
         PreparedStatement ps = null;
         ResultSet rs = null;
-        Retailer retailer = null;
+        Retailer retailer;
         String query;
         try{
             connection.setAutoCommit(false);
@@ -275,7 +275,7 @@ public class RetailerRepositoryImpl extends AbstractRepository implements Retail
 
         Retailer retailer = new Retailer();
 
-        retailer.setId(UUID.fromString(rs.getString("Id")));
+        retailer.setId(UUID.fromString(rs.getString("id")));
         retailer.setName(rs.getString("name"));
         retailer.setEmail(rs.getString("email"));
         retailer.setPassword(rs.getString("password"));

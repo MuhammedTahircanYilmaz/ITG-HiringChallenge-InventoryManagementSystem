@@ -27,7 +27,7 @@ public class SupplierRepositoryImpl extends AbstractRepository implements Suppli
         this.connection = connection;
     }
 
-    private final String tableName = "Suppliers";
+    private final String tableName = "suppliers";
     private final String className = this.getClass().getName();
 
     @Override
@@ -243,7 +243,7 @@ public class SupplierRepositoryImpl extends AbstractRepository implements Suppli
 
     @Override
     public ArrayList<Supplier> findAll() throws DAOException {
-        ArrayList<Supplier> Suppliers = new ArrayList<>();
+        ArrayList<Supplier> suppliers = new ArrayList<>();
         PreparedStatement ps = null;
         ResultSet rs = null;
         String query ;
@@ -256,7 +256,7 @@ public class SupplierRepositoryImpl extends AbstractRepository implements Suppli
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                Suppliers.add(getSupplier(rs));
+                suppliers.add(getSupplier(rs));
             }
             connection.commit();
         } catch (SQLException ex) {
@@ -264,7 +264,7 @@ public class SupplierRepositoryImpl extends AbstractRepository implements Suppli
         } finally {
             ConnectionFactory.closeAll(connection, ps, rs);
         }
-        return Suppliers;
+        return suppliers;
     }
 
     private Supplier getSupplier(ResultSet rs) throws SQLException {

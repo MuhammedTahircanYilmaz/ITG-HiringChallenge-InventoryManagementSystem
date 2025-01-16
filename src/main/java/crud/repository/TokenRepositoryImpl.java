@@ -14,11 +14,6 @@ import java.util.UUID;
 public class TokenRepositoryImpl {
     private final Connection connection;
 
-    private static final String SQL_INSERT = "INSERT INTO Tokens (Id, UserId, Token, Expiry) VALUES (?, ?, ?, ?)";
-    private static final String SQL_DELETE = "DELETE FROM Tokens WHERE Token = ?";
-    private static final String SQL_FIND_BY_USER_ID = "SELECT * FROM Tokens WHERE UserId = ?";
-    private static final String SQL_FIND_BY_TOKEN = "SELECT * FROM Tokens WHERE Token = ?";
-    private static final String SQL_DELETE_EXPIRED = "DELETE FROM Tokens WHERE Expiry < CURRENT_TIMESTAMP";
 
     public TokenRepositoryImpl(Connection connection) {
         if (connection == null) {
@@ -36,7 +31,9 @@ public class TokenRepositoryImpl {
         try {
             connection.setAutoCommit(false);
 
-            ps = connection.prepareStatement(SQL_INSERT);
+            String query = "INSERT INTO tokens (id, user_id, token, expiry) VALUES (?, ?, ?, ?)";
+
+            ps = connection.prepareStatement(query);
             ps.setString(1, UUID.randomUUID().toString());
             ps.setString(2, token.getUserId().toString());
             ps.setString(3, token.getToken());
@@ -62,8 +59,9 @@ public class TokenRepositoryImpl {
         PreparedStatement ps = null;
         try {
             connection.setAutoCommit(false);
+            String query = "DELETE FROM tokens WHERE token = ?";
 
-            ps = connection.prepareStatement(SQL_DELETE);
+            ps = connection.prepareStatement(query);
             ps.setString(1, token);
 
             ps.executeUpdate();
@@ -88,13 +86,17 @@ public class TokenRepositoryImpl {
         try {
             connection.setAutoCommit(false);
 
-            ps = connection.prepareStatement(SQL_FIND_BY_USER_ID);
+            String query = "SELECT * FROM tokens WHERE user_id = ?";
+
+            ps = connection.prepareStatement(query);
             ps.setString(1, userId.toString());
+
             rs = ps.executeQuery();
 
             if (rs.next()) {
                 token = getToken(rs);
             }
+
             if (token.getExpiry().isBefore(java.time.LocalDateTime.now()) ) {
                 delete(token.getToken());
                 throw new BusinessException("Your session has expired, please login again.");
@@ -123,7 +125,9 @@ public class TokenRepositoryImpl {
         try {
             connection.setAutoCommit(false);
 
-            ps = connection.prepareStatement(SQL_FIND_BY_TOKEN);
+            String query = "SELECT * FROM tokens WHERE token = ?";
+
+            ps = connection.prepareStatement(query);
             ps.setString(1, tokenValue);
             rs = ps.executeQuery();
 
@@ -146,7 +150,9 @@ public class TokenRepositoryImpl {
         try {
             connection.setAutoCommit(false);
 
-            ps = connection.prepareStatement(SQL_DELETE_EXPIRED);
+            String query = "DELETE FROM tokens WHERE expiry < CURRENT_TIMESTAMP";
+
+            ps = connection.prepareStatement(query);
 
             ps.executeUpdate();
             connection.commit();

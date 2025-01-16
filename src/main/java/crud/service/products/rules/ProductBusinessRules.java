@@ -11,11 +11,11 @@ public class ProductBusinessRules extends BaseBusinessRules<Product, ProductRepo
         super(repository);
     }
 
-    public boolean productNameIsValid(String name) {
-        if(name.length() <= 0 || name.length() > 100 || name == null){
-            return false;
+    public boolean productNameIsInvalid(String name) {
+        if(name.length() < 2 || name.length() > 100){
+            return true;
         }
-        return true;
+        return false;
     }
 
     public boolean productPriceIsValid(double price) {
@@ -24,13 +24,7 @@ public class ProductBusinessRules extends BaseBusinessRules<Product, ProductRepo
         }
         return true;
     }
-
-    public boolean productQuantityIsValid(long quantity) {
-        if(quantity <= 0){
-            return false;
-        }
-        return true;
-    }
+    
     public boolean productDiscountIsValid(float discount) {
         if (discount < 0.01 || discount > 100) {
             return false;
